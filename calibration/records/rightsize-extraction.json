@@ -1,0 +1,126 @@
+{
+  "bands": {
+    "cpu": [
+      0.2,
+      2.0
+    ],
+    "memory": [
+      0.2,
+      1.5
+    ]
+  },
+  "models": [
+    {
+      "knee_threads": 8,
+      "knee_wall_s": 11.013644456863403,
+      "legal_memory_window_mib": null,
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "peak_mib": 8700.66796875,
+      "peak_over_trough": 31.547823746866282,
+      "sweep": [
+        {
+          "n_samples": 58,
+          "ok": true,
+          "peak_mib": 8298.83203125,
+          "threads": 2,
+          "trough_mib": 275.79296875,
+          "wall_s": 14.519087791442871
+        },
+        {
+          "n_samples": 51,
+          "ok": true,
+          "peak_mib": 8454.21875,
+          "threads": 4,
+          "trough_mib": 287.5703125,
+          "wall_s": 12.769478559494019
+        },
+        {
+          "n_samples": 44,
+          "ok": true,
+          "peak_mib": 8700.66796875,
+          "threads": 8,
+          "trough_mib": 278.8828125,
+          "wall_s": 11.013644456863403
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "trough_mib": 275.79296875,
+      "verdict": "IMPOSSIBLE"
+    },
+    {
+      "knee_threads": 8,
+      "knee_wall_s": 17.524218320846558,
+      "legal_memory_window_mib": null,
+      "model": "unsloth/gemma-3-4b-it",
+      "peak_mib": 24767.6640625,
+      "peak_over_trough": 90.99747409512328,
+      "sweep": [
+        {
+          "n_samples": 101,
+          "ok": true,
+          "peak_mib": 24201.19140625,
+          "threads": 2,
+          "trough_mib": 272.46875,
+          "wall_s": 25.534562349319458
+        },
+        {
+          "n_samples": 75,
+          "ok": true,
+          "peak_mib": 24767.6640625,
+          "threads": 4,
+          "trough_mib": 272.234375,
+          "wall_s": 19.025923490524292
+        },
+        {
+          "n_samples": 69,
+          "ok": true,
+          "peak_mib": 24753.96484375,
+          "threads": 8,
+          "trough_mib": 272.1796875,
+          "wall_s": 17.524218320846558
+        }
+      ],
+      "tag": "gemma3-4b",
+      "trough_mib": 272.1796875,
+      "verdict": "IMPOSSIBLE"
+    },
+    {
+      "knee_threads": 8,
+      "knee_wall_s": 11.265144348144531,
+      "legal_memory_window_mib": null,
+      "model": "state-spaces/mamba-790m-hf",
+      "peak_mib": 3929.62109375,
+      "peak_over_trough": 14.412776870397433,
+      "sweep": [
+        {
+          "n_samples": 109,
+          "ok": true,
+          "peak_mib": 3878.51953125,
+          "threads": 2,
+          "trough_mib": 300.09375,
+          "wall_s": 27.538960695266724
+        },
+        {
+          "n_samples": 58,
+          "ok": true,
+          "peak_mib": 3874.125,
+          "threads": 4,
+          "trough_mib": 272.6484375,
+          "wall_s": 14.768108606338501
+        },
+        {
+          "n_samples": 44,
+          "ok": true,
+          "peak_mib": 3929.62109375,
+          "threads": 8,
+          "trough_mib": 290.45703125,
+          "wall_s": 11.265144348144531
+        }
+      ],
+      "tag": "mamba-790m",
+      "trough_mib": 272.6484375,
+      "verdict": "IMPOSSIBLE"
+    }
+  ],
+  "thermal_safe_threads_atlas": 7
+}

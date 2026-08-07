@@ -598,11 +598,203 @@
       },
       "tag": "mistral-7b",
       "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 8,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 4.858919643357932,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4716126203993423,
+        "1.25": 1.0
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 8,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 3.5765897744632595,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.40490913477040563,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 8,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 4.809201264055536,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.40949734207120614,
+        "1.25": 1.0
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 8,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 4.593542526655625,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4249072133562019,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 17,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 6.374842762802494,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4062589264782584,
+        "1.25": 1.0
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 17,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 6.381172185129914,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4407530609583643,
+        "1.25": 1.0
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 17,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 6.483574549312365,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4449320867214043,
+        "1.25": 1.0
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 17,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 5.903058836315745,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4381906437638425,
+        "1.25": 1.0
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 26,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.8841989561367285,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.5851472652515071,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 26,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.589910665539605,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.47073897905395135,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 26,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.99667770601244,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4885602400567373,
+        "1.25": 1.0
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 26,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 6.155901458805442,
+      "n_layers": 34,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.5570719026460194,
+        "1.25": 1.0
+      },
+      "tag": "gemma3-4b",
+      "truth_rank": 24
     }
   ],
   "runtime": {
     "code_commit": "unknown",
-    "generated_utc": "2026-08-07T20:35:42.715524+00:00",
+    "generated_utc": "2026-08-07T21:33:21.419882+00:00",
     "hostname": "atlas",
     "numpy": "2.5.1",
     "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
@@ -613,21 +805,23 @@
   "summary": {
     "across_family_spread": 9.992007221626409e-16,
     "families": [
+      "gemma",
       "llama",
       "mistral",
       "qwen"
     ],
     "family_mean_resolution_at_1.25": {
+      "gemma": 1.0,
       "llama": 0.9999999999999997,
       "mistral": 1.0,
       "qwen": 0.999999999999999
     },
     "max_resolution_at_1.25": 1.0000000000000004,
-    "mean_resolution_at_0.5": 0.33365050946449504,
-    "mean_resolution_at_1.25": 0.9999999999999996,
-    "median_row_entropy_bits": 3.5602501957128627,
+    "mean_resolution_at_0.5": 0.36570828658852217,
+    "mean_resolution_at_1.25": 0.9999999999999997,
+    "median_row_entropy_bits": 4.302394587298545,
     "min_resolution_at_1.25": 0.9999999999999964,
-    "n_cells": 36
+    "n_cells": 48
   },
   "supersedes": "calibration/records/c3-architecture-spread.json",
   "verdict": {

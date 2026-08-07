@@ -317,21 +317,28 @@ head with respect to a key is spanned by its queries.** That is a fact about
 softmax attention, not a claim of this program, and it is what makes real
 weights gradeable at all.
 
-| Family | cells | resolution @ k/d = 0.5 | @ k/d = 1.25 |
-|---|---:|---:|---:|
-| llama | 12 | — | **1.0000** |
-| qwen | 12 | — | **1.0000** |
-| mistral | 12 | — | **1.0000** |
-| all | 36 | **0.3337** | **1.0000** |
+| Family | cells | head_dim | resolution @ k/d = 0.5 | @ k/d = 1.25 |
+|---|---:|---:|---:|---:|
+| llama | 12 | 128 | 0.322 | **1.0000** |
+| qwen | 12 | 128 | 0.302 | **1.0000** |
+| mistral | 12 | 128 | 0.377 | **1.0000** |
+| gemma | 12 | 256 | 0.462 | **1.0000** |
+| all | 48 | — | **0.366** | **1.0000** |
 
 **Across-family spread is 1e-15.** At the source program's budget ratio the
 probe recovers the analytic operator exactly on every cell of every family,
-and the budget cliff reproduces on real activations at 0.334 against 1.000.
+and the budget cliff reproduces on real activations at 0.366 against 1.000.
 C-2e's headline was not an artifact of planted subspaces.
 
-**Gemma-3 is missing from this sweep**, not omitted from the specification.
-Its rotary embedding takes a per-layer type argument the extraction did not
-supply, so no real queries were captured. Three architectures, not four.
+Gemma-3 is the only family here at head_dim 256, so it varies dimension as
+well as architecture. Its rotary embedding keeps separate tables for sliding
+and full attention and looks them up by a layer type that lives on the config
+rather than on the layer, which is why the first two extraction attempts
+failed on it.
+
+Median attention row entropy across the 48 cells is **4.30 bits**, against
+0.152 for the failed first attempt. That single number is what separates a
+real measurement here from an artifact.
 
 ### What C-3 got wrong first
 

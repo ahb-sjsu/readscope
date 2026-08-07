@@ -313,3 +313,42 @@ An unweighted query covariance is a defensible definition. The lesson for a
 datasheet is only that a recovery number is meaningless without saying what
 it was graded against, because two reasonable references differ by about a
 fifth of the range.
+
+
+### F-11, the NRP question, answered by measurement rather than preference
+
+The extraction was going to be bursted to NRP, on the reasoning that Atlas
+cannot use its GPUs (torch 2.11.0+cu130 against a CUDA 12.8 driver). Before
+submitting anything, `calibration/rightsize_extraction.py` profiled the
+workload against the cluster's own bands. Record
+`calibration/records/rightsize-extraction.json`.
+
+| model | peak RSS | trough RSS | peak/trough | best wall | verdict |
+|---|---:|---:|---:|---:|---|
+| qwen2.5-1.5B | 8701 MiB | 276 MiB | 31.6 | 11.0 s | **IMPOSSIBLE** |
+| gemma-3-4B | 24768 MiB | 272 MiB | 91.0 | 17.5 s | **IMPOSSIBLE** |
+| mamba-790m | 3930 MiB | 273 MiB | 14.4 | 11.3 s | **IMPOSSIBLE** |
+
+Requests equal limits on NRP, so the request must be at least the peak or the
+pod OOMs, and at most the trough over 0.20 or the memory floor is violated.
+Every one of these exceeds five times its trough, so **none of them has a
+legal request**. The trough is the interpreter and torch import before any
+weights load; the peak is the weights resident.
+
+The wall times settle it independently. **These jobs run for 11 to 18
+seconds.** A pod that spends minutes pulling an image and downloading weights
+to do fifteen seconds of work is exactly the shape the enforcer averages over
+five minutes and kills, and no ballast trick changes the fact that the job is
+too small and too bursty for the platform.
+
+**So the extraction stays on Atlas, and the GPU was never the constraint.**
+The job is model-loading bound: a single 192-token forward pass is
+milliseconds of compute against tens of seconds of load. A GPU pod would have
+sat below the 40 percent utilisation floor by construction. batch-probe's
+thermal probe put the safe thread count on this box at 7, and the wall-time
+sweep showed the knee at 8 threads, so nothing here wanted more machine than
+it had.
+
+What would suit NRP is a job that holds high memory and high CPU for many
+minutes. This is not that, and the right-sizer said so before a single pod
+was submitted, which is the entire point of running it first.

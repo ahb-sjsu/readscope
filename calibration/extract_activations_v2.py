@@ -164,7 +164,20 @@ def main() -> int:
 
                 # the model's own rotary embedding, applied as the attention
                 # module applies it
-                cos, sin = dec.rotary_emb(q.unsqueeze(0), pos)
+                # Gemma-3 keys its rotary tables by layer type (sliding vs
+                # full attention) and errors on a bare call; every other
+                # family here takes the two-argument form.
+                # Gemma-3 keeps separate rotary tables for sliding and
+                # full attention and looks them up by the layer's type,
+                # which lives on the config rather than on the layer.
+                types = getattr(cfg, "layer_types", None)
+                layer_type = types[li] if types else None
+                if layer_type is None:
+                    cos, sin = dec.rotary_emb(q.unsqueeze(0), pos)
+                else:
+                    cos, sin = dec.rotary_emb(
+                        q.unsqueeze(0), pos, layer_type=layer_type
+                    )
                 cos = cos[0].unsqueeze(0)  # (1, S, d)
                 sin = sin[0].unsqueeze(0)
                 q = (q * cos) + (_rotate_half(q) * sin)
@@ -201,6 +214,7 @@ def main() -> int:
                             "head_dim": int(d),
                             "n_queries": int(N_QUERIES),
                             "queries": "real, q_proj hook + model rotary_emb",
+                            "layer_type": layer_type,
                         }
                     )
             print(
