@@ -182,11 +182,8 @@ is unbiased for the gradient but noisy, and squaring a noisy gradient adds an
 approximately isotropic term of order `||g||^2 / k` to the recovered
 operator. It leaves the leading eigenvector alone and buries everything else.
 
-**The immediate engineering item is to subtract that term**, estimate the
-residual isotropic inflation from the sketch's own variance and deflate the
-spectrum before eigendecomposition, then re-run C-2b under a fresh
-declaration. If bandwidth does not improve, the finding stands and the
-specification says the sketch reports the dominant direction only.
+**That proposed fix was wrong, and F-5 records why.** It is left standing
+here as written so the correction has something to point at.
 
 ### F-4, the gap between this package and its own provenance
 
@@ -200,3 +197,40 @@ implement.
 That gap was invisible until the bandwidth sweep put both on one axis, which
 is the entire argument for building the datasheet before building the
 adoption story.
+
+
+### F-5, from C-2c and C-2d: debiasing cannot buy bandwidth, and I said it would
+
+F-3 named the sketch's isotropic inflation as the cause of its one-to-two
+direction bandwidth and proposed subtracting it as the immediate fix. The
+first half was right and the second half was wrong.
+
+The bias is exact, `E[ghat ghat^T] = (1 + 1/k) g g^T + (||g||^2 / k) I`, and
+`debias_sketch` inverts it in closed form. Being a multiple of the identity,
+it shifts every eigenvalue equally and rotates nothing, so it cannot change a
+recovered subspace by construction. E1 was declared to test exactly that and
+it held to 4e-16.
+
+What it does fix is the spectrum, mean trace error falling from 6.21 to 0.068
+at `k=8`. That is real value for bit allocation and none at all for
+bandwidth.
+
+The cause of the bandwidth limit is variance, not bias.
+
+### F-6, the orthonormal estimator helps conditionally, and the bar that said otherwise failed
+
+An orthonormal frame removes the magnitude noise of an iid Gaussian one and
+is exact at `k = d`. It raises bandwidth from one to two at `k/d = 0.5` and
+does not help at `k/d = 0.25`, where it wins at some ranks and loses at
+others.
+
+E3 asked that it never be worse anywhere. It failed at three seeds. Rather
+than weaken the bar, C-2d re-ran the identical sweep at ten seeds, generated
+mechanically from C-2c so that only the seed list, the docstring and the
+output path could differ. **E3 failed again**, which settles it: ortho is
+genuinely worse at some ranks at low sampling ratio, and the estimator
+recommendation has to be conditional rather than a blanket preference.
+
+Generating the replication rather than editing the original is the only way
+to make "no bar was moved after seeing the numbers" checkable by a reader
+instead of merely asserted.

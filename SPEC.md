@@ -95,9 +95,64 @@ the Gaussian sketch shipped here are not the same instrument.
 
 So the accuracy table in the next section describes a probe design this
 package does not yet implement. Until it does, those numbers are provenance
-rather than specification, and this document will keep saying so. Closing the
-gap, most obviously by subtracting the isotropic bias the sketch introduces,
-is the top engineering item in `CALIBRATION.md`.
+rather than specification, and this document will keep saying so.
+
+### Correction: the fix this document proposed does not work
+
+An earlier version of this page said the gap would most obviously be closed
+by subtracting the sketch's isotropic bias. **That was wrong, and C-2c and
+C-2d were declared to establish it rather than to quietly replace it.**
+
+The bias is real and now exact. For iid Gaussian directions,
+
+    E[ghat ghat^T] = (1 + 1/k) g g^T + (||g||^2 / k) I
+
+by Isserlis, confirmed numerically. `readscope.probe.debias_sketch` inverts it
+in closed form. But **it is a multiple of the identity**, so it shifts every
+eigenvalue equally and moves no eigenvector at all. Debiasing cannot buy a
+single direction of bandwidth. E1 tested that prediction directly and it held
+to 4e-16.
+
+What debiasing does fix is the spectrum, and that is worth having on its own:
+mean trace error against the exact estimator falls from **6.21 to 0.068** at
+`k=8` and from **3.05 to 0.050** at `k=16`. A bit allocation computed by
+water-filling on the raw sketch spectrum is allocating against a flattened
+operator. Run `debias_sketch` before `water_fill`, and do not expect it to
+help subspace recovery.
+
+The actual cause of the bandwidth limit is the sketch's **variance**, not its
+bias.
+
+### The orthonormal estimator, and where it does and does not help
+
+`mode="ortho"` draws an orthonormal frame and recombines as `U^T y`, which is
+exactly the orthogonal projection of the gradient onto the drawn subspace. It
+costs the same `2k` calls. At `k = d` the projector is the identity, so the
+estimate is exact, and E5 confirmed that to 1e-9.
+
+C-2d, ten seeds, ambient dimension 32:
+
+| Estimator | res @1 | @2 | @4 | @8 | @16 | Bandwidth |
+|---|---:|---:|---:|---:|---:|---:|
+| exact, k=32 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | **16** |
+| sketch, k=16 | 0.985 | 0.490 | 0.240 | 0.128 | 0.033 | **1** |
+| ortho, k=16 | 0.995 | 0.539 | 0.269 | 0.145 | 0.065 | **2** |
+| sketch, k=8 | 0.966 | 0.481 | 0.221 | 0.118 | 0.056 | **1** |
+| ortho, k=8 | 0.981 | 0.473 | 0.237 | 0.113 | 0.034 | **1** |
+
+**Ortho buys bandwidth at `k/d = 0.5` and does not at `k/d = 0.25`.** At the
+larger budget it dominates the sketch at every rank. At the smaller one it
+wins at ranks 1 and 4 and loses at 2, 8 and 16. E3, which asked that ortho
+never score worse anywhere, **failed at both three seeds and ten**, so this is
+a real effect and not sampling noise. E4, which asked only that ortho buy
+bandwidth at some budget, passed.
+
+**The recommendation is therefore conditional, which is what a specification
+is for.** Use `ortho` when the direction budget is a substantial fraction of
+the ambient dimension. Below roughly a quarter, the two estimators are
+interchangeable within this sweep and neither resolves more than the dominant
+direction. Where that crossover sits has been measured at exactly two points
+and nowhere else.
 
 ---
 

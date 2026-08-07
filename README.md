@@ -81,10 +81,19 @@ far has been unkind to it.** Read [SPEC.md](SPEC.md) before relying on
 anything here.
 
 **Bandwidth, measured.** The exact estimator resolves all 32 read directions
-swept. The random-sketch estimator, which is the affordable one, resolves
-**one or two**. The cause is identified, an isotropic bias of order
-`||g||^2 / k` from squaring a noisy gradient, and a correction is the top
-engineering item rather than a fundamental limit.
+swept. The affordable estimators resolve **one or two**.
+
+I first blamed an isotropic bias and proposed debiasing as the fix. The bias
+is real and now derived exactly, and `debias_sketch` inverts it, but it is a
+multiple of the identity and so **cannot rotate an eigenvector or buy a
+single direction of bandwidth**. It does fix the spectrum, which matters for
+bit allocation: mean trace error drops from 6.21 to 0.068 at `k=8`. The
+bandwidth limit is variance, not bias, and both the wrong diagnosis and its
+correction are in `CALIBRATION.md`.
+
+An orthonormal frame is the variance fix, exact at `k = d`, and it raises
+bandwidth from one to two at `k/d = 0.5`. At `k/d = 0.25` it does not help.
+The recommendation is conditional on the sampling ratio.
 
 **The published accuracy figures came from a different probe.** Expressed on
 a common statistic, the Llama result scores 0.596 at rank 16 where this
