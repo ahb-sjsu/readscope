@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 
 from readscope import (
+    OverlapReading,
     blind_probe,
     chance_overlap,
     consumer_distortion,
@@ -147,6 +148,24 @@ def test_random_subspaces_sit_near_the_chance_floor():
         B = np.linalg.qr(rng.standard_normal((d, r)))[0]
         vals.append(subspace_overlap(A, B).overlap)
     assert np.mean(vals) == pytest.approx(chance_overlap(r, d), abs=0.02)
+
+
+def test_resolution_is_zero_at_chance_and_one_at_perfect():
+    rng = np.random.default_rng(80)
+    U = np.linalg.qr(rng.standard_normal((32, 4)))[0]
+    perfect = subspace_overlap(U, U)
+    assert perfect.resolution == pytest.approx(1.0)
+
+    floor = OverlapReading(overlap=4 / 32, chance=4 / 32, rank=4, dim=32)
+    assert floor.resolution == pytest.approx(0.0)
+
+
+def test_resolution_compares_across_shapes_where_overlap_cannot():
+    """0.5 raw overlap means very different things at different ranks."""
+    easy = OverlapReading(overlap=0.5, chance=1 / 64, rank=1, dim=64)
+    hard = OverlapReading(overlap=0.5, chance=32 / 64, rank=32, dim=64)
+    assert easy.resolution > 0.49
+    assert hard.resolution == pytest.approx(0.0)
 
 
 def test_orthogonal_subspaces_have_zero_overlap():

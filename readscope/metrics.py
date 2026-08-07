@@ -27,11 +27,30 @@ class OverlapReading:
         """Overlap in units of chance. The figure that survives rescaling."""
         return self.overlap / self.chance if self.chance > 0 else float("inf")
 
+    @property
+    def resolution(self) -> float:
+        """Excess over chance as a fraction of the available headroom.
+
+        ``(overlap - chance) / (1 - chance)``. Zero at the noise floor and
+        one at perfect recovery, whatever the shape being read.
+
+        Raw overlap cannot be compared across shapes because the floor moves
+        with them: at rank ``r`` in ``d`` dimensions chance is ``r / d``, so
+        a reading of 0.5 is excellent at rank 1 in 64 dimensions and exactly
+        worthless at rank 32. Ratio to chance has the opposite defect, since
+        it is bounded above by ``d / r`` and so cannot be compared either.
+        This is the quantity that can.
+        """
+        if self.chance >= 1.0:
+            return 0.0
+        return (self.overlap - self.chance) / (1.0 - self.chance)
+
     def to_dict(self) -> dict:
         return {
             "overlap": self.overlap,
             "chance": self.chance,
             "ratio_to_chance": self.ratio,
+            "resolution": self.resolution,
             "rank": self.rank,
             "dim": self.dim,
         }

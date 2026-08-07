@@ -33,12 +33,70 @@ frequency bins.
 | Field | Scope equivalent | Meaning for this instrument | Status |
 |---|---|---|---|
 | Sample rate | samples/second | Consumer evaluations spent per operating point. `2d` for the exact estimator, `2k` for the `k`-direction sketch. | **Measured, exactly known** |
-| Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Not characterized** |
+| Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Measured for this package's estimators, and it is bad** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
 | Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **One curve measured, synthetic consumer** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
 | Temperature drift | ppm/°C | Stability of a reading across architectures at matched rank profile. | **Not characterized** |
+
+---
+
+## Bandwidth, measured, and the worst news in this document
+
+C-2b, record `calibration/records/c2b-bandwidth.json`, PASS on all six bars.
+Planted subspace with a graded spectrum, ambient dimension 64, three seeds,
+192 operating points. The statistic is **resolution**,
+`(overlap - chance) / (1 - chance)`, which is zero at the noise floor and one
+at perfect recovery whatever the shape. Raw overlap cannot be compared across
+ranks because the floor moves with them.
+
+Bandwidth is the largest read rank whose entire prefix holds resolution at or
+above 0.5.
+
+| Estimator | Calls per point | res @1 | @2 | @4 | @8 | @16 | @32 | Bandwidth |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| exact | `2d` | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | **32** |
+| sketch, k=64 | `2k` | 0.995 | 0.503 | 0.283 | 0.139 | 0.060 | 0.041 | **2** |
+| sketch, k=16 | `2k` | 0.973 | 0.478 | 0.219 | 0.116 | 0.032 | 0.013 | **1** |
+
+**The exact estimator resolves the whole sweep. This package's random-sketch
+estimator resolves one or two directions.** `CALIBRATION.md` listed exactly
+this outcome in advance as one of the three findings that would mean the
+instrument is not worth specifying, on the grounds that it would then report
+the dominant direction and nothing more.
+
+The cause is structural. The two-point sketch is unbiased for the gradient
+but noisy, and squaring a noisy gradient adds a roughly isotropic term of
+order `||g||^2 / k` to the recovered operator. That term does not rotate the
+leading eigenvector, which is why rank one survives, and it buries every
+weaker planted direction, which is why nothing else does.
+
+At fixed rank the sketch's resolution is close to flat in ambient dimension,
+0.21 to 0.25 for `k=16` across dimensions 16 through 128, so the limit is the
+sketch budget rather than the size of the space.
+
+### This is not the probe that produced the accuracy numbers below
+
+Converting the published figures to the same statistic:
+
+| Run | Overlap | Chance | **Resolution** |
+|---|---:|---:|---:|
+| GO-P-2026-011, planted | 0.936 | 0.059 | **0.932** |
+| GO-P-2026-020, Llama, the miss | 0.567 | 0.126 | **0.505** |
+| GO-P-2026-021, Llama, the pass | 0.647 | 0.126 | **0.596** |
+
+The chance value of 0.126 is consistent with a rank-16 read subspace in a
+128-dimensional head space. **At rank 16 this package's sketch scores 0.03 to
+0.06 where the published probe scored 0.60.** That is roughly an order of
+magnitude, and it means the 32-key probe used in `geometric-observation` and
+the Gaussian sketch shipped here are not the same instrument.
+
+So the accuracy table in the next section describes a probe design this
+package does not yet implement. Until it does, those numbers are provenance
+rather than specification, and this document will keep saying so. Closing the
+gap, most obviously by subtracting the isotropic bias the sketch introduces,
+is the top engineering item in `CALIBRATION.md`.
 
 ---
 

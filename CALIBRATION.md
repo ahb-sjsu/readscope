@@ -68,6 +68,12 @@ trusted off its calibration points.
 
 ## C-2, the bandwidth sweep
 
+**Status: run, failed on a declaration error, corrected, measured.** C-2
+barred monotonicity on raw overlap while the chance floor moves with rank,
+and its bandwidth criterion was unsatisfiable past rank `dim / 2` by
+construction. C-2b bars the resolution instead and defines bandwidth as a
+prefix. See F-3 below for what it found.
+
 Overlap against rank at fixed dimension, and against dimension at fixed rank,
 until recovery falls to the chance floor. The rank at which it crosses is the
 instrument's bandwidth, and it is meaningless to quote an accuracy without
@@ -160,3 +166,37 @@ mode than the alternative and should not be assumed to hold on real models.
 
 The seed spread tightens as loading falls, from 0.045 at the worst point to
 0.003 at the best. Loading costs precision as well as accuracy.
+
+
+### F-3, from C-2b: the shipped sketch has a bandwidth of one or two
+
+The exact estimator resolves the full rank sweep. The random-sketch
+estimator, which is the affordable one and therefore the one that would ever
+be pointed at a frontier model, holds resolution above 0.5 only at rank one
+at `k=16` and rank two at `k=64`.
+
+This is one of the three outcomes listed above as grounds for concluding the
+instrument is not worth specifying. It is not fatal, because the cause is
+identified and is correctable rather than fundamental: the two-point sketch
+is unbiased for the gradient but noisy, and squaring a noisy gradient adds an
+approximately isotropic term of order `||g||^2 / k` to the recovered
+operator. It leaves the leading eigenvector alone and buries everything else.
+
+**The immediate engineering item is to subtract that term**, estimate the
+residual isotropic inflation from the sketch's own variance and deflate the
+spectrum before eigendecomposition, then re-run C-2b under a fresh
+declaration. If bandwidth does not improve, the finding stands and the
+specification says the sketch reports the dominant direction only.
+
+### F-4, the gap between this package and its own provenance
+
+Expressed as resolution, the published Llama figure is 0.596 at what the
+chance value implies is rank 16. This package's sketch scores 0.03 to 0.06 at
+rank 16. The 32-key probe that produced the published number and the Gaussian
+sketch shipped here are not the same instrument, and the accuracy table in
+`SPEC.md` therefore describes a probe design this package does not yet
+implement.
+
+That gap was invisible until the bandwidth sweep put both on one axis, which
+is the entire argument for building the datasheet before building the
+adoption story.

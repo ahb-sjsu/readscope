@@ -69,8 +69,23 @@ not you find the theory it came out of interesting.
 
 ## Status: read SPEC.md first
 
-**This instrument does not have a specification yet.** It has three
-measurements.
+**This instrument does not have a specification yet, and the calibration so
+far has been unkind to it.** Read [SPEC.md](SPEC.md) before relying on
+anything here.
+
+**Bandwidth, measured.** The exact estimator resolves all 32 read directions
+swept. The random-sketch estimator, which is the affordable one, resolves
+**one or two**. The cause is identified, an isotropic bias of order
+`||g||^2 / k` from squaring a noisy gradient, and a correction is the top
+engineering item rather than a fundamental limit.
+
+**The published accuracy figures came from a different probe.** Expressed on
+a common statistic, the Llama result scores 0.596 at rank 16 where this
+package's sketch scores 0.03 to 0.06. The 32-key probe in the source program
+and the Gaussian sketch shipped here are not the same instrument, and until
+that is closed the table below is provenance rather than specification.
+
+Those three inherited measurements:
 
 | Run | Substrate | Overlap | Chance | Verdict |
 |---|---|---|---|---|
