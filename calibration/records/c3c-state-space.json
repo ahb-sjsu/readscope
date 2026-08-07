@@ -1,0 +1,251 @@
+{
+  "bars": {
+    "N1_instrument": true,
+    "N2_budget_cliff": true,
+    "N3_compounding": false,
+    "N4_rank_floor": true,
+    "N5_anti_vacuity": false,
+    "N6_census": true
+  },
+  "declared": {
+    "decay_band": [
+      1e-12,
+      0.999
+    ],
+    "eps": 0.0001,
+    "graded_rank": 8,
+    "horizon": 96,
+    "instrument_bar": 0.9,
+    "near_quarter_bar": 0.5,
+    "ratios": [
+      0.5,
+      1.25
+    ],
+    "seed": 0,
+    "start": 32,
+    "truth": "closed-form sum_t (C_t * g_t)(C_t * g_t)^T for a selective SSM, g_t the accumulated decay from the start position"
+  },
+  "rows": [
+    {
+      "channel": 0,
+      "d_state": 16,
+      "decay_at_horizon": 6.26907269573017e-22,
+      "decay_monotone": true,
+      "effective_memory_steps": 1.8312593455084663,
+      "family": "mamba",
+      "layer": 12,
+      "near_quarter_trace_fraction": 0.9999999999926888,
+      "resolution": {
+        "0.5": 0.08259353738888975,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 11
+    },
+    {
+      "channel": 1,
+      "d_state": 16,
+      "decay_at_horizon": 1.0061502535426038e-07,
+      "decay_monotone": true,
+      "effective_memory_steps": 3.74900531051536,
+      "family": "mamba",
+      "layer": 12,
+      "near_quarter_trace_fraction": 0.9997846343724534,
+      "resolution": {
+        "0.5": 0.07847327163785756,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 14
+    },
+    {
+      "channel": 2,
+      "d_state": 16,
+      "decay_at_horizon": 0.2368523528580299,
+      "decay_monotone": true,
+      "effective_memory_steps": 33.50455224725434,
+      "family": "mamba",
+      "layer": 12,
+      "near_quarter_trace_fraction": 0.6091081087874802,
+      "resolution": {
+        "0.5": -0.007319349460785829,
+        "1.25": 1.0000000000000009
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 16
+    },
+    {
+      "channel": 3,
+      "d_state": 16,
+      "decay_at_horizon": 2.3523058494269202e-09,
+      "decay_monotone": true,
+      "effective_memory_steps": 3.527461872572574,
+      "family": "mamba",
+      "layer": 12,
+      "near_quarter_trace_fraction": 0.9999742377826508,
+      "resolution": {
+        "0.5": -0.02753275698951818,
+        "1.25": 0.9999999999999996
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 16
+    },
+    {
+      "channel": 0,
+      "d_state": 16,
+      "decay_at_horizon": 9.767288200481318e-05,
+      "decay_monotone": true,
+      "effective_memory_steps": 7.621265888649782,
+      "family": "mamba",
+      "layer": 24,
+      "near_quarter_trace_fraction": 0.9978468394404639,
+      "resolution": {
+        "0.5": 0.01802761433111355,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 16
+    },
+    {
+      "channel": 1,
+      "d_state": 16,
+      "decay_at_horizon": 0.0030232372216006435,
+      "decay_monotone": true,
+      "effective_memory_steps": 10.35371516304334,
+      "family": "mamba",
+      "layer": 24,
+      "near_quarter_trace_fraction": 0.9880786347363738,
+      "resolution": {
+        "0.5": 0.05587011567715883,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 16
+    },
+    {
+      "channel": 2,
+      "d_state": 16,
+      "decay_at_horizon": 0.007116590094135092,
+      "decay_monotone": true,
+      "effective_memory_steps": 7.584969906365407,
+      "family": "mamba",
+      "layer": 24,
+      "near_quarter_trace_fraction": 0.9874264778747617,
+      "resolution": {
+        "0.5": 0.03708109644943813,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 13
+    },
+    {
+      "channel": 3,
+      "d_state": 16,
+      "decay_at_horizon": 0.05544888352138014,
+      "decay_monotone": true,
+      "effective_memory_steps": 19.56610758314142,
+      "family": "mamba",
+      "layer": 24,
+      "near_quarter_trace_fraction": 0.9477453412690184,
+      "resolution": {
+        "0.5": 0.09679922731670176,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 16
+    },
+    {
+      "channel": 0,
+      "d_state": 16,
+      "decay_at_horizon": 0.3563008324451054,
+      "decay_monotone": true,
+      "effective_memory_steps": 45.61102343082648,
+      "family": "mamba",
+      "layer": 36,
+      "near_quarter_trace_fraction": 0.792153466378357,
+      "resolution": {
+        "0.5": -0.025178535421410242,
+        "1.25": 0.9999999999999996
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 16
+    },
+    {
+      "channel": 1,
+      "d_state": 16,
+      "decay_at_horizon": 4.924795197827842e-18,
+      "decay_monotone": true,
+      "effective_memory_steps": 2.1761437712923644,
+      "family": "mamba",
+      "layer": 36,
+      "near_quarter_trace_fraction": 0.9999999999979189,
+      "resolution": {
+        "0.5": -0.05239005485421533,
+        "1.25": 0.9999999999999996
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 10
+    },
+    {
+      "channel": 2,
+      "d_state": 16,
+      "decay_at_horizon": 0.792564983251856,
+      "decay_monotone": true,
+      "effective_memory_steps": 81.9549282834711,
+      "family": "mamba",
+      "layer": 36,
+      "near_quarter_trace_fraction": 0.46960628604629595,
+      "resolution": {
+        "0.5": -0.15764377071365798,
+        "1.25": 0.9999999999999996
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 16
+    },
+    {
+      "channel": 3,
+      "d_state": 16,
+      "decay_at_horizon": 0.0005097564788842157,
+      "decay_monotone": true,
+      "effective_memory_steps": 8.231531608310462,
+      "family": "mamba",
+      "layer": 36,
+      "near_quarter_trace_fraction": 0.9986268510765317,
+      "resolution": {
+        "0.5": -0.3156234004923377,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "mamba-790m",
+      "truth_rank": 16
+    }
+  ],
+  "runtime": {
+    "code_commit": "unknown",
+    "generated_utc": "2026-08-07T21:48:13.590535+00:00",
+    "hostname": "atlas",
+    "numpy": "2.5.1",
+    "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]"
+  },
+  "schema": "readscope-c3c-state-space-v1",
+  "skipped": [],
+  "summary": {
+    "mean_resolution_at_0.5": -0.01807025042756381,
+    "mean_resolution_at_1.25": 1.0000000000000002,
+    "median_effective_memory_steps": 7.926398748480122,
+    "median_near_quarter_fraction": 0.9929627370884189,
+    "min_resolution_at_1.25": 0.9999999999999996,
+    "n_cells": 12
+  },
+  "verdict": {
+    "computed_from": [
+      "N1_instrument",
+      "N2_budget_cliff",
+      "N3_compounding",
+      "N4_rank_floor",
+      "N5_anti_vacuity",
+      "N6_census"
+    ],
+    "value": "FAIL"
+  }
+}

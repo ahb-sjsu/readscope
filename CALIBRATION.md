@@ -352,3 +352,37 @@ it had.
 What would suit NRP is a job that holds high memory and high CPU for many
 minutes. This is not that, and the right-sizer said so before a single pod
 was submitted, which is the entire point of running it first.
+
+
+### F-12, from C-3c: the cliff is the probe's, not attention's
+
+A selective SSM gives a consumer that is not attention and still has an exact
+closed form, because the read subspace of a recurrent state is spanned by its
+readout vectors attenuated by the accumulated decay. On twelve channel-cells
+of a real Mamba-790m the probe recovers that operator at resolution 1.000 at
+`k/d = 1.25`.
+
+At `k/d = 0.5` resolution runs from -0.32 to 0.10, at or below chance. On a
+16-dimensional state, half the directions buys nothing. **The budget cliff
+therefore belongs to the estimator and not to softmax**, which is what a
+non-attention consumer was added to decide.
+
+Measured alongside: Mamba channel memory runs 1.8 to 82 steps, median 7.9,
+with most channels taking essentially all of their read operator's trace from
+the nearest quarter of the horizon and a few spreading across all of it.
+
+### F-13, two more of my own bars declared wrongly
+
+N3 asserted a universal about the near-quarter trace fraction. Per-channel
+decay is precisely the quantity an SSM varies, so a universal was the wrong
+form; the distribution should be reported as C-3b reports family spread.
+
+N5 put anti-vacuity on the decay rather than on the operator. Two channels
+have decayed to 1e-18 or below by the horizon and are nonetheless perfectly
+measurable, with operator ranks of 10 to 16 against a graded 8 and resolution
+1.000. A two-step-memory channel is a real channel.
+
+Both corrected bars hold when evaluated against the record C-3c already
+produced. **No re-run was performed**, because nothing measured would change
+and only two labels would move. A PASS obtained that way would be worth less
+than saying so.

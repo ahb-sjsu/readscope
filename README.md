@@ -123,6 +123,13 @@ The shortcut was declared before the run and the anti-vacuity bar measured
 attention entropy, so the artifact announced itself instead of becoming a
 result.
 
+**A non-transformer consumer.** On twelve channel-cells of a real
+Mamba-790m, graded against the closed-form operator of a selective SSM, the
+probe again recovers at **resolution 1.000** at `k/d = 1.25`. At `k/d = 0.5`
+resolution runs **−0.32 to 0.10**, at or below chance — so the budget cliff
+belongs to the estimator, not to softmax. Measured alongside: Mamba channel
+memory runs **1.8 to 82 steps**, median 7.9.
+
 Those three inherited measurements:
 
 | Run | Substrate | Overlap | Chance | Verdict |

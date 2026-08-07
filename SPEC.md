@@ -398,6 +398,72 @@ reasonable choices differ by roughly a fifth of the available range.
 
 ---
 
+## A non-transformer consumer
+
+C-3c, record `calibration/records/c3c-state-space.json`, four of six bars.
+Twelve channel-cells from a real Mamba-790m at three depths, state dimension
+16.
+
+`CALIBRATION.md` asked for a consumer that is not attention, so that nothing
+in this specification is secretly a statement about softmax. A selective SSM
+supplies one, and it comes with its own exact ground truth. Writing
+`g_t[n] = prod_{u} exp(A[n] dt[u])` for the accumulated decay,
+
+    d y_t / d h_s = C_t * g_t,
+    M_true = sum_{t >= s} (C_t * g_t)(C_t * g_t)^T
+
+**The read subspace of a recurrent state is spanned by its readout vectors,
+attenuated by how much of each has already decayed.** That is the same shape
+as attention, where a head's read subspace with respect to a key is spanned
+by its queries.
+
+**Two results, both from bars that passed.**
+
+The probe recovers the analytic operator at **resolution 1.000 on every
+cell** at `k/d = 1.25`, on a consumer it was never designed around. The
+instrument is not an attention instrument.
+
+**The budget cliff is a property of the probe, not of attention.** At
+`k/d = 0.5` resolution runs from **−0.32 to 0.10**, meaning at or below
+chance, against 1.000 at `k/d = 1.25`. On a 16-dimensional state, half the
+directions buys nothing at all. That is a sharper cliff than either the
+synthetic sweep or the attention sweep showed, and it settles that C-2e's
+headline was never about softmax.
+
+**Measured, and worth having on its own:** Mamba's channels differ enormously
+in memory. Effective memory runs from **1.8 to 82 steps**, median 7.9. Most
+channels read almost entirely their immediate past, median near-quarter trace
+fraction 0.993, while a few spread across the whole horizon. That is the
+compounding `readscope.regimes` warns about, measured on a real model rather
+than asserted.
+
+### Two bars I declared wrongly
+
+**N3 asked that every cell take more than half its trace from the nearest
+quarter of the horizon.** Eleven of twelve do, at a median of 0.993. One
+channel with 82-step memory sits at 0.470. The failure is not the model
+disagreeing with the measurement, it is my having declared a universal about
+a quantity that is heterogeneous by construction: a per-channel decay rate is
+exactly the thing an SSM is free to vary. The correct treatment is the one
+C-3b uses for family spread, report the distribution and place no bar on its
+size.
+
+**N5 required the accumulated decay at the horizon to sit inside a band**,
+meant to catch cells graded on a state that has already emptied. Two channels
+fall below the floor at 6e-22 and 5e-18. But those cells are not degenerate:
+their analytic operators have rank 10 to 16 against a graded rank of 8, and
+the probe recovers them at resolution 1.000. A channel that forgets in two
+steps is a real short-memory channel, not a broken measurement. Anti-vacuity
+belongs on the operator, which N4 already checks, and not on the decay.
+
+**Evaluated on the same record, both corrected bars hold**: every analytic
+operator has rank at least 8, and the near-quarter fraction is reported as a
+distribution running 0.470 to 1.000. **No sweep was re-run**, because no
+measured number would change; only the labels on two bars would. Saying that
+is preferable to producing a PASS by restating the same numbers.
+
+---
+
 ## Accuracy: everything measured so far
 
 Three runs, on two substrates, under sealed preregistration in the
