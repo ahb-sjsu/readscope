@@ -20,9 +20,16 @@ alloc = water_fill(spec.eigenvalues, budget=4.0 * spec.dim)
 print(alloc.n_starved)          # directions that earn no bits
 ```
 
-`consumer` is any callable from a vector to a scalar margin. A logit, a
+`consumer` is any callable from a vector to a **scalar margin**. A logit, a
 ranking score, an attention weight. The probe never sees a label, a Jacobian,
 or a hint about which directions matter.
+
+It will refuse a consumer it cannot couple to. Point it at a top-k router and
+it raises rather than reporting the confident zero that finite differencing
+would produce, because selection reads the *order* of its logits and its
+derivative vanishes almost everywhere. `readscope.regimes` carries the right
+instruments for that case, the routing margin and the differential fraction,
+inherited from turboquant-pro.
 
 ---
 
@@ -153,6 +160,8 @@ readscope/       the instrument
   allocate.py    reverse water-filling against the spectrum
   loading.py     probe loading, the calibration axis
   metrics.py     subspace overlap, always with its chance floor
+  regimes.py     which consumers the probe may be attached to
+  quotient.py    tangential/radial displacement split
 calibration/     the program that has to produce a spec sheet
 tests/           exact controls with closed forms
 SPEC.md          the specification, mostly empty on purpose

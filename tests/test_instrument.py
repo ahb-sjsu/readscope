@@ -9,14 +9,22 @@ import pytest
 
 from readscope import (
     OverlapReading,
+    Regime,
+    applicability,
+    assert_probeable,
     blind_probe,
     chance_overlap,
     consumer_distortion,
+    decay_sensitivity,
+    differential_fraction,
+    displacement_decomposition,
     interpolate_distribution,
     probe_loading,
     retrieval_margin_gradient,
+    routing_margins,
     spectrum_of,
     subspace_overlap,
+    tangential_fraction,
     uniform_allocation,
     water_fill,
 )
@@ -334,3 +342,155 @@ def test_loading_degrades_recovery():
 
     on_dist = blind_probe(consumer, activation, eps=1e-3).read_subspace(1)
     assert subspace_overlap(on_dist, truth).overlap > 0.9
+
+
+# ------------------------------------------- regimes, inherited from tqp
+
+
+def test_selection_consumer_is_refused():
+    """The regime the blind probe silently fails on.
+
+    A top-k router is piecewise constant, so finite differencing returns
+    zero and an unguarded probe would report a consumer that reads nothing.
+    """
+    rng = np.random.default_rng(90)
+    d, e = 12, 6
+    W = rng.standard_normal((e, d))
+
+    def router(x):
+        return float(np.argmax(W @ x))
+
+    pts = rng.standard_normal((48, d))
+    verdict = applicability(router, pts, rng=np.random.default_rng(91))
+
+    assert verdict.regime is Regime.SELECTION
+    assert not verdict.probeable
+    assert verdict.evidence["zero_response_fraction"] >= 0.9
+    with pytest.raises(ValueError):
+        assert_probeable(router, pts, rng=np.random.default_rng(91))
+
+
+def test_smooth_consumer_is_admitted():
+    rng = np.random.default_rng(92)
+    d = 12
+    w = rng.standard_normal(d)
+    pts = rng.standard_normal((48, d))
+    verdict = applicability(
+        lambda x: float(np.tanh(w @ x)), pts, rng=np.random.default_rng(93)
+    )
+    assert verdict.regime is Regime.SCALAR_MARGIN
+    assert verdict.probeable
+
+
+def test_indicator_consumer_is_refused():
+    rng = np.random.default_rng(94)
+    pts = rng.standard_normal((48, 8))
+    verdict = applicability(
+        lambda x: float(x[0] > 0), pts, rng=np.random.default_rng(95)
+    )
+    assert not verdict.probeable
+
+
+def test_routing_margin_is_the_top_two_gap():
+    logits = np.array([[3.0, 1.0, 0.5], [2.0, 1.9, 0.0]])
+    m = routing_margins(logits, k=1)
+    assert m[0] == pytest.approx(2.0)
+    assert m[1] == pytest.approx(0.1)
+
+
+def test_common_mode_logit_error_is_routing_safe():
+    """Selection is invariant to a shift shared by every expert."""
+    common = np.ones((4, 5)) * 0.7
+    assert np.allclose(differential_fraction(common), 0.0, atol=1e-12)
+    differential = np.tile(np.array([1.0, -1.0, 0.0, 0.0, 0.0]), (4, 1))
+    assert np.allclose(differential_fraction(differential), 1.0, atol=1e-12)
+
+
+def test_decay_sensitivity_blows_up_for_slow_channels():
+    fast, slow = decay_sensitivity(np.array([0.1])), decay_sensitivity(
+        np.array([0.99])
+    )
+    assert slow[0] > 100.0 * fast[0]
+    assert (
+        decay_sensitivity(np.array([0.9]), seq_len=4)[0]
+        < decay_sensitivity(np.array([0.9]))[0]
+    )
+
+
+# ------------------------------------------ quotient, inherited from tqp
+
+
+def test_pure_direction_change_is_fully_tangential():
+    x = np.array([1.0, 0.0])
+    y = np.array([0.0, 1.0])
+    assert tangential_fraction(x, y) == pytest.approx(1.0)
+
+
+def test_pure_scaling_is_fully_radial():
+    x = np.array([1.0, 2.0, 3.0])
+    assert tangential_fraction(x, 2.5 * x) == pytest.approx(0.0, abs=1e-12)
+
+
+def test_coincident_vectors_are_undefined():
+    x = np.array([1.0, 1.0])
+    assert np.isnan(tangential_fraction(x, x))
+
+
+def test_displacement_decomposition_reports_pairs():
+    rng = np.random.default_rng(96)
+    batch = rng.standard_normal((200, 16))
+    d = displacement_decomposition(batch, n_pairs=500, seed=1)
+    assert d["n_pairs"] > 0
+    assert 0.0 <= d["median_tangential_fraction"] <= 1.0
+    assert d["median_radial_fraction"] == pytest.approx(
+        1.0 - d["median_tangential_fraction"]
+    )
+
+
+def test_blind_probe_refuses_a_selection_consumer_by_default():
+    rng = np.random.default_rng(97)
+    W = rng.standard_normal((6, 10))
+    pts = rng.standard_normal((32, 10))
+    with pytest.raises(ValueError, match="does not apply"):
+        blind_probe(lambda x: float(np.argmax(W @ x)), pts)
+
+
+def test_the_guard_can_be_overridden_and_records_nothing():
+    rng = np.random.default_rng(98)
+    w = rng.standard_normal(6)
+    pts = rng.standard_normal((8, 6))
+    res = blind_probe(linear_consumer(w), pts, check_regime=False)
+    assert res.meta["regime"] is None
+
+
+def test_the_guard_records_its_verdict_when_it_runs():
+    rng = np.random.default_rng(99)
+    w = rng.standard_normal(6)
+    pts = rng.standard_normal((8, 6))
+    res = blind_probe(linear_consumer(w), pts)
+    assert res.meta["regime"]["regime"] == Regime.SCALAR_MARGIN.value
+
+
+def test_the_guard_does_not_disturb_the_sketch_stream():
+    """The guard must not consume from the caller's generator, or every
+    record taken before it existed becomes irreproducible."""
+    rng = np.random.default_rng(100)
+    w = rng.standard_normal(8)
+    pts = rng.standard_normal((16, 8))
+
+    guarded = blind_probe(
+        linear_consumer(w),
+        pts,
+        mode="sketch",
+        sketch_dim=32,
+        rng=np.random.default_rng(7),
+    )
+    unguarded = blind_probe(
+        linear_consumer(w),
+        pts,
+        mode="sketch",
+        sketch_dim=32,
+        rng=np.random.default_rng(7),
+        check_regime=False,
+    )
+    assert np.allclose(guarded.S, unguarded.S)

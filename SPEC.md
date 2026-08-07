@@ -39,6 +39,7 @@ frequency bins.
 | Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **One curve measured, synthetic consumer** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
 | Temperature drift | ppm/°C | Stability of a reading across architectures at matched rank profile. | **Not characterized** |
+| Applicability | probe coupling | Which consumer regimes this probe can be attached to at all. | **Bounded, and enforced in code** |
 
 ---
 
@@ -97,6 +98,66 @@ package does not yet implement. Until it does, those numbers are provenance
 rather than specification, and this document will keep saying so. Closing the
 gap, most obviously by subtracting the isotropic bias the sketch introduces,
 is the top engineering item in `CALIBRATION.md`.
+
+---
+
+## Applicability: consumers this probe must not be pointed at
+
+Inherited from `turboquant_pro.operator_sensitivity` and
+`turboquant_pro.operator_trace`, which established these regimes before this
+package existed. A scope that reads 0 V on a circuit it cannot couple to is
+not a working scope, and neither is a probe that returns a confident zero.
+
+The blind probe assumes the consumer is a **differentiable scalar margin**.
+Every calibration in this document is on that regime and nothing else. Two
+regimes that matter in practice break the assumption.
+
+**Selection.** Top-k routers and argmax gates read the *order* of their
+logits, not the values. They are invariant to a common-mode shift, and their
+derivative is zero almost everywhere and undefined on the decision boundary.
+Finite differencing returns exactly zero, which an unguarded probe would
+report as a consumer that reads nothing at all. The correct instruments are
+the **routing margin**, the gap between rank `k` and `k+1`, and the
+**differential fraction**, the share of a perturbation that is not
+common-mode. Both are in `readscope.regimes`.
+
+**Recurrence.** For a per-channel linear recurrence `h_t = a h_{t-1} + b_t` a
+pointwise Jacobian is well defined but misleading, because decay error
+compounds along the sequence. Sensitivity of the accumulated state goes as
+`1 / (1 - a)^2`, so slow channels over long sequences dominate and a
+single-step probe sees none of that. `readscope.regimes.decay_sensitivity`
+gives the right coefficient.
+
+**This is enforced, not just documented.** `blind_probe` runs an
+applicability check by default and raises rather than returning a reading it
+cannot justify. The check costs up to 128 extra consumer calls and can be
+turned off with `check_regime=False` once a regime is established. The
+verdict is recorded in the result's metadata so a reading always carries the
+evidence that the probe was entitled to take it.
+
+The check's own threshold, the share of zero responses above which a consumer
+is called a selection regime, is declared at 0.9 and **has not been swept by
+any calibration here**. It is a specification field with an unmeasured value,
+which is the honest status.
+
+---
+
+## What else was inherited
+
+`readscope.quotient` ports the tangential and radial displacement split from
+`turboquant_pro.a2_probe`. It answers a question the read operator does not:
+of the variation actually present in the data, how much survives
+normalization. A quotient that discards scale is safe exactly when the
+consumer's metric is carried by the tangential part. Reading a spectrum
+without checking that is how a quantizer scores well on reconstruction and
+destroys the ranking anyway.
+
+Deliberately **not** ported, and better used from their own package:
+`turboquant_pro.rank_certificate`, which supplies distribution-free floors on
+rank agreement and belongs with the retrieval path that consumes it, and
+`turboquant_pro.operator_trace`, which infers a consumer's regime from a
+torch graph and would drag a heavy dependency into a numpy-only package. Both
+compose with this one rather than needing to live inside it.
 
 ---
 

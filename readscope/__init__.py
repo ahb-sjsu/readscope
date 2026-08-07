@@ -30,25 +30,49 @@ from readscope.probe import (
     blind_probe,
     retrieval_margin_gradient,
 )
+from readscope.quotient import (
+    displacement_decomposition,
+    tangential_fraction,
+    tangential_fractions,
+)
+from readscope.regimes import (
+    Applicability,
+    Regime,
+    applicability,
+    assert_probeable,
+    decay_sensitivity,
+    differential_fraction,
+    routing_margins,
+)
 from readscope.spectrum import Spectrum, spectrum_of
 
 __version__ = "0.0.1"
 
 __all__ = [
     "Allocation",
+    "Applicability",
     "LoadingReading",
     "OverlapReading",
     "ProbeResult",
+    "Regime",
     "Spectrum",
     "__version__",
+    "applicability",
+    "assert_probeable",
     "blind_probe",
     "chance_overlap",
     "consumer_distortion",
+    "decay_sensitivity",
+    "differential_fraction",
+    "displacement_decomposition",
     "interpolate_distribution",
     "probe_loading",
     "retrieval_margin_gradient",
+    "routing_margins",
     "spectrum_of",
     "subspace_overlap",
+    "tangential_fraction",
+    "tangential_fractions",
     "uniform_allocation",
     "water_fill",
 ]

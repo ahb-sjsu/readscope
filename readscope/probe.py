@@ -89,6 +89,7 @@ def blind_probe(
     sketch_dim: int | None = None,
     eps: float = 1e-3,
     rng: np.random.Generator | None = None,
+    check_regime: bool = True,
 ) -> ProbeResult:
     """Recover ``S = E[g g^T]`` from consumer outputs alone.
 
@@ -110,6 +111,12 @@ def blind_probe(
         Finite-difference step.
     rng:
         Generator for the sketch. Required for reproducibility when sketching.
+    check_regime:
+        Verify the consumer is one this probe applies to before spending a
+        budget on it, and raise if it is not. On by default, because a probe
+        pointed at a selection consumer returns a confident reading that is
+        worthless rather than an error. Costs up to 128 extra consumer calls.
+        Turn it off only when the regime is already established.
     """
     pts = np.atleast_2d(np.asarray(points, dtype=float))
     if pts.ndim != 2:
@@ -117,6 +124,22 @@ def blind_probe(
     n, d = pts.shape
     if n == 0:
         raise ValueError("no operating points supplied")
+
+    verdict = None
+    if check_regime:
+        from readscope.regimes import applicability
+
+        # A fixed independent stream. Drawing from the caller's rng here
+        # would shift the sketch's directions and silently change every
+        # result recorded before this guard existed.
+        verdict = applicability(
+            consumer, pts, eps=eps, rng=np.random.default_rng(20260807)
+        )
+        if not verdict.probeable:
+            raise ValueError(
+                f"blind probe does not apply: {verdict.reason}. Pass "
+                "check_regime=False to override"
+            )
 
     if mode == "exact":
         k = d
@@ -163,7 +186,10 @@ def blind_probe(
         mode=mode,
         eps=eps,
         sketch_dim=None if mode == "exact" else k,
-        meta={"dim": d},
+        meta={
+            "dim": d,
+            "regime": None if verdict is None else verdict.to_dict(),
+        },
     )
 
 
