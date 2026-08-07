@@ -3,8 +3,8 @@
 **An oscilloscope and spectrum analyzer for model consumers.** Point it at a
 consumer, get back what that consumer actually reads.
 
-[![Spec](https://img.shields.io/badge/spec-3_points_1_axis-orange)](SPEC.md)
-[![Calibration](https://img.shields.io/badge/calibration-not_started-red)](CALIBRATION.md)
+[![Spec](https://img.shields.io/badge/spec-partial-orange)](SPEC.md)
+[![Calibration](https://img.shields.io/badge/calibration-C--0_C--1b_pass-yellow)](CALIBRATION.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ```python
@@ -97,12 +97,26 @@ the activation distribution the consumer meets in service, so the recovered
 operator is the read operator averaged over the wrong measure.
 
 That is not a flaw that invalidates the instrument. It is a characterizable
-effect, and characterizing it is the top item in
-[CALIBRATION.md](CALIBRATION.md): sweep the probing distribution toward the
-activation distribution, plot overlap against loading, and get a calibration
-curve that lets a reading be corrected rather than merely doubted.
+effect, and the first curve is measured.
 
-`readscope.loading` supplies the axis. No curve has been measured yet.
+| Probe loading, Jeffreys nats | Overlap |
+|---:|---:|
+| 0.89 | 0.992 |
+| 10.73 | 0.975 |
+| 25.25 | 0.852 |
+| 50.50 | 0.491 |
+| 91.64 | 0.437 |
+
+Near-exact below about 11 nats, a knee between 25 and 50, then a shelf around
+0.44 that stays well clear of the 0.125 chance floor, so a badly loaded probe
+degrades rather than dissolving into noise. One synthetic consumer family,
+five seeds, record `calibration/records/c1b-loading-curve.json`.
+
+The first attempt at this curve failed four of five declared bars, and one of
+its three defects was not a bug: **probe loading cannot degrade recovery at
+all for a consumer whose read subspace is the same everywhere in the input
+space.** That bounds where the error term applies, and it came out of the
+instrument's own calibration rather than from thinking about it.
 
 ---
 

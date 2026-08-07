@@ -1,7 +1,8 @@
 # The calibration program
 
-The instrument's accuracy specification is currently three points on one
-axis. This document says what has to be measured to turn that into a spec
+The instrument's accuracy specification is currently three real-model
+points and one loading curve on a synthetic consumer. This document says what
+has to be measured to turn that into a spec
 sheet, in the order that makes each step falsifiable before the next one
 depends on it.
 
@@ -35,7 +36,9 @@ Nothing here is a claim. It is the check that the instrument is an instrument.
 
 ## C-1, the loading curve
 
-**The headline calibration. Run once, failed, corrected, and now measured. See SPEC.md for the curve and the findings below for what the failure was worth.**
+**Status: run, failed, corrected, measured.** C-1 failed four of five
+bars and C-1b passes all five. The curve is in `SPEC.md` and what the failure
+was worth is in the findings at the bottom of this file.
 
 Hold the consumer, the rank, the dimension and the probe budget fixed. Sweep
 the probing distribution from itself toward the activation distribution with
@@ -120,7 +123,9 @@ If C-2 shows bandwidth of one or two directions at realistic budgets, the
 instrument reports the dominant direction and nothing else, which is worth
 knowing and is much less than what is currently implied.
 
-None of these has been ruled out. That is why the specification is empty.
+C-1b rules out the first one for its own consumer family, which is one
+configuration and not a class. The other two are open. That is why most of
+the specification is still empty.
 
 
 ---
