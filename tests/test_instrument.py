@@ -15,6 +15,7 @@ from readscope import (
     blind_probe,
     chance_overlap,
     consumer_distortion,
+    debias_sketch,
     decay_sensitivity,
     differential_fraction,
     displacement_decomposition,
@@ -494,3 +495,117 @@ def test_the_guard_does_not_disturb_the_sketch_stream():
         check_regime=False,
     )
     assert np.allclose(guarded.S, unguarded.S)
+
+
+# --------------------------------- the sketch's bias, and what it is not
+
+
+def test_sketch_bias_matches_the_closed_form():
+    """E[ghat ghat^T] = (1 + 1/k) g g^T + (||g||^2 / k) I."""
+    rng = np.random.default_rng(110)
+    d, k = 5, 3
+    g = rng.standard_normal(d)
+    acc = np.zeros((d, d))
+    trials = 60000
+    for _ in range(trials):
+        U = rng.standard_normal((k, d))
+        ghat = (U @ g) @ U / k
+        acc += np.outer(ghat, ghat)
+    acc /= trials
+    predicted = (1 + 1 / k) * np.outer(g, g) + (g @ g) / k * np.eye(d)
+    assert np.abs(acc - predicted).max() < 0.05 * np.abs(predicted).max()
+
+
+def test_debias_inverts_the_bias_exactly():
+    rng = np.random.default_rng(111)
+    d, k = 6, 4
+    g = rng.standard_normal(d)
+    S_true = np.outer(g, g)
+    S_hat = (1 + 1 / k) * S_true + np.trace(S_true) / k * np.eye(d)
+    assert np.allclose(debias_sketch(S_hat, k), S_true, atol=1e-12)
+
+
+def test_debias_cannot_rotate_an_eigenvector():
+    """The sharp prediction. The inflation is isotropic, so debiasing fixes
+    the spectrum and provably not the subspace."""
+    rng = np.random.default_rng(112)
+    d, k = 10, 4
+    A = rng.standard_normal((d, d))
+    S_hat = A @ A.T
+    before = spectrum_of(S_hat).eigenvectors
+    after = spectrum_of(debias_sketch(S_hat, k)).eigenvectors
+    for i in range(d):
+        assert abs(abs(float(before[:, i] @ after[:, i])) - 1.0) < 1e-9
+
+
+def test_debias_preserves_the_recovered_subspace_end_to_end():
+    rng = np.random.default_rng(113)
+    d, r = 24, 3
+    basis = np.linalg.qr(rng.standard_normal((d, r)))[0]
+    w = 0.8 ** np.arange(r)
+
+    def consumer(x):
+        return float(np.tanh(basis.T @ x) @ w)
+
+    pts = rng.standard_normal((128, d)) * 0.35
+    res = blind_probe(
+        consumer,
+        pts,
+        mode="sketch",
+        sketch_dim=8,
+        rng=np.random.default_rng(114),
+    )
+    raw = subspace_overlap(res.read_subspace(r), basis).overlap
+    deb = spectrum_of(debias_sketch(res.S, 8)).eigenvectors[:, :r]
+    assert subspace_overlap(deb, basis).overlap == pytest.approx(raw, abs=1e-9)
+
+
+# --------------------------------------------- the orthonormal estimator
+
+
+def test_ortho_at_full_rank_is_exact():
+    """At k = d the projector is the identity, so the estimate is exact."""
+    rng = np.random.default_rng(115)
+    d = 8
+    w = rng.standard_normal(d)
+    pts = rng.standard_normal((12, d))
+    res = blind_probe(
+        linear_consumer(w),
+        pts,
+        mode="ortho",
+        sketch_dim=d,
+        rng=np.random.default_rng(116),
+    )
+    assert np.allclose(res.S, np.outer(w, w), atol=1e-6)
+
+
+def test_ortho_rejects_more_directions_than_dimensions():
+    pts = np.random.default_rng(117).standard_normal((4, 5))
+    with pytest.raises(ValueError, match="sketch_dim <= dim"):
+        blind_probe(
+            linear_consumer(np.ones(5)), pts, mode="ortho", sketch_dim=9
+        )
+
+
+def test_ortho_beats_the_gaussian_sketch_at_equal_cost():
+    rng = np.random.default_rng(118)
+    d, r, k = 24, 3, 8
+    basis = np.linalg.qr(rng.standard_normal((d, r)))[0]
+    w = 0.8 ** np.arange(r)
+
+    def consumer(x):
+        return float(np.tanh(basis.T @ x) @ w)
+
+    pts = rng.standard_normal((128, d)) * 0.35
+    common = {"sketch_dim": k, "eps": 1e-3}
+    a = blind_probe(
+        consumer, pts, mode="sketch", rng=np.random.default_rng(119), **common
+    )
+    b = blind_probe(
+        consumer, pts, mode="ortho", rng=np.random.default_rng(119), **common
+    )
+    assert a.n_calls == b.n_calls
+    assert (
+        subspace_overlap(b.read_subspace(r), basis).overlap
+        > subspace_overlap(a.read_subspace(r), basis).overlap
+    )

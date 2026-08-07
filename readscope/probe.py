@@ -17,12 +17,28 @@ it sets the instrument's sample rate and its noise floor.
     per operating point and is exact to order ``eps^2``.
 
 ``sketch``
-    Central differences along ``k`` random Gaussian directions, combined into
-    the standard two-point estimator. Costs ``2 k`` calls per point and is
-    unbiased for ``S`` only in expectation over the sketch, so it carries
-    estimator variance that ``exact`` does not. This is the estimator that
-    makes the probe affordable on a frontier model, and its variance is part
-    of what the calibration sweep has to characterize.
+    Central differences along ``k`` iid Gaussian directions, combined into
+    the standard two-point estimator. Costs ``2 k`` calls per point. Unbiased
+    for the gradient, but squaring it inflates the operator, exactly:
+
+        E[ghat ghat^T] = (1 + 1/k) g g^T + (||g||^2 / k) I
+
+    by Isserlis on ``E[(g.u)^2 u u^T] = ||g||^2 I + 2 g g^T``. See
+    :func:`debias_sketch`, which inverts this in closed form.
+
+    **The inflation is isotropic, so it cannot rotate an eigenvector.** What
+    degrades subspace recovery for this estimator is its variance, not its
+    bias, and no amount of debiasing fixes that. C-2b measured the damage: a
+    bandwidth of one to two directions where the exact estimator resolves
+    all thirty-two.
+
+``ortho``
+    Central differences along ``k`` **orthonormal** directions, recombined as
+    ``ghat = U^T y``, which is exactly the orthogonal projection of ``g`` onto
+    the drawn subspace. Same ``2 k`` calls as ``sketch``. It removes the
+    magnitude noise of the Gaussian frame, and at ``k = d`` the projector is
+    the identity so the estimate is exact. This is the variance fix that
+    debiasing is not. Requires ``k <= d``.
 """
 
 from __future__ import annotations
@@ -85,7 +101,7 @@ def blind_probe(
     consumer: Consumer,
     points: np.ndarray,
     *,
-    mode: Literal["exact", "sketch"] = "exact",
+    mode: Literal["exact", "sketch", "ortho"] = "exact",
     sketch_dim: int | None = None,
     eps: float = 1e-3,
     rng: np.random.Generator | None = None,
@@ -104,9 +120,12 @@ def blind_probe(
         representative as these are, which is the probe-loading question that
         :mod:`readscope.loading` exists to quantify.
     mode:
-        ``exact`` for coordinate differences, ``sketch`` for a random sketch.
+        ``exact`` for coordinate differences, ``sketch`` for an iid Gaussian
+        frame, ``ortho`` for an orthonormal frame. Prefer ``ortho`` over
+        ``sketch`` at equal cost.
     sketch_dim:
-        Number of random directions per point when ``mode='sketch'``.
+        Number of directions per point when sketching. Must not exceed the
+        ambient dimension in ``ortho`` mode.
     eps:
         Finite-difference step.
     rng:
@@ -143,12 +162,16 @@ def blind_probe(
 
     if mode == "exact":
         k = d
-    elif mode == "sketch":
+    elif mode in ("sketch", "ortho"):
         if sketch_dim is None:
-            raise ValueError("sketch mode requires sketch_dim")
+            raise ValueError(f"{mode} mode requires sketch_dim")
         if sketch_dim < 1:
             raise ValueError("sketch_dim must be positive")
         k = int(sketch_dim)
+        if mode == "ortho" and k > d:
+            raise ValueError(
+                f"ortho mode needs sketch_dim <= dim, got {k} > {d}"
+            )
         if rng is None:
             rng = np.random.default_rng(0)
     else:
@@ -167,13 +190,19 @@ def blind_probe(
                 calls += 2
         else:
             assert rng is not None
-            U = rng.standard_normal((k, d))
+            if mode == "ortho":
+                # orthonormal rows; U^T U is the projector onto their span,
+                # so the recombination below is exactly P_U g
+                U = np.linalg.qr(rng.standard_normal((d, k)))[0].T
+            else:
+                U = rng.standard_normal((k, d))
             g = np.zeros(d, dtype=float)
             for u in U:
                 deriv = _central_difference(consumer, x, u, eps)
                 g += deriv * u
                 calls += 2
-            g /= k
+            if mode == "sketch":
+                g /= k
         S += np.outer(g, g)
 
     S /= n
@@ -208,3 +237,37 @@ def retrieval_margin_gradient(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         raise ValueError("cosine margin undefined for a zero vector")
     ahat, bhat = a / na, b / nb
     return ahat - float(ahat @ bhat) * bhat
+
+
+def debias_sketch(S: np.ndarray, sketch_dim: int) -> np.ndarray:
+    """Remove the isotropic inflation the Gaussian sketch adds.
+
+    The sketch's operator satisfies, in expectation,
+
+        S_hat = (1 + 1/k) S_true + (tr(S_true) / k) I
+
+    Taking traces gives ``tr(S_true) = tr(S_hat) k / (k + d + 1)``, and
+    substituting back inverts the map exactly:
+
+        S_true = (k / (k + 1)) [ S_hat - tr(S_hat) / (k + d + 1) I ]
+
+    **This corrects the spectrum and provably not the subspace.** Subtracting
+    a multiple of the identity shifts every eigenvalue equally and leaves
+    every eigenvector where it was, so a bit allocation computed from the
+    debiased spectrum is right where one from the raw spectrum is flattened,
+    while subspace recovery is untouched. Use it before
+    :func:`~readscope.allocate.water_fill`, and do not expect it to buy
+    bandwidth.
+
+    Applies to ``sketch`` mode only. The ``ortho`` estimator has a different
+    and smaller isotropic term and is not corrected here.
+    """
+    A = np.asarray(S, dtype=float)
+    if A.ndim != 2 or A.shape[0] != A.shape[1]:
+        raise ValueError("S must be square")
+    d = A.shape[0]
+    k = int(sketch_dim)
+    if k < 1:
+        raise ValueError("sketch_dim must be positive")
+    shift = float(np.trace(A)) / (k + d + 1)
+    return (k / (k + 1.0)) * (A - shift * np.eye(d))

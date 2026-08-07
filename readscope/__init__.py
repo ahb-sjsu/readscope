@@ -28,6 +28,7 @@ from readscope.metrics import (
 from readscope.probe import (
     ProbeResult,
     blind_probe,
+    debias_sketch,
     retrieval_margin_gradient,
 )
 from readscope.quotient import (
@@ -62,6 +63,7 @@ __all__ = [
     "blind_probe",
     "chance_overlap",
     "consumer_distortion",
+    "debias_sketch",
     "decay_sensitivity",
     "differential_fraction",
     "displacement_decomposition",
