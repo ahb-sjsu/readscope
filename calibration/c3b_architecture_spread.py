@@ -1,74 +1,53 @@
 #!/usr/bin/env python3
-"""C-3, the architecture spread on real heads. Declared before it runs.
+"""C-3b, the architecture spread with real queries. Declared before it runs.
 
-Every accuracy number this instrument has on anything real comes from sixteen
-head-cells of one 3B model. C-2e closed the estimator question, so the only
-remaining explanation for the gap between resolution 1.000 on a planted
-subspace and 0.596 on a real head is that a real read subspace is not a
-planted one. This sweep measures that across families, depths and heads.
+Supersedes c3_architecture_spread.py, which failed three of six bars because
+its query set was drawn from the key stream. The self-match term saturated
+the softmax, median attention entropy came out at 0.152 bits across 42 cells
+where 192 positions allow 7.6, and eleven cells had analytic operators below
+the graded rank. That was an artifact of the declared simplification and not
+a property of any model, so it is not reported as one. C-3's record stays.
 
-**The ground truth is exact, not planted.** For a softmax attention consumer
-that reads one key, the Jacobian has a closed form. With
-``z_i = q_i . k_s / sqrt(d)`` and ``p_i = softmax(z_i)``,
+Here the queries are real. A forward hook on ``q_proj`` captures the pre-
+rotary query projection and the model's own ``rotary_emb`` supplies the
+cosines and sines, so the query tensor is the one attention actually
+consumed. Grouped-query attention is resolved by mapping each attention head
+to the key-value head it reads.
 
-    d p_i / d k_s = p_i * (e_s - p_{i,s}) (q_i / sqrt(d))
-
-so the per-query Jacobian is rank one along ``q_i``, and the read operator
-accumulated over a probe key set is
+**The ground truth is exact.** For a softmax attention consumer reading one
+key, ``d p_i / d k_s = p_i (e_s - p_{i,s}) q_i / sqrt(d)``, so
 
     M_true = sum_s sum_i a_{i,s} q_i q_i^T / d,
     a_{i,s} = || p_i * (e_s - p_{i,s} 1) ||^2
 
-**The read subspace of an attention head, with respect to a key, is spanned
-by its queries.** That is a fact about softmax attention and not a claim of
-this program, and it is what makes a real-weights ground truth available at
-all.
+The read subspace of an attention head with respect to a key is spanned by
+its queries. That is a fact about softmax attention, not a claim of this
+program.
 
-**Declared limitation.** The keys are the model's own post-RoPE activations
-from a real forward pass, taken from its KV cache. The query set is drawn
-from that same post-RoPE key stream at declared strides rather than from
-``q_proj``, because the cache stores keys and values and not queries.
-Post-RoPE keys and queries share the rotary geometry and the activation
-distribution, so this keeps the realistic conditioning that the sweep is
-about, but it is **not the model's actual query set** and no result here
-should be read as one. The analytic truth is computed with the same query
-set as the probe, so the comparison between them is exact either way; what
-the simplification affects is how representative the read subspace is of the
-one that head really has.
+Bars are carried over from C-3 unchanged, with one added in front:
 
-Declared bars, computed from the record:
+  A0  artifact cleared median attention row entropy across cells exceeds
+                      1.0 bits. This is the check that C-3's failure really
+                      was the query simplification. If A0 fails, the queries
+                      are still wrong and nothing after it is interpretable.
+  A1  instrument      resolution at k/d = 1.25 is at least 0.90 on every
+                      cell.
+  A2  budget cliff    resolution at k/d = 0.5 is strictly below that at
+                      k/d = 1.25 on every cell.
+  A3  spread reported per-family resolution and the across-family spread are
+                      computed and reported, with no bar on their size.
+  A4  rank floor      the analytic operator has rank at least the graded rank
+                      on every cell.
+  A5  anti-vacuity    median row entropy exceeds 0.1 bits on every cell.
+  A6  census          every manifest cell is attempted and every skip is
+                      recorded with its reason.
 
-  A1  instrument      on every cell, the blind probe at k/d = 1.25, the ratio
-                      the source program ran, recovers the analytic operator
-                      at resolution at least 0.90. If the probe cannot match
-                      a closed form on real activations, nothing below means
-                      anything.
-  A2  budget cliff    on every cell, resolution at k/d = 0.5 is strictly
-                      below resolution at k/d = 1.25. The cliff C-2e found on
-                      synthetic consumers must appear on real ones too, or it
-                      was an artifact of planted subspaces.
-  A3  spread reported every family, depth and head is reported with its own
-                      resolution, and the across-family spread at fixed k/d
-                      is computed. No bar is placed on the spread's size,
-                      because no prior says what it should be and inventing
-                      one after the fact is the failure this program exists
-                      to avoid.
-  A4  rank floor      the analytic operator has numerical rank at least the
-                      graded rank on every cell, so no cell is graded against
-                      a degenerate truth.
-  A5  anti-vacuity    on every cell the attention distribution is
-                      non-degenerate, meaning the median row entropy exceeds
-                      0.1 bits, so no cell is graded on a head that attends
-                      to one position and reads nothing.
-  A6  census          every cell in the manifest is attempted, and every
-                      skipped cell is recorded with its reason.
+Gemma-3 is absent from this sweep. Its rotary embedding takes a per-layer
+type argument that the extraction did not supply, so no real queries were
+captured for it. That is a missing family, recorded here rather than papered
+over, and it means this sweep covers three architectures and not four.
 
-A1 failing is an instrument failure. A2 failing overturns C-2e's headline.
-A5 failing on many cells would mean real heads are mostly degenerate at this
-sequence length, which would be a finding about the substrate rather than
-the probe.
-
-Runs on Atlas. Numpy only; the activations come from a saved artifact.
+Runs on Atlas. Numpy only; activations come from a saved artifact.
 """
 
 from __future__ import annotations
@@ -86,7 +65,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from readscope import jacobian_probe, subspace_overlap  # noqa: E402
 
-ACTS = Path("/archive/readscope/activations")
+ACTS = Path("/archive/readscope/activations_v2")
 RATIOS = [0.5, 1.25]
 GRADED_RANK = 16
 PROBE_KEYS = 32
@@ -222,7 +201,11 @@ def main() -> int:
         else 0.0
     )
 
+    median_entropy = float(
+        np.median([r["median_row_entropy_bits"] for r in rows])
+    )
     bars = {
+        "A0_artifact_cleared": bool(median_entropy > 1.0),
         "A1_instrument": bool(min(hi) >= INSTRUMENT_BAR),
         "A2_budget_cliff": bool(
             all(
@@ -242,7 +225,8 @@ def main() -> int:
     verdict = "PASS" if all(bars.values()) else "FAIL"
 
     record = {
-        "schema": "readscope-c3-architecture-spread-v1",
+        "schema": "readscope-c3b-architecture-spread-v1",
+        "supersedes": "calibration/records/c3-architecture-spread.json",
         "declared": {
             "ratios": RATIOS,
             "graded_rank": GRADED_RANK,
@@ -251,6 +235,7 @@ def main() -> int:
             "seed": SEED,
             "instrument_bar": INSTRUMENT_BAR,
             "entropy_floor": ENTROPY_FLOOR,
+            "artifact_entropy_bar": 1.0,
             "truth": "closed-form sum_s J_s^T J_s for softmax attention "
             "on the model's own post-RoPE keys and queries",
         },
@@ -258,6 +243,7 @@ def main() -> int:
         "skipped": skipped,
         "summary": {
             "n_cells": len(rows),
+            "median_row_entropy_bits": median_entropy,
             "families": sorted(by_family),
             "family_mean_resolution_at_1.25": family_means,
             "across_family_spread": spread,
@@ -281,7 +267,7 @@ def main() -> int:
     out = (
         Path(__file__).resolve().parent
         / "records"
-        / "c3-architecture-spread.json"
+        / "c3b-architecture-spread.json"
     )
     out.write_text(json.dumps(record, indent=2, sort_keys=True))
 

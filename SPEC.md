@@ -39,7 +39,7 @@ frequency bins.
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
 | Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **One curve measured, synthetic consumer** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
-| Temperature drift | ppm/°C | Stability of a reading across architectures at matched rank profile. | **Not characterized** |
+| Temperature drift | ppm/°C | Stability of a reading across architectures at matched rank profile. | **Measured on three families. Spread 1e-15** |
 | Applicability | probe coupling | Which consumer regimes this probe can be attached to at all. | **Bounded, and enforced in code** |
 
 ---
@@ -300,6 +300,94 @@ tested whether it survives any of those changing.
 `jacobian_probe` and you can work at half the direction budget for a
 bandwidth of roughly its output width. If it emits a scalar, pay `k >= d` or
 accept a one-direction reading.
+
+---
+
+## Real attention heads, three families
+
+C-3b, record `calibration/records/c3b-architecture-spread.json`, **PASS on
+all seven bars.** 36 head-cells from Llama-3.2-3B, Qwen2.5-1.5B and
+Mistral-7B, three depths each, four heads each, on the models' own post-RoPE
+keys and queries.
+
+The ground truth is exact rather than planted. For a softmax head reading one
+key, `∂pᵢ/∂k_s = pᵢ(e_s − p_{i,s})·qᵢ/√d`, so the read operator is
+`Σ_s Σ_i a_{i,s} qᵢqᵢᵀ/d` in closed form. **The read subspace of an attention
+head with respect to a key is spanned by its queries.** That is a fact about
+softmax attention, not a claim of this program, and it is what makes real
+weights gradeable at all.
+
+| Family | cells | resolution @ k/d = 0.5 | @ k/d = 1.25 |
+|---|---:|---:|---:|
+| llama | 12 | — | **1.0000** |
+| qwen | 12 | — | **1.0000** |
+| mistral | 12 | — | **1.0000** |
+| all | 36 | **0.3337** | **1.0000** |
+
+**Across-family spread is 1e-15.** At the source program's budget ratio the
+probe recovers the analytic operator exactly on every cell of every family,
+and the budget cliff reproduces on real activations at 0.334 against 1.000.
+C-2e's headline was not an artifact of planted subspaces.
+
+**Gemma-3 is missing from this sweep**, not omitted from the specification.
+Its rotary embedding takes a per-layer type argument the extraction did not
+supply, so no real queries were captured. Three architectures, not four.
+
+### What C-3 got wrong first
+
+The first attempt drew its query set from the key stream, because a KV cache
+stores keys and values and not queries. The self-match term saturated the
+softmax: median attention row entropy came out at **0.152 bits** across 42
+cells where 192 positions allow 7.6, with eleven analytic operators below the
+graded rank and some at rank zero.
+
+Reported naively that would have read as "real attention heads are
+degenerate." It is not a fact about any model, it is a fact about a shortcut
+this document declared in advance and then measured. With real queries hooked
+from `q_proj` and the model's own rotary embedding, median entropy is above
+one bit by declared bar and every analytic operator reaches full rank.
+
+---
+
+## What the published 0.647 measures
+
+C-4, record `calibration/records/c4-reference-choice.json`, four of five bars.
+
+C-3b recovers the analytic operator at resolution 1.000 on real heads at the
+same budget ratio where the source program reports overlap 0.647. Both cannot
+be statements about probe fidelity.
+
+Reading `gateB_llama_rematch.py`, the difference is the **reference**. That
+script grades against `Qsetᵀ Qset / n_q`, the unweighted query covariance. A
+finite-difference probe recovers the Jacobian Gram, which is the same queries
+weighted by how much the softmax actually responds along each. Both are
+spanned by the queries; they are not the same operator.
+
+Measured on the 36 real cells, using only probe-free closed forms:
+
+| Quantity | median | range |
+|---|---:|---:|
+| weighted against unweighted reference | **0.796** | 0.678 to 0.985 |
+| probe against weighted reference | **1.000** | 1.000 to 1.000 |
+
+**R2 passed**: the reference disagreement lands inside the band set by the
+two published figures, whose resolutions are 0.505 and 0.596. **R3 passed**:
+the probe is exact against its own target, so the disagreement is not a
+degraded instrument.
+
+**R1 failed**, and it matters. The bar asked that the two references disagree
+on *every* cell, and one cell agrees at 0.985. So the reference choice is a
+large and real contributor to the gap and it is **not uniform, and not the
+whole of it**: median reference disagreement sits at 0.796 where the
+published figures sit near 0.55, so something else contributes too. The
+remaining candidates are the query capture, the GQA grouping and the model
+and layer set, none of which this sweep matched to the source.
+
+**This audits a definition, it does not correct anyone.** An unweighted query
+covariance is a defensible account of what a head reads, precisely because it
+does not depend on which key is being perturbed. The finding is that a
+datasheet has to say which reference a number is against, because two
+reasonable choices differ by roughly a fifth of the available range.
 
 ---
 

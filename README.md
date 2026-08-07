@@ -110,6 +110,19 @@ package's sketch scores 0.03 to 0.06. The 32-key probe in the source program
 and the Gaussian sketch shipped here are not the same instrument, and until
 that is closed the table below is provenance rather than specification.
 
+**Real attention heads, three families.** On 36 head-cells from
+Llama-3.2-3B, Qwen2.5-1.5B and Mistral-7B, graded against the exact
+closed-form Jacobian Gram of the softmax, the probe recovers the read
+operator at **resolution 1.000** at `k/d = 1.25`, with an across-family
+spread of **1e-15**. The budget cliff reproduces on real activations, 0.334
+against 1.000.
+
+The first attempt at this drew queries from the key stream and would have
+reported "real attention heads are degenerate" — a striking claim, and false.
+The shortcut was declared before the run and the anti-vacuity bar measured
+attention entropy, so the artifact announced itself instead of becoming a
+result.
+
 Those three inherited measurements:
 
 | Run | Substrate | Overlap | Chance | Verdict |

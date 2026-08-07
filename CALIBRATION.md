@@ -87,6 +87,10 @@ cost against bandwidth.
 
 ## C-3, the architecture spread
 
+**Status: run, failed on a declared shortcut, corrected, passed.** C-3 drew its
+queries from the key stream and saturated the softmax; C-3b hooks `q_proj`
+and passes all seven bars on three families. See F-9 and F-10.
+
 Repeat C-1 and C-2 across architectures and rank profiles. Attention heads
 across depth in more than one model family, at more than one scale, plus at
 least one non-transformer consumer so the specification is not secretly a
@@ -270,3 +274,42 @@ At `k/d >= 1` this package recovers a **planted** subspace at resolution
 So the remaining question is what a real read subspace does that a planted
 one does not, and that is C-3's whole job. Until it runs, the instrument's
 accuracy on anything real rests on sixteen head-cells of one 3B model.
+
+
+### F-9, from C-3 and C-3b: the shortcut nearly produced a fake finding
+
+C-3's query set came from the key stream, because a KV cache stores keys and
+values and not queries. The self-match term saturated the softmax and median
+attention entropy came out at 0.152 bits across 42 cells, with eleven
+analytic operators below the graded rank and some at rank zero.
+
+Written up carelessly that is "real attention heads are degenerate", which is
+a striking claim and completely false. What saved it was that the shortcut
+was declared in the sweep before it ran and the anti-vacuity bar measured
+entropy explicitly, so the artifact announced itself instead of becoming a
+result.
+
+C-3b hooks `q_proj` and re-applies the model's own rotary embedding. Median
+entropy clears one bit by declared bar, every operator reaches full rank, and
+the probe recovers the analytic operator at resolution 1.000 on all 36 cells
+of all three families with an across-family spread of 1e-15.
+
+### F-10, from C-4: the published number is against a different reference
+
+The source program grades against the unweighted query covariance
+`Qset^T Qset / n_q`. The probe recovers the Jacobian Gram, the same queries
+weighted by the softmax response. On real cells those two references agree at
+median resolution 0.796, range 0.678 to 0.985, while the probe agrees with
+its own target at 1.000 everywhere.
+
+That lands inside the band set by the published figures, so R2 passed. R1
+failed, because one cell has the references agreeing at 0.985 and the bar
+asked for disagreement everywhere. **So reference choice is a large part of
+the gap and demonstrably not all of it**, since the median disagreement sits
+well above the published figures. The unmatched remainder is the query
+capture, the GQA grouping, and the model and layer set.
+
+An unweighted query covariance is a defensible definition. The lesson for a
+datasheet is only that a recovery number is meaningless without saying what
+it was graded against, because two reasonable references differ by about a
+fifth of the range.

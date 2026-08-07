@@ -1,0 +1,645 @@
+{
+  "bars": {
+    "A0_artifact_cleared": true,
+    "A1_instrument": true,
+    "A2_budget_cliff": true,
+    "A3_spread_reported": true,
+    "A4_rank_floor": true,
+    "A5_anti_vacuity": true,
+    "A6_census": true
+  },
+  "declared": {
+    "artifact_entropy_bar": 1.0,
+    "entropy_floor": 0.1,
+    "eps": 0.001,
+    "graded_rank": 16,
+    "instrument_bar": 0.9,
+    "probe_keys": 32,
+    "ratios": [
+      0.5,
+      1.25
+    ],
+    "seed": 0,
+    "truth": "closed-form sum_s J_s^T J_s for softmax attention on the model's own post-RoPE keys and queries"
+  },
+  "rows": [
+    {
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 2.062475964548205,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.44623692107336727,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 2.263175785834658,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.23909438509977946,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 3.6260859459370756,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.3601616158608483,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 4.266374384452933,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.25293160641475787,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 3.0857753314131573,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.2594836780915602,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 1.406346736260696,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.28112504266395716,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 1.3882665897897428,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.31544613143196004,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 5.128432049817306,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.2713557662505704,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 1.8788709435656104,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4558247867857145,
+        "1.25": 1.0
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 1.9454252789447264,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.24800908953826126,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 3.4461387255757945,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.36084186762556303,
+        "1.25": 1.0
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 0.3386773132483632,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.37058279832185204,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 5.128751792740337,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.2529089285408871,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 4.319752260928019,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.24049136486030528,
+        "1.25": 0.999999999999999
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 5.6192961733985545,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.2765888899219017,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 2.4141892543296155,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.25240889111385745,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 1.951339443189331,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.25514884116617775,
+        "1.25": 0.9999999999999964
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 3.48349024338593,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.40846344663531087,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 2.911687097601606,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.21128704994783704,
+        "1.25": 0.9999999999999984
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 1.2109088121056184,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.31416554373131617,
+        "1.25": 0.9999999999999964
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.5339714047535145,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.32238260193669993,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.785643859362173,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4047876905664062,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.550250601207084,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.37467991051726124,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.299217281627474,
+      "n_layers": 28,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.31064816471414675,
+        "1.25": 0.9999999999999992
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 8,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 4.285036913669071,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.30483808458805234,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 8,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 3.7248390386097068,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.3981260362615161,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 8,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 3.4944144454886503,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.39032877002765703,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 8,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 3.9158677090150924,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4197280987257275,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 16,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 5.304314230365995,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.39864398232453996,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 16,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 5.625030823582488,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.46210120743294575,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 16,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 5.308639333480448,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.3754296426096026,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 16,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 5.219689726796204,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.4183630694326134,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 24,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 2.0343312389694446,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.34988105829746347,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 24,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 2.1286715146778334,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.3252498509933436,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 24,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.326421594785442,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.3559626694394004,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 24,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 2.479633389534584,
+      "n_layers": 32,
+      "probe_keys": 32,
+      "resolution": {
+        "0.5": 0.32771085777866166,
+        "1.25": 1.0
+      },
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    }
+  ],
+  "runtime": {
+    "code_commit": "unknown",
+    "generated_utc": "2026-08-07T20:35:42.715524+00:00",
+    "hostname": "atlas",
+    "numpy": "2.5.1",
+    "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]"
+  },
+  "schema": "readscope-c3b-architecture-spread-v1",
+  "skipped": [],
+  "summary": {
+    "across_family_spread": 9.992007221626409e-16,
+    "families": [
+      "llama",
+      "mistral",
+      "qwen"
+    ],
+    "family_mean_resolution_at_1.25": {
+      "llama": 0.9999999999999997,
+      "mistral": 1.0,
+      "qwen": 0.999999999999999
+    },
+    "max_resolution_at_1.25": 1.0000000000000004,
+    "mean_resolution_at_0.5": 0.33365050946449504,
+    "mean_resolution_at_1.25": 0.9999999999999996,
+    "median_row_entropy_bits": 3.5602501957128627,
+    "min_resolution_at_1.25": 0.9999999999999964,
+    "n_cells": 36
+  },
+  "supersedes": "calibration/records/c3-architecture-spread.json",
+  "verdict": {
+    "computed_from": [
+      "A0_artifact_cleared",
+      "A1_instrument",
+      "A2_budget_cliff",
+      "A3_spread_reported",
+      "A4_rank_floor",
+      "A5_anti_vacuity",
+      "A6_census"
+    ],
+    "value": "PASS"
+  }
+}
