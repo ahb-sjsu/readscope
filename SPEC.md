@@ -498,20 +498,59 @@ should do. It turned out to be the most useful number in the sweep.
 read operator spans two dozen directions and its sensitivity is concentrated
 in roughly two of them, at every scale from 1.5B to 32B.
 
-That reframes the bandwidth story rather than contradicting it. C-2e's cliff
-says recovering a **rank-16 subspace** demands `k >= d`. This says a real
-attention head does not put much sensitivity in most of those sixteen. **If
-what you need is the one or two directions carrying the mass, a
-sub-dimensional probe is likely to be adequate**, and the cheap estimators
-this specification was pessimistic about may be fit for the common purpose
-after all.
+That looked like it might reframe the bandwidth story. C-2e's cliff is about
+recovering a **rank-16 subspace**, and a real head does not put much
+sensitivity in most of those sixteen, so a sub-dimensional probe might have
+been adequate for the one or two directions that carry the mass.
 
-Stated carefully, because this is the boundary where it would be easy to
-overclaim: **this is an observation, not a tested claim.** No bar was placed
-on effective rank, no sweep has yet graded a rank-2 subspace at
-sub-dimensional budget, and until one does, the honest specification remains
-the cliff. What the observation earns is the next experiment, not a
-relaxation of the current number.
+**C-6 tested that and it is false.** The observation earned an experiment and
+the experiment killed it. See the next section.
+
+---
+
+## The rank-budget surface: the cliff does not care about rank
+
+C-6, record `calibration/records/c6-rank-budget-surface.json`, four of six
+bars, and the bar that failed is the one that mattered.
+
+C-5's effective-rank observation suggested the budget cliff might soften if
+you only asked for the directions that carry the mass. C-2e had swept budget
+at a fixed graded rank of 16 and never swept the other axis. C-6 sweeps both,
+on the four-family real-activation set, running the probe once per budget and
+grading the same recovered operator at every rank.
+
+Mean resolution, 48 cells, four families:
+
+| graded rank | k/d=0.125 | 0.25 | 0.5 | 0.75 | 1.0 | 1.25 | required k/d |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 0.158 | 0.363 | 0.646 | 0.856 | 1.000 | 1.000 | **1.0** |
+| 2 | 0.149 | 0.292 | 0.524 | 0.735 | 1.000 | 1.000 | **1.0** |
+| 4 | 0.130 | 0.234 | 0.448 | 0.686 | 1.000 | 1.000 | **1.0** |
+| 8 | 0.109 | 0.197 | 0.393 | 0.633 | 1.000 | 1.000 | **1.0** |
+| 16 | 0.093 | 0.181 | 0.366 | 0.583 | 1.000 | 1.000 | **1.0** |
+
+**S2 failed. The required budget is 1.0 at every rank, including rank one.**
+Asking for a single direction instead of sixteen buys real improvement at
+intermediate budgets, 0.646 against 0.366 at half the dimension, and never
+enough to clear the bar below `k = d`.
+
+**So the cliff is rank-independent and the specification hardens rather than
+softens.** Pay `k >= d` regardless of how many directions you need. The
+effective-rank observation is true and operationally worth nothing.
+
+The mechanism is visible once stated. Below full dimension the estimate is a
+projection onto a random `k`-subspace, and the leading eigenvector of a
+projected operator is not the leading eigenvector of the operator unless the
+random subspace happens to contain it. The projection distorts every
+direction, not just the tail, so there is no low-rank shortcut to be had.
+
+**S5 also failed**, on my own declaration rather than the data. It required
+median attention row entropy above 1.0 bits on *every* cell, carrying over a
+threshold C-3b applied to the median *across* cells. One cell of 48 sits at
+0.339 bits. Recomputed on the 47 cells that clear the bar, the surface is
+unchanged to three decimals and every required budget is still 1.0, so the
+S2 conclusion does not depend on it. That is the fourth time in this
+programme I have declared a universal where a distribution was called for.
 
 ---
 

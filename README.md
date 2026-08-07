@@ -135,12 +135,13 @@ throughout, so only the substrate grows — resolution at `k/d = 1.25` is
 1.0000 at every scale, **across-scale spread 6.7e-16**. The budget law has no
 scale term.
 
-The unbarred column mattered more: **every real head's read operator has
-exact rank 24 and effective rank about 1.8.** A head spans two dozen
-directions and concentrates its sensitivity in roughly two. That does not
-soften the cliff, which is about recovering a rank-16 subspace, but it points
-at the experiment that might: grade a rank-2 subspace at sub-dimensional
-budget. Not yet run.
+**The cliff does not care about rank.** Every real head's read operator has
+exact rank 24 and effective rank about 1.8, which suggested a cheap probe
+might suffice for the directions that carry the mass. C-6 tested it across
+graded ranks 1 to 16 and the required budget is **1.0 at every one of them**,
+including rank one. Below full dimension the estimate is a projection onto a
+random subspace, and a projected operator's leading eigenvector is not the
+operator's. **Pay `k >= d` regardless of how many directions you need.**
 
 Those three inherited measurements:
 

@@ -414,3 +414,38 @@ stands unqualified.
 Recording it as an observation rather than folding it into the spec is the
 point. It was measured without a bar, so it has not been tested, and the
 specification does not move until it has been.
+
+
+### F-15, from C-6: the cliff is rank-independent, and my hypothesis was wrong
+
+C-5's unbarred effective-rank observation suggested the budget cliff might
+only apply to recovering a full rank-16 subspace, and that a cheap probe
+might suffice for the one or two directions carrying the sensitivity. That
+hypothesis was post hoc, which is why C-6 was declared with a bar that could
+kill it.
+
+It killed it. Required budget is 1.0 at every graded rank from 1 to 16. Rank
+one recovers better than rank sixteen at intermediate budgets, 0.646 against
+0.366 at half the dimension, and never enough to clear 0.90 below `k = d`.
+
+**The specification hardens: pay `k >= d` regardless of how many directions
+you need.** Below full dimension the estimate is a projection onto a random
+subspace, and a projected operator's leading eigenvector is not the
+operator's unless that subspace contains it. There is no low-rank shortcut.
+
+The effective-rank observation remains true and is now known to be
+operationally worthless, which is a better place to be than believing it
+might help.
+
+### F-16, the fourth universal declared where a distribution belonged
+
+S5 required per-cell entropy above 1.0 bits, carrying over a threshold C-3b
+applied to the median across cells. One cell of 48 sits at 0.339. Recomputed
+on the 47 that clear it, the surface is unchanged to three decimals, so
+nothing about S2 depends on it.
+
+Four times now: C-3c's N3 and N5, and this. The pattern is specific enough to
+state as a rule. **A bar on every cell is only appropriate for a quantity the
+substrate has no freedom to vary.** Entropy, decay rate and trace
+concentration are all properties real models differ in by design, and they
+belong in reported distributions with bars on their aggregates.
