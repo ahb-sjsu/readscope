@@ -35,7 +35,7 @@ Nothing here is a claim. It is the check that the instrument is an instrument.
 
 ## C-1, the loading curve
 
-**The headline calibration, and the one the framing demands.**
+**The headline calibration. Run once, failed, corrected, and now measured. See SPEC.md for the curve and the findings below for what the failure was worth.**
 
 Hold the consumer, the rank, the dimension and the probe budget fixed. Sweep
 the probing distribution from itself toward the activation distribution with
@@ -121,3 +121,37 @@ instrument reports the dominant direction and nothing else, which is worth
 knowing and is much less than what is currently implied.
 
 None of these has been ruled out. That is why the specification is empty.
+
+
+---
+
+## Findings so far
+
+### F-1, from C-1's failure: loading needs a moving read subspace
+
+C-1 failed four of five bars. Two causes were harness bugs, a consumer that
+collapsed its rank-four subspace to rank one and a saturating nonlinearity
+whose derivative vanished, both caught by the anti-vacuity bar reporting
+operator ranks of 0, 5 and 32 against a declared 4.
+
+The third was not a bug. **Probe loading cannot degrade subspace recovery for
+a consumer whose read subspace is the same everywhere in the input space.**
+The recovered subspace is the Jacobian's row space no matter where the probe
+points are drawn from. The sweep would have measured nothing even with the
+first two defects repaired.
+
+That bounds the error term. Loading matters for consumers whose local
+sensitivity rotates with position, and the amount it matters is what the
+curve measures. Any future calibration that reports no loading effect must
+first show its consumer could have exhibited one.
+
+### F-2, from C-1b: the curve has a knee and a shelf
+
+Recovery is flat and near-exact below about 11 nats of Jeffreys divergence,
+loses fifteen points by 25 nats, halves by 50, and then flattens onto a shelf
+around 0.44 rather than falling to the 0.125 chance floor. A badly loaded
+probe returns a degraded reading, not noise, which is a more useful failure
+mode than the alternative and should not be assumed to hold on real models.
+
+The seed spread tightens as loading falls, from 0.045 at the worst point to
+0.003 at the best. Loading costs precision as well as accuracy.

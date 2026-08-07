@@ -34,7 +34,7 @@ frequency bins.
 | Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Not characterized** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three points, one axis** |
-| Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **Named, not swept** |
+| Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **One curve measured, synthetic consumer** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
 | Temperature drift | ppm/°C | Stability of a reading across architectures at matched rank profile. | **Not characterized** |
 
@@ -109,8 +109,50 @@ distribution along a path that keeps every intermediate covariance positive
 definite, so that recovery quality can be plotted against loading with
 everything else held fixed.
 
-**No such curve has been measured.** Producing it is the whole content of
-`CALIBRATION.md`.
+### The first calibration curve
+
+C-1b, record `calibration/records/c1b-loading-curve.json`, PASS on all five
+declared bars. Gated synthetic consumer, ambient dimension 24, graded rank 3,
+chance overlap 0.125, five seeds, 48-direction sketch, 384 operating points.
+Truth is the read operator recovered by the exact estimator on the activation
+distribution, which is what a user cares about rather than any planted
+subspace.
+
+| Probe loading, Jeffreys nats | Overlap | SD across seeds | Worst seed |
+|---:|---:|---:|---:|
+| 0.89 | 0.9919 | 0.0029 | 0.9863 |
+| 3.23 | 0.9889 | 0.0019 | 0.9867 |
+| 10.73 | 0.9748 | 0.0059 | 0.9687 |
+| 25.25 | 0.8521 | 0.0280 | 0.8089 |
+| 50.50 | 0.4914 | 0.0354 | 0.4361 |
+| 91.64 | 0.4365 | 0.0445 | 0.3741 |
+
+**The curve has a knee between 25 and 50 nats.** Below about 11 nats the
+reading is essentially exact and the seed spread is under a percent. By 25
+nats it has lost fifteen points. By 50 it has halved, and past that it flattens
+onto a shelf around 0.44, still well above the 0.125 floor, so a badly loaded
+probe returns a degraded reading rather than noise.
+
+**Read as a specification:** overlap at or above 0.97 for probe loading up to
+roughly 11 nats, falling to about 0.44 by 92 nats, on this consumer family.
+That is one configuration and not yet a correction factor. Extending it across
+architectures and rank profiles is C-3, and turning the curve into a
+correction is the point of having it.
+
+### What C-1 taught before C-1b measured anything
+
+The first attempt failed four of five bars and one of its three defects was
+not a bug.
+
+**A consumer whose read subspace does not vary across the input space cannot
+exhibit probe loading at all.** If the Jacobian's row space is the same
+everywhere, the recovered subspace is that row space regardless of where the
+probe points come from. Probe loading acts only on consumers whose local
+sensitivity direction changes over the input space, and what goes wrong is
+then the average over the wrong measure.
+
+This bounds where the error term applies, and it is a claim about the
+instrument that the instrument's own calibration produced.
 
 ---
 

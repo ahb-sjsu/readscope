@@ -27,8 +27,9 @@ it sets the instrument's sample rate and its noise floor.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Literal, Optional
+from typing import Literal
 
 import numpy as np
 
@@ -54,7 +55,7 @@ class ProbeResult:
     eps: float
     """Finite-difference step actually used."""
 
-    sketch_dim: Optional[int] = None
+    sketch_dim: int | None = None
     """``k`` for the sketch estimator, ``None`` for exact."""
 
     meta: dict = field(default_factory=dict)
@@ -85,9 +86,9 @@ def blind_probe(
     points: np.ndarray,
     *,
     mode: Literal["exact", "sketch"] = "exact",
-    sketch_dim: Optional[int] = None,
+    sketch_dim: int | None = None,
     eps: float = 1e-3,
-    rng: Optional[np.random.Generator] = None,
+    rng: np.random.Generator | None = None,
 ) -> ProbeResult:
     """Recover ``S = E[g g^T]`` from consumer outputs alone.
 

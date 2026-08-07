@@ -61,7 +61,7 @@ def subspace_overlap(U_hat: np.ndarray, U_true: np.ndarray) -> OverlapReading:
 
 
 def chance_overlap(rank: int, dim: int) -> float:
-    """Expected overlap of a uniformly random rank-``r`` frame in ``d`` dims."""
+    """Expected overlap of a random rank-``r`` frame in ``d`` dims."""
     if rank < 1 or dim < 1 or rank > dim:
         raise ValueError("require 1 <= rank <= dim")
     return rank / dim

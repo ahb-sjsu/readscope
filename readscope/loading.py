@@ -59,6 +59,12 @@ def _moments(X: np.ndarray, ridge: float) -> tuple[np.ndarray, np.ndarray]:
     return mu, C + ridge * np.eye(C.shape[0])
 
 
+def _quad(v: np.ndarray, M: np.ndarray) -> float:
+    """``v^T M v`` as a scalar. A (1, 1) array is not 0-d, so float() on
+    the raw product raises under numpy 2."""
+    return float((v.T @ M @ v).reshape(()))
+
+
 def _logdet(C: np.ndarray) -> float:
     sign, val = np.linalg.slogdet(C)
     if sign <= 0:
@@ -91,25 +97,25 @@ def probe_loading(
 
     kl_pa = 0.5 * (
         float(np.trace(inv_a @ C_p))
-        + float(dmu.T @ inv_a @ dmu)
+        + _quad(dmu, inv_a)
         - d
         + _logdet(C_a)
         - _logdet(C_p)
     )
     kl_ap = 0.5 * (
         float(np.trace(inv_p @ C_a))
-        + float(dmu.T @ inv_p @ dmu)
+        + _quad(dmu, inv_p)
         - d
         + _logdet(C_p)
         - _logdet(C_a)
     )
 
     C_mix = 0.5 * (C_p + C_a)
-    bhat = 0.125 * float(dmu.T @ np.linalg.inv(C_mix) @ dmu) + 0.5 * (
+    bhat = 0.125 * _quad(dmu, np.linalg.inv(C_mix)) + 0.5 * (
         _logdet(C_mix) - 0.5 * (_logdet(C_p) + _logdet(C_a))
     )
 
-    mean_shift = float(np.sqrt(max(float(dmu.T @ inv_a @ dmu), 0.0)))
+    mean_shift = float(np.sqrt(max(_quad(dmu, inv_a), 0.0)))
 
     ratios = np.linalg.eigvalsh(np.linalg.solve(C_a, C_p))
     ratios = np.clip(ratios.real, 1e-300, None)

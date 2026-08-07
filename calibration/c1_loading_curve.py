@@ -75,9 +75,7 @@ def main() -> int:
         basis = np.linalg.qr(rng.standard_normal((DIM, RANK)))[0]
         consumer = planted_consumer(basis)
 
-        scale = np.concatenate(
-            [np.full(RANK, 3.0), np.full(DIM - RANK, 0.3)]
-        )
+        scale = np.concatenate([np.full(RANK, 3.0), np.full(DIM - RANK, 0.3)])
         activation = rng.standard_normal((4096, DIM)) * scale
         far = rng.standard_normal((4096, DIM)) * scale[::-1] + 4.0
 
@@ -121,7 +119,9 @@ def main() -> int:
     }
     load_by_alpha = {
         a: float(
-            np.mean([r["loading"]["jeffreys"] for r in rows if r["alpha"] == a])
+            np.mean(
+                [r["loading"]["jeffreys"] for r in rows if r["alpha"] == a]
+            )
         )
         for a in ALPHAS
     }
@@ -183,11 +183,11 @@ def main() -> int:
 
     for a in ALPHAS:
         print(
-            "alpha %.2f  loading %10.4f  overlap %.4f"
-            % (a, load_by_alpha[a], by_alpha[a])
+            f"alpha {a:.2f}  loading {load_by_alpha[a]:10.4f}  "
+            f"overlap {by_alpha[a]:.4f}"
         )
     for k in sorted(bars):
-        print("%-28s %s" % (k, "PASS" if bars[k] else "FAIL"))
+        print(f"{k:<28} {'PASS' if bars[k] else 'FAIL'}")
     print("VERDICT", verdict)
     print(out)
     return 0 if verdict == "PASS" else 1
