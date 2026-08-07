@@ -87,7 +87,8 @@ cost against bandwidth.
 
 ## C-3, the architecture spread
 
-**Status: run, failed on a declared shortcut, corrected, passed.** C-3 drew its
+**Status: run, failed on a declared shortcut, corrected, passed. Extended by
+C-5 across scale.** C-3 drew its
 queries from the key stream and saturated the softmax; C-3b hooks `q_proj`
 and passes all seven bars on three families. See F-9 and F-10.
 
@@ -386,3 +387,30 @@ Both corrected bars hold when evaluated against the record C-3c already
 produced. **No re-run was performed**, because nothing measured would change
 and only two labels would move. A PASS obtained that way would be worth less
 than saying so.
+
+
+### F-14, from C-5: recovery is scale-invariant, and heads read about two directions
+
+Qwen2.5 holds head_dim at 128 from 1.5B to 32B while depth, head count and
+grouping all change, so the ladder varies substrate with geometry fixed.
+Across 48 cells the mean resolution at `k/d = 1.25` is 1.0000 at every scale,
+with an across-scale spread of **6.7e-16**. Twenty times the parameters,
+no change in what the probe needs. The budget law has no scale term.
+
+The reported column with no bar on it turned out to matter more. **Every
+cell's analytic read operator has exact rank 24 and effective rank between
+1.20 and 3.29, median 1.82.** A real attention head spans two dozen
+directions and concentrates its sensitivity in about two, at every scale
+measured.
+
+That is a reframing of the bandwidth result and not a contradiction of it.
+The cliff is about recovering a rank-16 subspace. This says most of those
+sixteen carry little. **The next experiment is obvious and not yet run:
+grade a rank-2 subspace at sub-dimensional budget.** If a cheap probe
+recovers the directions that actually carry the mass, the pessimistic
+specification softens for the common case, and if it does not, the cliff
+stands unqualified.
+
+Recording it as an observation rather than folding it into the spec is the
+point. It was measured without a bar, so it has not been tested, and the
+specification does not move until it has been.

@@ -1,0 +1,850 @@
+{
+  "bars": {
+    "Q1_instrument": true,
+    "Q2_budget_cliff": true,
+    "Q3_scale_invariance": true,
+    "Q4_rank_floor": true,
+    "Q5_anti_vacuity": true,
+    "Q6_census": true
+  },
+  "declared": {
+    "dtype": "bfloat16, constant across the ladder",
+    "entropy_bar": 1.0,
+    "eps": 0.001,
+    "geometry": "head_dim 128 at every scale",
+    "graded_rank": 16,
+    "instrument_bar": 0.9,
+    "probe_keys": 32,
+    "ratios": [
+      0.5,
+      1.25
+    ],
+    "scale_spread_bar": 0.05,
+    "seed": 0
+  },
+  "rows": [
+    {
+      "effective_rank": 1.3673792744858202,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 5.119669032074697,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.44438719031362517,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.543546784617223,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 4.331740631394904,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.2807262614892875,
+        "1.25": 0.9999999999999992
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.5365608560392257,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 5.607467372820437,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.2642333076650444,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.976672635453986,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 2.408644337300094,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.26820808919246575,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.455275829697137,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 1.9537735006954742,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.25160464043799585,
+        "1.25": 0.9999999999999972
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.0382274725446954,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 3.48235449803854,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.29763997959047245,
+        "1.25": 0.9999999999999988
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.7614430744284917,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 2.933495048642614,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.2481315774778687,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.8798844483939108,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 1.2301887380053684,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.27309379040348264,
+        "1.25": 0.999999999999998
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.4154520799254062,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.525549694331105,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.36376488634840226,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.609353944624102,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.782637336343829,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.26824692551642154,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.5538761957011114,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.539190857482778,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.2730229370726933,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.7467293915907867,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.297432899715656,
+      "n_layers": 28,
+      "params_b": 1.5,
+      "resolution": {
+        "0.5": 0.3518418280311885,
+        "1.25": 0.9999999999999992
+      },
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.9093650460170644,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 3.227464744253161,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.4288269272669919,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.7188664946525622,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 5.591451974554369,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.21431460966510008,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.6627430858265504,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 3.8216561149470234,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.2248014455037651,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.5546993890918435,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 7,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 4.909989932109637,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.2698106525543607,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.718637707061228,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 1.147447429925637,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.3735953978216134,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.5072927481400464,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 2.850091550451285,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.31283958345993707,
+        "1.25": 0.9999999999999992
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.7661121895218652,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 3.0642379472477503,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.24836644113794687,
+        "1.25": 0.999999999999999
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.731325101922529,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 14,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 2.7082757107418605,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.4358379136685823,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.099977351191329,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.282225511266791,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.3332188263902016,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.8291431468522406,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 4.652092055377862,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.3303862254783306,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.6031550916643456,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.631290292343912,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.34371462700893457,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.0232358392949283,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 21,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.112390171522303,
+      "n_layers": 28,
+      "params_b": 7.0,
+      "resolution": {
+        "0.5": 0.3012697839078336,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-7b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.6416686908894174,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 12,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 0.1521852470927882,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.23613995313907304,
+        "1.25": 0.9999999999999992
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.2434979641659416,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 12,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 0.21595823933925895,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.2787453383875729,
+        "1.25": 0.9999999999999992
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 3.288042168597612,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 12,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 1.0490981408867475,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.43227727479493616,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.1597920403966295,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 12,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 1.5986249733673064,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.40972256554003156,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.3848363661312826,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 24,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 4.959846268165858,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.4261253859428393,
+        "1.25": 1.0000000000000004
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.7587177027366643,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 24,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 3.6867383771591244,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.44296501532928456,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.3170047855934817,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 24,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 5.150173823110508,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.3700152956138855,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.9805321604162407,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 24,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 3.925168547391672,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.38980156168173036,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.645454403477731,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 36,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 3.029272510049651,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.28409270219990745,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.3412643854012933,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 36,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 3.294768828709951,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.32092140835386374,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.2977942578176727,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 36,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 1.9554636842746809,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.2765231075161018,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.2129551646256975,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 36,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 4.399146085402222,
+      "n_layers": 48,
+      "params_b": 14.0,
+      "resolution": {
+        "0.5": 0.3189976154850278,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-14b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.7366122018682764,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 16,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 1.956235169790921,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.27574322722142364,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.204427864601708,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 16,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 1.9065246482482876,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.31780663265597864,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.865887379959211,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 16,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 2.5924571642526217,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.26264463010555367,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.8751615572062916,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 16,
+      "layer_fraction": 0.25,
+      "median_row_entropy_bits": 2.5614363010878876,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.2997471372586036,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.0333652543713514,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 32,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 3.402082493069729,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.4943733302029237,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.8438906211444772,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 32,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 2.865661737991821,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.27423236942131884,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.979124587865035,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 32,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 3.7921898105137637,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.4528769910667541,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.817574134311041,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 32,
+      "layer_fraction": 0.5,
+      "median_row_entropy_bits": 4.438452635997436,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.3166996024997828,
+        "1.25": 0.9999999999999998
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 1.629851272847728,
+      "head": 0,
+      "head_dim": 128,
+      "layer": 48,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 4.737663682526844,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.34355340527259964,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.060414583143384,
+      "head": 1,
+      "head_dim": 128,
+      "layer": 48,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.246680810771959,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.3468701454129185,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 2.023897065559345,
+      "head": 2,
+      "head_dim": 128,
+      "layer": 48,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 4.955247315061435,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.35703933172792,
+        "1.25": 0.9999999999999994
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    },
+    {
+      "effective_rank": 3.011836206621134,
+      "head": 3,
+      "head_dim": 128,
+      "layer": 48,
+      "layer_fraction": 0.75,
+      "median_row_entropy_bits": 5.3156500314447985,
+      "n_layers": 64,
+      "params_b": 32.0,
+      "resolution": {
+        "0.5": 0.34564982013997625,
+        "1.25": 1.0
+      },
+      "tag": "qwen25-32b",
+      "truth_rank": 24
+    }
+  ],
+  "runtime": {
+    "code_commit": "unknown",
+    "generated_utc": "2026-08-07T22:59:13.151311+00:00",
+    "hostname": "atlas",
+    "numpy": "2.5.1",
+    "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]"
+  },
+  "schema": "readscope-c5-scale-ladder-v1",
+  "skipped": [],
+  "summary": {
+    "across_scale_spread_at_1.25": 6.661338147750939e-16,
+    "effective_rank_by_scale": {
+      "1.5": 1.6570334989584914,
+      "14.0": 2.189296674187472,
+      "32.0": 1.923503560791582,
+      "7.0": 1.7603794326030442
+    },
+    "mean_resolution_at_0.5_by_scale": {
+      "1.5": 0.298741784461579,
+      "14.0": 0.3488606019986879,
+      "32.0": 0.3406030519154794,
+      "7.0": 0.31808186948863315
+    },
+    "mean_resolution_at_1.25_by_scale": {
+      "1.5": 0.9999999999999992,
+      "14.0": 0.9999999999999999,
+      "32.0": 0.9999999999999997,
+      "7.0": 0.9999999999999997
+    },
+    "median_entropy_by_scale": {
+      "1.5": 4.101011995570459,
+      "14.0": 2.7847037270791475,
+      "32.0": 3.6475234833964585,
+      "7.0": 3.9998844528951327
+    },
+    "n_cells": 48,
+    "scales_b": [
+      1.5,
+      7.0,
+      14.0,
+      32.0
+    ]
+  },
+  "verdict": {
+    "computed_from": [
+      "Q1_instrument",
+      "Q2_budget_cliff",
+      "Q3_scale_invariance",
+      "Q4_rank_floor",
+      "Q5_anti_vacuity",
+      "Q6_census"
+    ],
+    "value": "PASS"
+  }
+}

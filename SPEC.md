@@ -39,7 +39,7 @@ frequency bins.
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
 | Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **One curve measured, synthetic consumer** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
-| Temperature drift | ppm/°C | Stability of a reading across architectures at matched rank profile. | **Measured on three families. Spread 1e-15** |
+| Temperature drift | ppm/°C | Stability of a reading across architectures and scales at matched geometry. | **Four families, spread 1e-15. Four scales, spread 7e-16** |
 | Applicability | probe coupling | Which consumer regimes this probe can be attached to at all. | **Bounded, and enforced in code** |
 
 ---
@@ -461,6 +461,57 @@ operator has rank at least 8, and the near-quarter fraction is reported as a
 distribution running 0.470 to 1.000. **No sweep was re-run**, because no
 measured number would change; only the labels on two bars would. Saying that
 is preferable to producing a PASS by restating the same numbers.
+
+---
+
+## The scale ladder
+
+C-5, record `calibration/records/c5-scale-ladder.json`, **PASS on all six
+bars.** 48 head-cells across Qwen2.5 at 1.5B, 7B, 14B and 32B, three depths
+and four heads each, all loaded in bfloat16 so precision is not confounded
+with size.
+
+Qwen2.5 holds `head_dim` at 128 across the whole ladder while layer count
+goes 28 to 64, head count 12 to 40 and grouping 2 to 8 key-value heads.
+**The geometry the probe works in is constant and only the substrate grows**,
+which is the only way to ask the scale question without confounding it with
+dimension.
+
+| scale | res @ k/d = 0.5 | @ k/d = 1.25 | effective rank | entropy, bits |
+|---:|---:|---:|---:|---:|
+| 1.5B | 0.299 | **1.0000** | 1.66 | 4.10 |
+| 7B | 0.318 | **1.0000** | 1.76 | 4.00 |
+| 14B | 0.349 | **1.0000** | 2.19 | 2.78 |
+| 32B | 0.341 | **1.0000** | 1.92 | 3.65 |
+
+**Across-scale spread at `k/d = 1.25` is 6.7e-16.** A twentyfold increase in
+parameters changes nothing about what the probe needs. The budget law has no
+scale term, so the specification does not need one.
+
+### The unbarred column that matters most
+
+Effective rank was reported without a bar, because no prior said what it
+should do. It turned out to be the most useful number in the sweep.
+
+**Every cell's analytic read operator has an effective rank between 1.20 and
+3.29, median 1.82**, while its exact rank is 24 at every single cell. So the
+read operator spans two dozen directions and its sensitivity is concentrated
+in roughly two of them, at every scale from 1.5B to 32B.
+
+That reframes the bandwidth story rather than contradicting it. C-2e's cliff
+says recovering a **rank-16 subspace** demands `k >= d`. This says a real
+attention head does not put much sensitivity in most of those sixteen. **If
+what you need is the one or two directions carrying the mass, a
+sub-dimensional probe is likely to be adequate**, and the cheap estimators
+this specification was pessimistic about may be fit for the common purpose
+after all.
+
+Stated carefully, because this is the boundary where it would be easy to
+overclaim: **this is an observation, not a tested claim.** No bar was placed
+on effective rank, no sweep has yet graded a rank-2 subspace at
+sub-dimensional budget, and until one does, the honest specification remains
+the cliff. What the observation earns is the next experiment, not a
+relaxation of the current number.
 
 ---
 

@@ -130,6 +130,18 @@ resolution runs **−0.32 to 0.10**, at or below chance — so the budget cliff
 belongs to the estimator, not to softmax. Measured alongside: Mamba channel
 memory runs **1.8 to 82 steps**, median 7.9.
 
+**Scale.** Across Qwen2.5 at 1.5B, 7B, 14B and 32B — head_dim held at 128
+throughout, so only the substrate grows — resolution at `k/d = 1.25` is
+1.0000 at every scale, **across-scale spread 6.7e-16**. The budget law has no
+scale term.
+
+The unbarred column mattered more: **every real head's read operator has
+exact rank 24 and effective rank about 1.8.** A head spans two dozen
+directions and concentrates its sensitivity in roughly two. That does not
+soften the cliff, which is about recovering a rank-16 subspace, but it points
+at the experiment that might: grade a rank-2 subspace at sub-dimensional
+budget. Not yet run.
+
 Those three inherited measurements:
 
 | Run | Substrate | Overlap | Chance | Verdict |
