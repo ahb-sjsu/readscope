@@ -32,7 +32,8 @@ frequency bins.
 
 | Field | Scope equivalent | Meaning for this instrument | Status |
 |---|---|---|---|
-| Sample rate | samples/second | Consumer evaluations spent per operating point. `2d` for the exact estimator, `2k` for the `k`-direction sketch. | **Measured, exactly known** |
+| Sample rate | samples/second | Consumer evaluations spent per operating point. `2d` exact, `2k` sketched. | **Measured, exactly known** |
+| Minimum usable budget | minimum input signal | The direction budget below which the probe resolves almost nothing. | **Measured. It is a cliff at `k = d`** |
 | Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Measured for this package's estimators, and it is bad** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
@@ -90,8 +91,16 @@ Converting the published figures to the same statistic:
 The chance value of 0.126 is consistent with a rank-16 read subspace in a
 128-dimensional head space. **At rank 16 this package's sketch scores 0.03 to
 0.06 where the published probe scored 0.60.** That is roughly an order of
-magnitude, and it means the 32-key probe used in `geometric-observation` and
-the Gaussian sketch shipped here are not the same instrument.
+magnitude, and the cause is now known: the source probe runs at `k/d = 1.25`
+and the sketch measurements were all sub-dimensional. `mode="lstsq"` and
+`jacobian_probe` port the source design, and the budget law above says what
+it costs.
+
+The residual gap is the interesting one. At `k/d >= 1` this package recovers
+a planted subspace at resolution 1.000, while the source program recovered a
+**real attention head** at 0.596. That difference is not the estimator. It is
+the difference between a clean planted subspace and a real one, and measuring
+it is exactly what C-3 exists for.
 
 So the accuracy table in the next section describes a probe design this
 package does not yet implement. Until it does, those numbers are provenance
@@ -224,6 +233,73 @@ rank agreement and belongs with the retrieval path that consumes it, and
 `turboquant_pro.operator_trace`, which infers a consumer's regime from a
 torch graph and would drag a heavy dependency into a numpy-only package. Both
 compose with this one rather than needing to live inside it.
+
+---
+
+## The budget law: the most actionable number here
+
+Reading the source program's own probe settled where the accuracy gap came
+from. `gateB_llama_rematch.py` runs `N_PROBE = 160` directions in a `d = 128`
+head space, so `k/d = 1.25`. **It is not a cheaper estimator, it is an
+overdetermined one.** Everything C-2b and C-2d measured was the
+sub-dimensional regime, which nothing in the source program ever relied on.
+The premise that a sketch was "the affordable estimator" was mine, not the
+program's.
+
+C-2e, record `calibration/records/c2e-budget-law.json`, five of six bars.
+Least-squares recovery, ambient dimension 32, five seeds, 96 operating
+points.
+
+| Budget `k/d` | res @1 | @2 | @4 | @8 | @16 | Bandwidth |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0.25 | 0.967 | 0.460 | 0.214 | 0.114 | 0.003 | **1** |
+| 0.50 | 0.988 | 0.549 | 0.246 | 0.161 | 0.077 | **2** |
+| 0.75 | 0.996 | 0.746 | 0.359 | 0.166 | 0.115 | **2** |
+| 1.00 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | **16** |
+| 1.25 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | **16** |
+| 1.50 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | **16** |
+
+**Bandwidth is a cliff at `k = d`, not a slope.** It goes 1, 2, 2, then
+straight to the exact estimator's 16. Three quarters of the directions buys
+two of sixteen; the last quarter buys the other fourteen. There is no
+graceful degradation to trade against, and no partial budget worth spending.
+
+**Read as a specification: for a scalar-margin consumer, pay `2d` consumer
+calls per operating point or expect the dominant direction and nothing
+else.** That is the honest cost of this instrument, and it is why the source
+program pays it.
+
+### The discount, which is real and does not go all the way
+
+A vector-valued consumer returns `m` numbers per direction instead of one, so
+a direction carries `m` times the information at identical call cost. Whether
+that substitutes for directions was declared as an open question with both
+answers useful.
+
+At `k/d = 0.5`, holding everything else fixed:
+
+| Consumer output `m` | res @1 | @2 | @4 | @8 | @16 | Bandwidth |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 0.988 | 0.510 | 0.236 | 0.134 | 0.049 | **2** |
+| 2 | 0.988 | 0.883 | 0.429 | 0.208 | 0.048 | **2** |
+| 4 | 0.989 | 0.977 | 0.696 | 0.382 | 0.124 | **4** |
+| 8 | 0.990 | 0.989 | 0.909 | 0.556 | 0.243 | **8** |
+
+**Vector output buys bandwidth and does not buy the cliff away.** At half the
+direction budget, eight outputs reach bandwidth 8 where a scalar margin
+reaches 2, a fourfold gain for free. It still falls short of the exact
+estimator's 16, so S5 failed while S4 passed, which is exactly the middle
+outcome the declaration named as informative.
+
+The pattern in these four rows is that bandwidth tracks `m` once `m` is at
+least 4. **That is a suggestion, not a law.** It rests on one ambient
+dimension, one budget ratio, and four values of `m`, and nothing here has
+tested whether it survives any of those changing.
+
+**Practical reading.** If your consumer emits a vector, use
+`jacobian_probe` and you can work at half the direction budget for a
+bandwidth of roughly its output width. If it emits a scalar, pay `k >= d` or
+accept a one-direction reading.
 
 ---
 

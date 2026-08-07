@@ -234,3 +234,39 @@ recommendation has to be conditional rather than a blanket preference.
 Generating the replication rather than editing the original is the only way
 to make "no bar was moved after seeing the numbers" checkable by a reader
 instead of merely asserted.
+
+
+### F-7, from C-2e: the budget law is a cliff, and my "affordable estimator" premise was wrong
+
+The source program's probe runs 160 directions in a 128-dimensional head,
+`k/d = 1.25`. It never relied on a sub-dimensional estimator, and the idea
+that a cheap sketch was the operating point was mine rather than the
+program's.
+
+Measured, bandwidth against budget goes 1, 2, 2, 16, 16, 16 as `k/d` runs
+from 0.25 to 1.5. **Three quarters of the directions buys two directions of
+sixteen and the last quarter buys the rest.** There is no graceful
+degradation, so there is no partial budget worth spending, and the
+specification says plainly that a scalar-margin probe costs `2d` calls per
+operating point.
+
+### F-8, the vector discount is real, partial, and the shape of it is only a hint
+
+A vector-valued consumer returns `m` numbers per direction at the same call
+cost. At half the direction budget, bandwidth goes 2, 2, 4, 8 for `m` of 1,
+2, 4, 8. Real, useful, and short of the exact estimator's 16, so S5 failed
+while S4 passed.
+
+Bandwidth tracking `m` in those four rows is suggestive and is not
+established. One ambient dimension, one ratio, four values of `m`. Writing it
+down as a law would be the kind of overreach this file exists to prevent.
+
+### What C-3 has to answer now
+
+At `k/d >= 1` this package recovers a **planted** subspace at resolution
+1.000. The source program recovered a **real attention head** at 0.596 at
+`k/d = 1.25`. The estimator is no longer the explanation for that gap.
+
+So the remaining question is what a real read subspace does that a planted
+one does not, and that is C-3's whole job. Until it runs, the instrument's
+accuracy on anything real rests on sixteen head-cells of one 3B model.

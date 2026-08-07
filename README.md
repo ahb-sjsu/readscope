@@ -91,9 +91,18 @@ bit allocation: mean trace error drops from 6.21 to 0.068 at `k=8`. The
 bandwidth limit is variance, not bias, and both the wrong diagnosis and its
 correction are in `CALIBRATION.md`.
 
-An orthonormal frame is the variance fix, exact at `k = d`, and it raises
-bandwidth from one to two at `k/d = 0.5`. At `k/d = 0.25` it does not help.
-The recommendation is conditional on the sampling ratio.
+**The budget law, which is the number to plan against.** Bandwidth against
+direction budget `k/d` goes **1, 2, 2, 16, 16, 16** across 0.25 to 1.5. It is
+a cliff at `k = d`, not a slope: three quarters of the directions buys two
+directions of sixteen and the last quarter buys the other fourteen. For a
+scalar-margin consumer, pay `2d` calls per operating point or expect the
+dominant direction and nothing else. The source program pays exactly this,
+running 160 directions in a 128-dimensional head.
+
+**A vector consumer buys a partial discount.** At half the direction budget,
+`jacobian_probe` reaches bandwidth 2, 2, 4, 8 for output widths 1, 2, 4, 8 —
+a fourfold gain over a scalar margin at identical cost, still short of the
+full 16.
 
 **The published accuracy figures came from a different probe.** Expressed on
 a common statistic, the Llama result scores 0.596 at rank 16 where this

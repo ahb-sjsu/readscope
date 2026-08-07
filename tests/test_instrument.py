@@ -20,6 +20,7 @@ from readscope import (
     differential_fraction,
     displacement_decomposition,
     interpolate_distribution,
+    jacobian_probe,
     probe_loading,
     retrieval_margin_gradient,
     routing_margins,
@@ -609,3 +610,82 @@ def test_ortho_beats_the_gaussian_sketch_at_equal_cost():
         subspace_overlap(b.read_subspace(r), basis).overlap
         > subspace_overlap(a.read_subspace(r), basis).overlap
     )
+
+
+# ------------------- the estimator the published figures actually used
+
+
+def test_lstsq_at_full_rank_is_exact():
+    rng = np.random.default_rng(120)
+    d = 8
+    w = rng.standard_normal(d)
+    pts = rng.standard_normal((10, d))
+    res = blind_probe(
+        linear_consumer(w),
+        pts,
+        mode="lstsq",
+        sketch_dim=d,
+        rng=np.random.default_rng(121),
+    )
+    assert np.allclose(res.S, np.outer(w, w), atol=1e-6)
+
+
+def test_lstsq_is_exact_when_overdetermined():
+    """n_directions > d is the regime the source program actually ran."""
+    rng = np.random.default_rng(122)
+    d = 8
+    w = rng.standard_normal(d)
+    pts = rng.standard_normal((10, d))
+    res = blind_probe(
+        linear_consumer(w),
+        pts,
+        mode="lstsq",
+        sketch_dim=2 * d,
+        rng=np.random.default_rng(123),
+    )
+    assert np.allclose(res.S, np.outer(w, w), atol=1e-6)
+    assert res.n_calls == 10 * 2 * 2 * d
+
+
+def test_jacobian_probe_recovers_a_linear_vector_consumer():
+    """For C(x) = A x the Jacobian is A, so M = A^T A exactly."""
+    rng = np.random.default_rng(124)
+    d, m = 7, 4
+    A = rng.standard_normal((m, d))
+    pts = rng.standard_normal((6, d))
+    res = jacobian_probe(
+        lambda x: A @ x,
+        pts,
+        n_directions=d,
+        rng=np.random.default_rng(125),
+    )
+    assert np.allclose(res.S, A.T @ A, atol=1e-6)
+    assert res.meta["out_dim"] == m
+    assert res.n_calls == 6 * 2 * d
+
+
+def test_jacobian_probe_reduces_to_the_scalar_case():
+    rng = np.random.default_rng(126)
+    d = 6
+    w = rng.standard_normal(d)
+    pts = rng.standard_normal((8, d))
+    vec = jacobian_probe(
+        lambda x: np.array([w @ x]),
+        pts,
+        n_directions=d,
+        rng=np.random.default_rng(127),
+    )
+    assert np.allclose(vec.S, np.outer(w, w), atol=1e-6)
+
+
+def test_vector_output_carries_more_directions_than_a_scalar():
+    """A scalar margin reveals a rank-one operator per point; a vector
+    consumer reveals up to m."""
+    rng = np.random.default_rng(128)
+    d, m = 12, 5
+    A = rng.standard_normal((m, d))
+    pts = rng.standard_normal((4, d))
+    res = jacobian_probe(
+        lambda x: A @ x, pts, n_directions=d, rng=np.random.default_rng(129)
+    )
+    assert np.linalg.matrix_rank(res.S, tol=1e-8) == m

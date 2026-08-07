@@ -29,6 +29,7 @@ from readscope.probe import (
     ProbeResult,
     blind_probe,
     debias_sketch,
+    jacobian_probe,
     retrieval_margin_gradient,
 )
 from readscope.quotient import (
@@ -68,6 +69,7 @@ __all__ = [
     "differential_fraction",
     "displacement_decomposition",
     "interpolate_distribution",
+    "jacobian_probe",
     "probe_loading",
     "retrieval_margin_gradient",
     "routing_margins",
