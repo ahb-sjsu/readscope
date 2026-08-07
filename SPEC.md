@@ -152,6 +152,17 @@ consumer's metric is carried by the tangential part. Reading a spectrum
 without checking that is how a quantizer scores well on reconstruction and
 destroys the ranking anyway.
 
+### Backported the other way
+
+`turboquant_pro.calibration_coverage`, landed at commit f526400. That
+package's Lloyd-Max path fits a codebook from "a representative set of real
+key activations" and had no way to check the word representative. A
+calibration sample shifted or differently shaped from serving traffic fits
+the codebook to the wrong measure and fails quietly, because the codebook
+still reconstructs its own calibration set beautifully. That is probe
+loading with a different name, so `readscope.loading` went back the other
+way as a coverage guard with a warn and a strict CI gate.
+
 Deliberately **not** ported, and better used from their own package:
 `turboquant_pro.rank_certificate`, which supplies distribution-free floors on
 rank agreement and belongs with the retrieval path that consumes it, and
