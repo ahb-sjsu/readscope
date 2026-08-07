@@ -1,0 +1,146 @@
+# readscope
+
+**An oscilloscope and spectrum analyzer for model consumers.** Point it at a
+consumer, get back what that consumer actually reads.
+
+[![Spec](https://img.shields.io/badge/spec-3_points_1_axis-orange)](SPEC.md)
+[![Calibration](https://img.shields.io/badge/calibration-not_started-red)](CALIBRATION.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+```python
+from readscope import blind_probe, spectrum_of, water_fill
+
+probe = blind_probe(consumer, operating_points, mode="sketch", sketch_dim=32)
+spec = spectrum_of(probe.S)
+
+print(spec.effective_rank)      # how many directions this consumer reads
+print(spec.energy_rank(0.9))    # how many carry 90% of its sensitivity
+
+alloc = water_fill(spec.eigenvalues, budget=4.0 * spec.dim)
+print(alloc.n_starved)          # directions that earn no bits
+```
+
+`consumer` is any callable from a vector to a scalar margin. A logit, a
+ranking score, an attention weight. The probe never sees a label, a Jacobian,
+or a hint about which directions matter.
+
+---
+
+## What it does
+
+The read operator `P_C = J^T G J` is built from a derivative, and derivatives
+are measurable. Perturb the input, watch the output move, accumulate
+
+```
+S = E[ g g^T ],   g = grad_x C(x)
+```
+
+The top eigenvectors of `S` span the read subspace. That is the trace.
+
+The spectrum of `S` is where a consumer's sensitivity sits across directions,
+the same way a spectrum analyzer shows where a signal's energy sits across
+frequency. Allocating a bit budget against that spectrum by reverse
+water-filling is not an analogy to power allocation across frequency bins. It
+is the same optimization, with a downstream task's sensitivity in place of a
+signal's power.
+
+## What it is for
+
+Compression and quantization decide what to keep, and they almost always
+decide by reconstruction error. On Llama-3.2-3B attention heads, two key
+codecs tied on reconstruction to 7.5e-9 by construction still differed
+downstream by a median relative-KL gap of 1.85. The consumer-relative
+distortion `tr(P_C Σ_δ)` picked the worse arm on 16 of 16 heads.
+Reconstruction, exactly tied, picked it on 2 of 16.
+
+So: measure what the consumer reads, spend bits against that, and stop
+accepting compression on a metric the consumer is blind to.
+
+## You do not have to buy anything to use it
+
+Nobody adopted the oscilloscope's ontology. You do not need a theory of what
+voltage is to point a probe at a node and read a trace.
+
+This is the same. The reading is a spectrum of output sensitivity. It means
+what it means whether or not you ever use the word consumer, and whether or
+not you find the theory it came out of interesting.
+
+---
+
+## Status: read SPEC.md first
+
+**This instrument does not have a specification yet.** It has three
+measurements.
+
+| Run | Substrate | Overlap | Chance | Verdict |
+|---|---|---|---|---|
+| GO-P-2026-011 | planted low-rank subspace | 0.936 | 0.059 | PASS 5/5 |
+| GO-P-2026-020 | Llama-3.2-3B, 16 heads | 0.567 | 0.126 | **missed the 0.60 bar** |
+| GO-P-2026-021 | Llama-3.2-3B, 16 heads | 0.647 | 0.126 | PASS, 32-key probe |
+
+The 16 cells are layers {8, 16} × 8 KV heads of one 3B model. The two Llama
+numbers bracket the sealed bar and differ only by probe design, which is
+exactly why a single accuracy figure would be misleading. The earlier miss
+stays on the record as its own negative.
+
+An instrument is trusted because it is specified, not because it worked once.
+A scope ships with bandwidth, sample rate, noise floor, and accuracy over
+range. This one currently ships with a sample rate, a noise floor, and three
+points on one accuracy axis. [SPEC.md](SPEC.md) names every field and marks
+the empty ones.
+
+### The known error term
+
+Probe loading. A scope's input impedance draws current from the node, so what
+you read is not quite what was there. Here, the probing distribution is not
+the activation distribution the consumer meets in service, so the recovered
+operator is the read operator averaged over the wrong measure.
+
+That is not a flaw that invalidates the instrument. It is a characterizable
+effect, and characterizing it is the top item in
+[CALIBRATION.md](CALIBRATION.md): sweep the probing distribution toward the
+activation distribution, plot overlap against loading, and get a calibration
+curve that lets a reading be corrected rather than merely doubted.
+
+`readscope.loading` supplies the axis. No curve has been measured yet.
+
+---
+
+## Install
+
+```bash
+pip install -e ".[dev]"
+```
+
+Pure numpy. Torch is optional and only needed for the model-facing
+calibration harnesses.
+
+## Layout
+
+```
+readscope/       the instrument
+  probe.py       blind recovery of S = E[g g^T]
+  spectrum.py    the response spectrum, effective rank, energy rank
+  allocate.py    reverse water-filling against the spectrum
+  loading.py     probe loading, the calibration axis
+  metrics.py     subspace overlap, always with its chance floor
+calibration/     the program that has to produce a spec sheet
+tests/           exact controls with closed forms
+SPEC.md          the specification, mostly empty on purpose
+CALIBRATION.md   what has to be measured, and what would sink it
+```
+
+## Provenance
+
+The theory and the three measurements come from the observation-theory
+program: [geometric-observation](https://github.com/ahb-sjsu/geometric-observation)
+(the blind probe, the sealed preregistrations, the claims ledger) and
+[turboquant-pro](https://github.com/ahb-sjsu/turboquant-pro) (the production
+compression path that consumes a read operator).
+
+This repository is the instrument pulled out of that program and specified on
+its own terms, so it can be used by people with no interest in the program.
+
+## License
+
+MIT.

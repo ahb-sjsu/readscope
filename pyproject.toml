@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "readscope/__init__.py"
+
+[project]
+name = "readscope"
+dynamic = ["version"]
+description = "An oscilloscope and spectrum analyzer for model consumers: recover what a consumer reads, and spend bits against it"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Andrew H. Bond", email = "andrew.bond@sjsu.edu"}]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.21"]
+keywords = [
+    "interpretability",
+    "quantization",
+    "compression",
+    "attention",
+    "sensitivity-analysis",
+    "instrumentation",
+    "calibration",
+    "llm",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+torch = ["torch>=2.0"]
+dev = ["pytest>=7.0", "black==26.1.0", "ruff==0.14.8"]
+
+[project.urls]
+Homepage = "https://github.com/ahb-sjsu/readscope"
+Repository = "https://github.com/ahb-sjsu/readscope"
+Issues = "https://github.com/ahb-sjsu/readscope/issues"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.black]
+target-version = ["py310"]
+line-length = 79
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
