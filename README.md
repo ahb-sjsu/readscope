@@ -3,6 +3,7 @@
 **An oscilloscope and spectrum analyzer for model consumers.** Point it at a
 consumer, get back what that consumer actually reads.
 
+[![PyPI](https://img.shields.io/pypi/v/readscope)](https://pypi.org/project/readscope/)
 [![Spec](https://img.shields.io/badge/spec-partial-orange)](SPEC.md)
 [![Calibration](https://img.shields.io/badge/calibrations-C--0_to_C--10-blue)](CALIBRATION.md)
 [![Tests](https://img.shields.io/badge/tests-73-green)](tests/)
@@ -179,11 +180,16 @@ worth reading before trusting any number here:
 ## Install
 
 ```bash
-pip install -e ".[dev]"
+pip install readscope
 ```
 
 Pure numpy. Torch is optional and only needed by the model-facing extraction
-scripts under `calibration/`.
+scripts under `calibration/`, which ship in the repository rather than the
+wheel. For development, `pip install -e ".[dev]"`.
+
+**Using it with turboquant-pro?** `pip install tqp-readscope` registers these
+probes as read-operator providers, so `tr(P_C Σ_δ)` becomes a number you can
+gate a codec on.
 
 ## Layout
 
