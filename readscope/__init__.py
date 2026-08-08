@@ -19,6 +19,7 @@ from readscope.loading import (
     LoadingReading,
     fit_loading_correction,
     interpolate_distribution,
+    loading_null_floor,
     probe_loading,
 )
 from readscope.metrics import (
@@ -73,6 +74,7 @@ __all__ = [
     "displacement_decomposition",
     "fit_loading_correction",
     "interpolate_distribution",
+    "loading_null_floor",
     "jacobian_probe",
     "probe_loading",
     "retrieval_margin_gradient",

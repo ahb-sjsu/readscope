@@ -130,6 +130,69 @@ def fit_loading_correction(
     )
 
 
+_NULL_CACHE: dict = {}
+
+
+def loading_null_floor(
+    n_probe: int,
+    n_activation: int,
+    dim: int,
+    *,
+    trials: int = 24,
+    ridge: float = 1e-9,
+    rng: np.random.Generator | None = None,
+) -> float:
+    """The Jeffreys reading when both samples come from the *same* law.
+
+    Two finite samples of the same distribution do not have the same fitted
+    Gaussian, so this estimator reads a positive divergence even when there
+    is no mismatch at all. That reading is the axis's noise floor, and a
+    loading below it means nothing.
+
+    The quantity is **distribution free**. Jeffreys between fitted Gaussians
+    depends on the moments only through products like ``inv(C_a) C_p``, which
+    are invariant when both samples are pushed through the same affine map,
+    so the floor is a function of ``(n_probe, n_activation, dim)`` alone and
+    is simulated once per shape and cached.
+    """
+    key = (int(n_probe), int(n_activation), int(dim), int(trials))
+    if key in _NULL_CACHE:
+        return _NULL_CACHE[key]
+    if rng is None:
+        rng = np.random.default_rng(0)
+    vals = []
+    for _ in range(int(trials)):
+        a = rng.standard_normal((int(n_probe), int(dim)))
+        b = rng.standard_normal((int(n_activation), int(dim)))
+        vals.append(_jeffreys_raw(a, b, ridge))
+    out = float(np.mean(vals))
+    _NULL_CACHE[key] = out
+    return out
+
+
+def _jeffreys_raw(P: np.ndarray, A: np.ndarray, ridge: float) -> float:
+    mu_p, C_p = _moments(P, ridge)
+    mu_a, C_a = _moments(A, ridge)
+    d = mu_p.size
+    inv_a, inv_p = np.linalg.inv(C_a), np.linalg.inv(C_p)
+    dmu = (mu_p - mu_a).reshape(-1, 1)
+    kl_pa = 0.5 * (
+        float(np.trace(inv_a @ C_p))
+        + _quad(dmu, inv_a)
+        - d
+        + _logdet(C_a)
+        - _logdet(C_p)
+    )
+    kl_ap = 0.5 * (
+        float(np.trace(inv_p @ C_a))
+        + _quad(dmu, inv_p)
+        - d
+        + _logdet(C_p)
+        - _logdet(C_a)
+    )
+    return kl_pa + kl_ap
+
+
 @dataclass
 class LoadingReading:
     """How far a probing distribution sits from an activation distribution."""
@@ -146,8 +209,37 @@ class LoadingReading:
     spectral_ratio: float
     """Worst-direction variance ratio, ``max(l, 1/l)`` over eigendirections."""
 
+    null_floor: float = 0.0
+    """What this estimator reads at this shape when there is no mismatch."""
+
+    dim: int = 1
+    """Ambient dimension, needed to make the reading comparable."""
+
+    @property
+    def loading(self) -> float:
+        """**The dimensionless axis.** Null-corrected, per dimension.
+
+        ``max(0, jeffreys - null_floor) / dim``. Raw Jeffreys is unusable as
+        a datasheet axis for two reasons that this fixes together. It grows
+        linearly with dimension for a mismatch that is the same in every
+        direction, so the identical mismatch read 0.89 to 92 at dimension 24
+        and billions at dimension 256. And it is positive even with no
+        mismatch at all, because two finite samples of one law have different
+        fitted Gaussians.
+
+        A correction fitted against this quantity has a chance of
+        transferring across dimensions. One fitted against raw Jeffreys does
+        not, which C-7b established the hard way.
+        """
+        if self.dim < 1:
+            return 0.0
+        return max(0.0, self.jeffreys - self.null_floor) / float(self.dim)
+
     def to_dict(self) -> dict:
         return {
+            "loading": self.loading,
+            "null_floor": self.null_floor,
+            "dim": self.dim,
             "jeffreys": self.jeffreys,
             "bhattacharyya": self.bhattacharyya,
             "mean_shift": self.mean_shift,
@@ -187,6 +279,7 @@ def probe_loading(
     *,
     ridge: float = 1e-9,
     strict: bool = True,
+    null_trials: int = 24,
 ) -> LoadingReading:
     """Measure the divergence between probing and activation distributions.
 
@@ -276,6 +369,10 @@ def probe_loading(
         bhattacharyya=bhat,
         mean_shift=mean_shift,
         spectral_ratio=spectral,
+        null_floor=loading_null_floor(
+            P.shape[0], A.shape[0], d, trials=null_trials, ridge=ridge
+        ),
+        dim=int(d),
     )
 
 

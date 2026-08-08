@@ -500,3 +500,40 @@ test. **The units are.** Normalising loading so the same physical mismatch
 reads the same number at any dimension is a change to the axis rather than to
 the curve, and it has to happen before any correction fitted at one dimension
 can be applied at another.
+
+
+### F-20, from C-8: the axis is fixed and it is decisive
+
+Normalising loading as ``max(0, jeffreys - null_floor(n_p, n_a, d)) / d``
+makes it comparable across dimensions. A fixed per-direction mismatch reads
+1.140, 1.135, 1.125, 1.129, 1.131 at dimensions 16 through 256, a relative
+spread of **1.3 percent** where raw Jeffreys spreads **242 percent** over the
+same configurations. Independent samples of one law read exactly zero after
+the null correction.
+
+The null floor is distribution free, so it is a property of
+``(n_probe, n_activation, dim)`` alone and is simulated once and cached. It is
+also large where it matters: at dimension 256 with two samples per dimension
+it is 260 nats, which is the number C-7 was unknowingly reading as signal.
+
+### F-21, the second vacuous pass in two sweeps, and the rule that catches both
+
+C-8's D5 reported a correction transferring with mean absolute error 0.0000.
+Every reading in that half was exactly 1.000, so the fitted attenuation was
+the identity and no error was possible. The probe never degraded, so there was
+nothing to predict.
+
+F-1 already said why. **Probe loading cannot degrade subspace recovery when
+the consumer's read subspace does not vary across the input space**, and the
+gated consumer's gradients always lie in the span of its three defining
+vectors, which is exactly the rank C-8 graded at. Using the exact
+least-squares estimator removed the last source of variation. C-1b escaped
+this only through a noisier estimator.
+
+Two sweeps in a row have now passed a bar for a reason unrelated to the claim:
+C-7b through saturation, C-8 through a pinned quantity. Both were caught the
+same way and only that way, so it is now a standing rule rather than a habit:
+
+**Before believing a bar of the form "X predicts Y", require a prior bar that
+Y varies.** C-1b had one, as its L3 separation bar. C-7b and C-8 dropped it
+and both produced a confident number out of nothing.

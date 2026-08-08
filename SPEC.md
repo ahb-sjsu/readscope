@@ -37,7 +37,7 @@ frequency bins.
 | Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Measured for this package's estimators, and it is bad** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
-| Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **One curve measured. The correction does NOT yet transfer** |
+| Input impedance | ohms | Probe loading, on a dimensionless axis. | **Axis works, 1.3% spread across 16x dimension range. Correction still unestablished** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
 | Temperature drift | ppm/°C | Stability of a reading across architectures and scales at matched geometry. | **Four families, spread 1e-15. Four scales, spread 7e-16** |
 | Applicability | probe coupling | Which consumer regimes this probe can be attached to at all. | **Bounded, and enforced in code** |
@@ -606,23 +606,70 @@ bar C-7b was missing: a correction must be evaluated inside its fitted domain,
 and a reading that needs extrapolation must be recorded as out of range rather
 than clamped into an answer.
 
-### Why it does not transfer, and what would fix it
+### The axis was the obstacle, and it is now fixed
 
-The loading axis is **not dimensionless**. Jeffreys divergence between fitted
-Gaussians grows with dimension and with estimator bias, so a curve fitted on a
-24-dimensional synthetic consumer sits at 0.89 to 92 nats while the same
-qualitative mismatch at head_dim 128 reads in the thousands and at head_dim
-256 in the billions. The consumer family was never the obstacle. The units
-were.
+Raw Jeffreys fails as a datasheet quantity in two ways at once. It grows with
+dimension for a mismatch identical in every direction, and it is positive when
+there is no mismatch at all, because two finite samples of one law have
+different fitted Gaussians.
 
-**Until loading is normalised so that the same physical mismatch reads the
-same number at any dimension, no correction fitted at one dimension can be
-applied at another.** That is the next piece of work, and it is a change to
-the axis rather than to the curve.
+`readscope.loading` now reports
 
-Loading therefore remains a **warning, not a correction**, which is exactly
-what this document said before the attempt and is now said with two records
-behind it.
+    loading = max(0, jeffreys - null_floor(n_p, n_a, d)) / d
+
+The null floor is simulated per shape and cached. It is **distribution free**,
+because Jeffreys between fitted Gaussians depends on the moments only through
+products invariant to a shared affine map, which is why it can be tabulated
+once rather than measured per use.
+
+C-8, record `calibration/records/c8-dimensionless-loading.json`, measures
+whether that works. A fixed per-direction mismatch, constructed identically at
+five dimensions:
+
+| dimension | 16 | 32 | 64 | 128 | 256 |
+|---|---:|---:|---:|---:|---:|
+| normalised loading | 1.140 | 1.135 | 1.125 | 1.129 | 1.131 |
+| raw Jeffreys, nats | 18.3 | 36.5 | 72.4 | 145.1 | 290.7 |
+
+**Relative spread falls from 242 percent to 1.3 percent, a factor of 187**,
+across a sixteenfold range of dimension. Two independent samples of one law
+read exactly 0.000 at every dimension after the null correction, where raw
+Jeffreys reads 0.1 to 1.3. The axis is monotone in mismatch at every
+dimension.
+
+So the axis is fixed and comparable. **The correction is still not
+established.**
+
+### C-8's correction half passed vacuously, and F-1 predicted it
+
+D5 asked whether a correction fitted at dimension 32 transfers to 16, 64, 128
+and 256. It reported 95 percent of readings in domain and a mean absolute
+error of 0.0000.
+
+Every reading in that half was exactly 1.000. The fitted attenuation curve was
+therefore the identity, and an identity correction cannot have error. **The
+probe never degraded, so there was nothing for a correction to predict.**
+
+The cause is the degeneracy this programme already found and wrote down. F-1,
+from C-1: **probe loading cannot degrade subspace recovery when the
+consumer's read subspace does not vary across the input space.** The gated
+consumer's gradient always lies in the span of its three defining vectors, so
+graded at rank three, which is that whole span, the recovered subspace is the
+span wherever you probe. Using the exact least-squares estimator at
+`k/d = 1.25` removed the last source of variation.
+
+C-1b avoided this by accident, through a noisier estimator. C-8 did not, and
+the missing bar is one C-1b had and C-8 dropped: **before testing whether a
+correction predicts degradation, bar that degradation exists in the fit
+family.** C-1b's L3 separation bar was exactly that.
+
+Loading therefore remains a **warning, not a correction**. What has changed is
+that the axis is no longer the obstacle, so the next attempt can be about the
+correction rather than the units.
+
+---
+
+## Accuracy: everything measured so far
 
 ---
 

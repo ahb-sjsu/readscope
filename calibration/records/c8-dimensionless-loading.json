@@ -1,0 +1,488 @@
+{
+  "axis": [
+    {
+      "dim": 16,
+      "n": 3200,
+      "points": [
+        {
+          "loading": 0.00013323424268792388,
+          "mismatch": 1.0,
+          "raw_jeffreys": 0.09710737645569267
+        },
+        {
+          "loading": 0.10492225764195229,
+          "mismatch": 1.25,
+          "raw_jeffreys": 1.7737317508439225
+        },
+        {
+          "loading": 0.3569233315339224,
+          "mismatch": 1.5,
+          "raw_jeffreys": 5.805748933115445
+        },
+        {
+          "loading": 1.1399550911092466,
+          "mismatch": 2.0,
+          "raw_jeffreys": 18.334257086320633
+        },
+        {
+          "loading": 3.620798666779543,
+          "mismatch": 3.0,
+          "raw_jeffreys": 58.02775429704537
+        }
+      ]
+    },
+    {
+      "dim": 32,
+      "n": 6400,
+      "points": [
+        {
+          "loading": 0.0007618380549358414,
+          "mismatch": 1.0,
+          "raw_jeffreys": 0.1972816057362934
+        },
+        {
+          "loading": 0.10196759690693896,
+          "mismatch": 1.25,
+          "raw_jeffreys": 3.435865889000393
+        },
+        {
+          "loading": 0.3483619062518205,
+          "mismatch": 1.5,
+          "raw_jeffreys": 11.320483788036602
+        },
+        {
+          "loading": 1.1352084148926407,
+          "mismatch": 2.0,
+          "raw_jeffreys": 36.499572064542846
+        },
+        {
+          "loading": 3.599551588831539,
+          "mismatch": 3.0,
+          "raw_jeffreys": 115.3585536305876
+        }
+      ]
+    },
+    {
+      "dim": 64,
+      "n": 12800,
+      "points": [
+        {
+          "loading": 0.0,
+          "mismatch": 1.0,
+          "raw_jeffreys": 0.32676611832134483
+        },
+        {
+          "loading": 0.10271542678217507,
+          "mismatch": 1.25,
+          "raw_jeffreys": 6.9117216127428005
+        },
+        {
+          "loading": 0.3457174709954552,
+          "mismatch": 1.5,
+          "raw_jeffreys": 22.463852442392728
+        },
+        {
+          "loading": 1.1254087008701146,
+          "mismatch": 2.0,
+          "raw_jeffreys": 72.36409115437093
+        },
+        {
+          "loading": 3.559745792539884,
+          "mismatch": 3.0,
+          "raw_jeffreys": 228.16166502123616
+        }
+      ]
+    },
+    {
+      "dim": 128,
+      "n": 25600,
+      "points": [
+        {
+          "loading": 0.0,
+          "mismatch": 1.0,
+          "raw_jeffreys": 0.6556560699527267
+        },
+        {
+          "loading": 0.10103175120889221,
+          "mismatch": 1.25,
+          "raw_jeffreys": 13.592774891187773
+        },
+        {
+          "loading": 0.34962459954342057,
+          "mismatch": 1.5,
+          "raw_jeffreys": 45.412659478007406
+        },
+        {
+          "loading": 1.1287133142069994,
+          "mismatch": 2.0,
+          "raw_jeffreys": 145.1360149549455
+        },
+        {
+          "loading": 3.5738118942603077,
+          "mismatch": 3.0,
+          "raw_jeffreys": 458.10863320176895
+        }
+      ]
+    },
+    {
+      "dim": 256,
+      "n": 51200,
+      "points": [
+        {
+          "loading": 0.0,
+          "mismatch": 1.0,
+          "raw_jeffreys": 1.298041753910212
+        },
+        {
+          "loading": 0.10159304808961742,
+          "mismatch": 1.25,
+          "raw_jeffreys": 27.313407692598098
+        },
+        {
+          "loading": 0.3483590608327204,
+          "mismatch": 1.5,
+          "raw_jeffreys": 90.48550695483246
+        },
+        {
+          "loading": 1.1305553796992118,
+          "mismatch": 2.0,
+          "raw_jeffreys": 290.72776458465427
+        },
+        {
+          "loading": 3.5721641923770506,
+          "mismatch": 3.0,
+          "raw_jeffreys": 915.779620630181
+        }
+      ]
+    }
+  ],
+  "bars": {
+    "D1_floor_is_real": true,
+    "D2_null_reads_zero": true,
+    "D3_axis_transfers": true,
+    "D4_monotone": true,
+    "D5_correction_transfers": true,
+    "D6_census": true
+  },
+  "correction": {
+    "fit_points": [
+      {
+        "loading": 0.0,
+        "mismatch": 1.0,
+        "reading": 0.9999999999999999
+      },
+      {
+        "loading": 0.15098114627240827,
+        "mismatch": 1.25,
+        "reading": 0.9999999999999999
+      },
+      {
+        "loading": 0.5295711051804611,
+        "mismatch": 1.5,
+        "reading": 0.9999999999999999
+      },
+      {
+        "loading": 1.753157957860047,
+        "mismatch": 2.0,
+        "reading": 0.9999999999999999
+      },
+      {
+        "loading": 5.821273330242745,
+        "mismatch": 3.0,
+        "reading": 0.9999999999999999
+      }
+    ],
+    "fitted": {
+      "attenuation": [
+        0.9999999999999999,
+        0.9999999999999999,
+        0.9999999999999999,
+        0.9999999999999999,
+        0.9999999999999999
+      ],
+      "loadings": [
+        0.0,
+        0.15098114627240827,
+        0.5295711051804611,
+        1.753157957860047,
+        5.821273330242745
+      ],
+      "model": "reading ~ truth * g(loading), g piecewise linear in log1p(loading), clamped outside the fitted range",
+      "source": "c8 fit at dim 32"
+    },
+    "in_domain_fraction": 0.95,
+    "mae_in_domain": 3.389101864645215e-16,
+    "n_in_domain": 19,
+    "n_total": 20,
+    "transfer": [
+      {
+        "abs_error": 5.551115123125783e-16,
+        "dim": 16,
+        "in_domain": true,
+        "loading": 0.0,
+        "mismatch": 1.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000004
+      },
+      {
+        "abs_error": 0.0,
+        "dim": 16,
+        "in_domain": true,
+        "loading": 0.15098916550059252,
+        "mismatch": 1.25,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 0.9999999999999999
+      },
+      {
+        "abs_error": 3.3306690738754696e-16,
+        "dim": 16,
+        "in_domain": true,
+        "loading": 0.5402698846941355,
+        "mismatch": 1.5,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000002
+      },
+      {
+        "abs_error": 4.440892098500626e-16,
+        "dim": 16,
+        "in_domain": true,
+        "loading": 1.7560188797327714,
+        "mismatch": 2.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 0.9999999999999994
+      },
+      {
+        "abs_error": 4.440892098500626e-16,
+        "dim": 16,
+        "in_domain": true,
+        "loading": 5.782292314383474,
+        "mismatch": 3.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 0.9999999999999994
+      },
+      {
+        "abs_error": 3.3306690738754696e-16,
+        "dim": 64,
+        "in_domain": true,
+        "loading": 1.363104538959492e-05,
+        "mismatch": 1.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000002
+      },
+      {
+        "abs_error": 0.0,
+        "dim": 64,
+        "in_domain": true,
+        "loading": 0.15281224605738503,
+        "mismatch": 1.25,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 0.9999999999999999
+      },
+      {
+        "abs_error": 3.3306690738754696e-16,
+        "dim": 64,
+        "in_domain": true,
+        "loading": 0.5276397760525924,
+        "mismatch": 1.5,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000002
+      },
+      {
+        "abs_error": 0.0,
+        "dim": 64,
+        "in_domain": true,
+        "loading": 1.748392452822481,
+        "mismatch": 2.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 0.9999999999999999
+      },
+      {
+        "abs_error": 0.0,
+        "dim": 64,
+        "in_domain": true,
+        "loading": 5.802518770211499,
+        "mismatch": 3.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 0.9999999999999999
+      },
+      {
+        "abs_error": 0.0,
+        "dim": 128,
+        "in_domain": true,
+        "loading": 1.4925869893179892e-05,
+        "mismatch": 1.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 0.9999999999999999
+      },
+      {
+        "abs_error": 3.3306690738754696e-16,
+        "dim": 128,
+        "in_domain": true,
+        "loading": 0.15392736877231758,
+        "mismatch": 1.25,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000002
+      },
+      {
+        "abs_error": 5.551115123125783e-16,
+        "dim": 128,
+        "in_domain": true,
+        "loading": 0.5321939319669338,
+        "mismatch": 1.5,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000004
+      },
+      {
+        "abs_error": 5.551115123125783e-16,
+        "dim": 128,
+        "in_domain": true,
+        "loading": 1.7635005154120338,
+        "mismatch": 2.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000004
+      },
+      {
+        "abs_error": 5.551115123125783e-16,
+        "dim": 128,
+        "in_domain": true,
+        "loading": 5.815333704039624,
+        "mismatch": 3.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000004
+      },
+      {
+        "abs_error": 3.3306690738754696e-16,
+        "dim": 256,
+        "in_domain": true,
+        "loading": 5.4137347536053e-06,
+        "mismatch": 1.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 0.9999999999999996
+      },
+      {
+        "abs_error": 7.771561172376096e-16,
+        "dim": 256,
+        "in_domain": true,
+        "loading": 0.15351857733006552,
+        "mismatch": 1.25,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000007
+      },
+      {
+        "abs_error": 3.3306690738754696e-16,
+        "dim": 256,
+        "in_domain": true,
+        "loading": 0.5310022427027865,
+        "mismatch": 1.5,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000002
+      },
+      {
+        "abs_error": 5.551115123125783e-16,
+        "dim": 256,
+        "in_domain": true,
+        "loading": 1.7654410937092149,
+        "mismatch": 2.0,
+        "predicted_attenuation": 0.9999999999999999,
+        "reading": 1.0000000000000004
+      },
+      {
+        "dim": 256,
+        "in_domain": false,
+        "loading": 5.82871038908102,
+        "mismatch": 3.0,
+        "reading": 0.9999999999999999
+      }
+    ]
+  },
+  "declared": {
+    "axis": "max(0, jeffreys - null_floor(n_p, n_a, d)) / d",
+    "axis_spread_bar": 0.2,
+    "correction_mae_bar": 0.1,
+    "dims": [
+      16,
+      32,
+      64,
+      128,
+      256
+    ],
+    "fit_dim": 32,
+    "mismatches": [
+      1.0,
+      1.25,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "null_zero_bar": 0.05,
+    "raw_spread_floor": 1.0,
+    "samples_per_dim": 200,
+    "seed": 0
+  },
+  "null": [
+    {
+      "dim": 16,
+      "floor": 0.09529106981975899,
+      "floor_thin_sample": 18.962994003740313,
+      "n": 3200,
+      "null_raw_jeffreys": 0.07379864629222332,
+      "null_reading": 0.0
+    },
+    {
+      "dim": 32,
+      "floor": 0.17263743470370707,
+      "floor_thin_sample": 37.3236104560422,
+      "n": 6400,
+      "null_raw_jeffreys": 0.16676578642763573,
+      "null_reading": 0.0
+    },
+    {
+      "dim": 64,
+      "floor": 0.3399986684387084,
+      "floor_thin_sample": 70.16981731089709,
+      "n": 12800,
+      "null_raw_jeffreys": 0.3333267211748421,
+      "null_reading": 0.0
+    },
+    {
+      "dim": 128,
+      "floor": 0.6607923995983391,
+      "floor_thin_sample": 132.96129514824298,
+      "n": 25600,
+      "null_raw_jeffreys": 0.653729929101388,
+      "null_reading": 0.0
+    },
+    {
+      "dim": 256,
+      "floor": 1.3058196221028098,
+      "floor_thin_sample": 260.4603916960667,
+      "n": 51200,
+      "null_raw_jeffreys": 1.3034733971514072,
+      "null_reading": 0.0
+    }
+  ],
+  "runtime": {
+    "code_commit": "unknown",
+    "generated_utc": "2026-08-08T01:49:02.605696+00:00",
+    "hostname": "atlas",
+    "numpy": "2.5.1",
+    "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]"
+  },
+  "schema": "readscope-c8-dimensionless-loading-v1",
+  "summary": {
+    "axis_relative_spread_at_mismatch_2": 0.012850529276478404,
+    "raw_relative_spread_at_mismatch_2": 2.418860202828558
+  },
+  "verdict": {
+    "computed_from": [
+      "D1_floor_is_real",
+      "D2_null_reads_zero",
+      "D3_axis_transfers",
+      "D4_monotone",
+      "D5_correction_transfers",
+      "D6_census"
+    ],
+    "value": "PASS"
+  }
+}

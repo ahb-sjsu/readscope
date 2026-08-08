@@ -170,10 +170,16 @@ the activation distribution the consumer meets in service, so the recovered
 operator is the read operator averaged over the wrong measure.
 
 That is not a flaw that invalidates the instrument. It is a characterizable
-effect, and the first curve is measured. **It is not yet a correction** — two
-attempts are recorded in `SPEC.md`, the second of which passed all its bars
-for a spurious reason and is written up as the most dangerous failure in the
-programme.
+effect, and the first curve is measured.
+
+The axis is now **dimensionless**: `max(0, jeffreys - null_floor) / dim`,
+where the null floor is what the estimator reads with no mismatch at all. A
+fixed mismatch reads within **1.3 percent** across a sixteenfold range of
+dimension, where raw Jeffreys spreads **242 percent**.
+
+**It is still not a correction.** Three attempts are recorded in `SPEC.md`,
+two of which passed their bars for spurious reasons and are written up as
+such.
 
 | Probe loading, Jeffreys nats | Overlap |
 |---:|---:|

@@ -22,6 +22,7 @@ from readscope import (
     fit_loading_correction,
     interpolate_distribution,
     jacobian_probe,
+    loading_null_floor,
     probe_loading,
     retrieval_margin_gradient,
     routing_margins,
@@ -796,3 +797,72 @@ def test_extrapolation_can_be_forced_but_is_the_documented_failure():
 def test_in_domain_correction_still_works():
     c = fit_loading_correction([1.0, 90.0], [1.0, 0.44])
     assert c.correct(0.44, 90.0) == pytest.approx(1.0, abs=1e-9)
+
+
+# --------------------------------------------- the dimensionless axis
+
+
+def test_null_floor_is_positive_and_grows_as_samples_thin():
+    """Two samples of one law still read a positive divergence."""
+    thick = loading_null_floor(4000, 4000, 8, trials=8)
+    thin = loading_null_floor(200, 200, 8, trials=8)
+    assert thick > 0.0
+    assert thin > thick
+
+
+def test_null_floor_is_distribution_free_in_scale():
+    """It depends on shape only, which is why it can be cached."""
+    a = loading_null_floor(500, 500, 16, trials=8)
+    b = loading_null_floor(500, 500, 16, trials=8)
+    assert a == b
+
+
+def test_identical_distributions_read_zero_loading():
+    rng = np.random.default_rng(140)
+    X = rng.standard_normal((3000, 8))
+    assert probe_loading(X, X).loading == pytest.approx(0.0)
+
+
+def test_independent_samples_of_one_law_read_near_zero_loading():
+    """The null correction is what makes this true; raw Jeffreys is not 0."""
+    rng = np.random.default_rng(141)
+    a = rng.standard_normal((3000, 8))
+    b = rng.standard_normal((3000, 8))
+    r = probe_loading(a, b)
+    assert r.jeffreys > 0.0
+    assert r.loading < 0.02
+
+
+def test_loading_is_comparable_across_dimensions():
+    """The whole point. A per-direction mismatch of the same size must read
+    the same number at any dimension, which raw Jeffreys does not."""
+    readings, raws = [], []
+    for d in (8, 16, 32, 64):
+        rng = np.random.default_rng(200 + d)
+        n = 200 * d
+        a = rng.standard_normal((n, d))
+        b = rng.standard_normal((n, d)) * 2.0
+        r = probe_loading(a, b)
+        readings.append(r.loading)
+        raws.append(r.jeffreys)
+
+    # comparative, not absolute: "dimensionless" means the normalised
+    # spread is far smaller than the raw one, and a fixed tolerance on the
+    # normalised value would be a threshold guess rather than the property
+    def rel_spread(v):
+        return (max(v) - min(v)) / max(abs(np.mean(v)), 1e-12)
+
+    assert rel_spread(raws) > 1.0
+    assert rel_spread(readings) < 0.2
+    assert rel_spread(readings) < rel_spread(raws) / 5.0
+
+
+def test_loading_is_monotone_in_mismatch():
+    rng = np.random.default_rng(142)
+    d, n = 16, 4000
+    a = rng.standard_normal((n, d))
+    out = [
+        probe_loading(rng.standard_normal((n, d)) * s, a).loading
+        for s in (1.2, 2.0, 4.0)
+    ]
+    assert out[0] < out[1] < out[2]
