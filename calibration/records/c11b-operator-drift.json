@@ -1,0 +1,598 @@
+{
+  "bars": {
+    "P0_operator_moves": true,
+    "P1_drift_accumulates": true,
+    "P2_early_misprices_late": true,
+    "P3_union_is_a_fix": true,
+    "P4_anti_vacuity": false,
+    "P5_census": true
+  },
+  "declared": {
+    "budget_bits_per_dim": 3.0,
+    "entropy_bar": 1.0,
+    "graded_rank": 16,
+    "misprice_bar": 0.05,
+    "misprice_denominator": "uniform allocation cost, which cannot collapse the way the late-plan cost did in C-11",
+    "moves_bar": 0.9,
+    "n_windows": 4,
+    "probe_keys": 24,
+    "seed": 0,
+    "windowing": "by position, pooling the query group; the stored array is head-major so a flat slice would cut by head"
+  },
+  "provenance": "post hoc hypothesis from turboquant-pro's unexplained long-generation negative; P0 declared first and can void the sweep",
+  "rows": [
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.2258802221605761,
+        0.22651178554188814,
+        0.22440291580876412
+      ],
+      "cost_early_plan": 0.5933958906886476,
+      "cost_late_plan": 0.006295775331380439,
+      "cost_uniform": 0.18230023700065465,
+      "cost_union_plan": 0.036941247538183536,
+      "drift": 0.7755970841912356,
+      "effective_rank_first": 3.620485360531546,
+      "effective_rank_last": 3.0194502202535274,
+      "entropies": [
+        3.7765792755361605,
+        3.682859206413304,
+        3.5780541280152653,
+        4.473496578534731
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 0,
+      "layer": 8,
+      "misprice_fraction_of_uniform": 3.2205120795051894,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.16272064781714426,
+        0.1626881032380298,
+        0.15923484265302035
+      ],
+      "cost_early_plan": 0.057516830027253954,
+      "cost_late_plan": 0.0003586808199009799,
+      "cost_uniform": 0.027772411432268534,
+      "cost_union_plan": 0.0016469751899578617,
+      "drift": 0.8407651573469794,
+      "effective_rank_first": 1.5298693338722262,
+      "effective_rank_last": 1.6910473598974947,
+      "entropies": [
+        4.526397095600775,
+        4.459113432717215,
+        3.947046496017353,
+        4.3463039167200765
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 1,
+      "layer": 8,
+      "misprice_fraction_of_uniform": 2.0580909708453117,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0,
+        0.1363530480400719,
+        0.12845479105476879,
+        0.1743186814597779
+      ],
+      "cost_early_plan": 0.2832987093560513,
+      "cost_late_plan": 0.00021332006349890237,
+      "cost_uniform": 0.02955036113195255,
+      "cost_union_plan": 0.0011292660360392275,
+      "drift": 0.8256813185402221,
+      "effective_rank_first": 2.219370329393416,
+      "effective_rank_last": 2.3720451920280077,
+      "entropies": [
+        2.4869016349641413,
+        2.926800781168574,
+        2.693853786110636,
+        4.471565449455241
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 2,
+      "layer": 8,
+      "misprice_fraction_of_uniform": 9.579760735528021,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0,
+        0.12028455832108571,
+        0.14617667189648031,
+        0.1762596803369433
+      ],
+      "cost_early_plan": 0.13642738822254613,
+      "cost_late_plan": 0.00036493674576899214,
+      "cost_uniform": 0.037094130413964095,
+      "cost_union_plan": 0.0017549477236207013,
+      "drift": 0.8237403196630567,
+      "effective_rank_first": 2.2750184211486544,
+      "effective_rank_last": 2.175029238733798,
+      "entropies": [
+        3.9221291475998985,
+        4.383619998787055,
+        3.9834583327693798,
+        4.22030264573498
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 3,
+      "layer": 8,
+      "misprice_fraction_of_uniform": 3.6680318411118864,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0,
+        0.18382352971359467,
+        0.15502460350734162,
+        0.1360105215353776
+      ],
+      "cost_early_plan": 0.0355649791108297,
+      "cost_late_plan": 0.00020084270568966733,
+      "cost_uniform": 0.013822846425443609,
+      "cost_union_plan": 0.0008470345810514973,
+      "drift": 0.8639894784646224,
+      "effective_rank_first": 2.6967928774617693,
+      "effective_rank_last": 2.0749392629461343,
+      "entropies": [
+        6.047692507680177,
+        5.762967638291697,
+        5.252508325567861,
+        4.965981303823742
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 4,
+      "layer": 8,
+      "misprice_fraction_of_uniform": 2.558383079482496,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0,
+        0.20813941099982294,
+        0.19824444775263636,
+        0.14577788036306089
+      ],
+      "cost_early_plan": 0.2488271564277968,
+      "cost_late_plan": 0.0005939135674375597,
+      "cost_uniform": 0.04613799788945998,
+      "cost_union_plan": 0.0023044087736130104,
+      "drift": 0.8542221196369391,
+      "effective_rank_first": 1.8624888120125873,
+      "effective_rank_last": 1.8324328590227268,
+      "entropies": [
+        4.0574525691397,
+        4.1149845947302985,
+        3.9189424646362037,
+        3.7372596932831064
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 5,
+      "layer": 8,
+      "misprice_fraction_of_uniform": 5.38023438847716,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0,
+        0.20753742319527405,
+        0.15930251942035717,
+        0.20635924511151676
+      ],
+      "cost_early_plan": 0.08486253305676547,
+      "cost_late_plan": 0.000379897405350953,
+      "cost_uniform": 0.0250335452498268,
+      "cost_union_plan": 0.0014810710789090503,
+      "drift": 0.7936407548884832,
+      "effective_rank_first": 1.8739724012203973,
+      "effective_rank_last": 1.9451121755536331,
+      "entropies": [
+        5.444861049265059,
+        5.564216558046935,
+        4.582636681930296,
+        4.847714224896574
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 6,
+      "layer": 8,
+      "misprice_fraction_of_uniform": 3.374777116397408,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.14540302943130604,
+        0.09771306194913712,
+        0.17448078048863933
+      ],
+      "cost_early_plan": 0.09511888979477393,
+      "cost_late_plan": 0.0006030970415256097,
+      "cost_uniform": 0.03172365157618661,
+      "cost_union_plan": 0.002878629055949285,
+      "drift": 0.8255192195113611,
+      "effective_rank_first": 2.384147548731409,
+      "effective_rank_last": 1.993456624849071,
+      "entropies": [
+        5.1069347697291025,
+        5.443252404570591,
+        4.821204098234108,
+        4.8457955089070595
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 7,
+      "layer": 8,
+      "misprice_fraction_of_uniform": 2.979347838512912,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.13676577305306106,
+        0.11236318337671894,
+        0.12013612927936894
+      ],
+      "cost_early_plan": 0.017865113398782568,
+      "cost_late_plan": 2.1425078133486117e-05,
+      "cost_uniform": 0.004273151199319641,
+      "cost_union_plan": 0.00020985395959507102,
+      "drift": 0.8798638707206309,
+      "effective_rank_first": 1.5627156612640714,
+      "effective_rank_last": 1.4206248954050358,
+      "entropies": [
+        2.065321409367301,
+        1.1717832700834703,
+        1.0165375251632218,
+        1.1160379391665747
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 0,
+      "layer": 16,
+      "misprice_fraction_of_uniform": 4.175768066313708,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.16450948209084806,
+        0.1280180868291647,
+        0.13168320169788772
+      ],
+      "cost_early_plan": 0.10975232129054259,
+      "cost_late_plan": 1.6087093714902822e-05,
+      "cost_uniform": 0.018933672369985242,
+      "cost_union_plan": 0.000210968779887085,
+      "drift": 0.8683167983021127,
+      "effective_rank_first": 1.9863973290271049,
+      "effective_rank_last": 1.9135660051442416,
+      "entropies": [
+        1.4277017158930492,
+        1.4380132736788211,
+        1.2505391460050972,
+        0.9465464935904243
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 1,
+      "layer": 16,
+      "misprice_fraction_of_uniform": 5.795824077466764,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.15897821066657233,
+        0.1467762338999869,
+        0.20050473655285334
+      ],
+      "cost_early_plan": 0.03826830655280278,
+      "cost_late_plan": 0.0001653735543460112,
+      "cost_uniform": 0.012281149840352758,
+      "cost_union_plan": 0.0009831022907207541,
+      "drift": 0.799495263447147,
+      "effective_rank_first": 2.2337567617238228,
+      "effective_rank_last": 1.9955537061456905,
+      "entropies": [
+        4.964687963900248,
+        5.395744480237756,
+        4.4430542791135865,
+        3.9551348807923103
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 2,
+      "layer": 16,
+      "misprice_fraction_of_uniform": 3.102554198407396,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.19724297112934666,
+        0.2072689090711107,
+        0.18240519690066467
+      ],
+      "cost_early_plan": 0.7627787339791106,
+      "cost_late_plan": 0.006646529761170581,
+      "cost_uniform": 0.33054454205403716,
+      "cost_union_plan": 0.022192825620859735,
+      "drift": 0.8175948030993351,
+      "effective_rank_first": 1.7681182086062897,
+      "effective_rank_last": 1.6378095557088388,
+      "entropies": [
+        4.898749700439955,
+        4.528383796715119,
+        3.953467414327518,
+        1.7322196138879686
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 3,
+      "layer": 16,
+      "misprice_fraction_of_uniform": 2.2875349855098444,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.21096658957108222,
+        0.20472555702431544,
+        0.20833522585893244
+      ],
+      "cost_early_plan": 0.02118407820973812,
+      "cost_late_plan": 2.0376444816288796e-05,
+      "cost_uniform": 0.005766678564864016,
+      "cost_union_plan": 0.0002197169396191938,
+      "drift": 0.7916647741410681,
+      "effective_rank_first": 1.6431465801036382,
+      "effective_rank_last": 1.4095668894054616,
+      "entropies": [
+        2.5081659120315187,
+        2.5118843360233893,
+        2.022392819794663,
+        1.2402088638939417
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 4,
+      "layer": 16,
+      "misprice_fraction_of_uniform": 3.6699985142003304,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0,
+        0.2702375681673169,
+        0.21689545697427848,
+        0.23123967578553387
+      ],
+      "cost_early_plan": 0.0197039311344575,
+      "cost_late_plan": 7.76925506726236e-05,
+      "cost_uniform": 0.005156220493768578,
+      "cost_union_plan": 0.0003864837116673909,
+      "drift": 0.7687603242144662,
+      "effective_rank_first": 3.067919712357822,
+      "effective_rank_last": 2.1087981718493283,
+      "entropies": [
+        4.145405865913529,
+        5.159606588382868,
+        3.310685363299867,
+        2.9304651579624945
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 5,
+      "layer": 16,
+      "misprice_fraction_of_uniform": 3.806322597628182,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.1415990367270368,
+        0.1472965472279339,
+        0.12355276084443204
+      ],
+      "cost_early_plan": 0.06071897822145003,
+      "cost_late_plan": 8.230906884415051e-05,
+      "cost_uniform": 0.017821146591563496,
+      "cost_union_plan": 0.0012348502564825921,
+      "drift": 0.8764472391555678,
+      "effective_rank_first": 1.8375820501144522,
+      "effective_rank_last": 1.566474853520514,
+      "entropies": [
+        4.667231251097784,
+        4.824218171582025,
+        4.394934239595322,
+        3.902119168837503
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 6,
+      "layer": 16,
+      "misprice_fraction_of_uniform": 3.402512225633742,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0,
+        0.15870918692641098,
+        0.13672661082547075,
+        0.17034573056197466
+      ],
+      "cost_early_plan": 0.08222300669164895,
+      "cost_late_plan": 0.0002490961070369302,
+      "cost_uniform": 0.02952050191008531,
+      "cost_union_plan": 0.0012641076138444891,
+      "drift": 0.8296542694380253,
+      "effective_rank_first": 2.053036063244975,
+      "effective_rank_last": 1.7448178642624512,
+      "entropies": [
+        2.713558356140796,
+        2.888466408647159,
+        2.459720337640836,
+        2.59102724257517
+      ],
+      "group_size": 3,
+      "head_dim": 128,
+      "kv_head": 7,
+      "layer": 16,
+      "misprice_fraction_of_uniform": 2.7768467770057343,
+      "ranks": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    }
+  ],
+  "runtime": {
+    "code_commit": "unknown",
+    "generated_utc": "2026-08-08T06:30:38.438002+00:00",
+    "hostname": "atlas",
+    "numpy": "2.5.1",
+    "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]"
+  },
+  "schema": "readscope-c11b-operator-drift-v1",
+  "skipped": [],
+  "summary": {
+    "median_agreement_last_window": 0.17439973097420863,
+    "median_misprice_fraction_of_uniform": 3.388644671015575,
+    "n_cells": 16,
+    "total_inversions": 14,
+    "union_helps_rate": 1.0
+  },
+  "supersedes": "calibration/records/c11-operator-drift.json",
+  "verdict": {
+    "computed_from": [
+      "P0_operator_moves",
+      "P1_drift_accumulates",
+      "P2_early_misprices_late",
+      "P3_union_is_a_fix",
+      "P4_anti_vacuity",
+      "P5_census"
+    ],
+    "value": "FAIL"
+  }
+}

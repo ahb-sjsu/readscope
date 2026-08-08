@@ -595,3 +595,72 @@ magnitude and the mechanism, not the digit.
 The datasheet lesson is now quantified rather than qualitative: **two
 reasonable references for one attention head differ by about 0.3 in overlap.**
 A recovery number without its reference named is not interpretable.
+
+
+### F-24, from C-11: read operators drift along the sequence, and the null was half of it
+
+The hypothesis was post hoc, from turboquant-pro's unexplained negative that
+all 4-bit KV quantization degrades on very-long-generation tasks. A key
+written at position `s` is read by every query after it, and a head's read
+operator is spanned by its queries, so if the query distribution moves then a
+codebook fitted at calibration is applied to a consumer that has since moved.
+
+It took three attempts, and each failure was instrument rather than model.
+
+**C-11 was invalid.** 24 queries split four ways gives six per window, but the
+sweep graded at rank eight, so every agreement number carried two arbitrary
+null directions. The mispricing denominator collapsed to 1e-20 and the ratio
+came back as 5e19 percent. P4 caught it before anything was reported.
+
+**C-11b fixed the windows and was still wrong twice.** It graded at rank 16,
+carried over from the source program's `R_SUB` without checking that C-5 had
+already measured these operators at an effective rank near 1.9 — a rank sweep
+showed agreement of 0.671, 0.374, 0.256, 0.201, 0.174 at ranks 1 to 16, so
+grading at 16 overstated the effect fourfold. And reading the storage layout
+found a defect nothing else would have: the source-matched query set is
+head-major, so slicing it flat **cuts by head, not by position**. That sweep
+would have measured head-to-head variation and called it drift.
+
+**C-11c added the control that decides it.** Two disjoint samples of the same
+distribution do not produce identical operators either, so every quantity is
+measured twice: once on windows cut by position, once on windows of identical
+size drawn at random, averaged over five draws. **The null is large.** At the
+graded rank of 2, random splits agree at 0.572, not 1.0, so more than half of
+C-11b's apparent drift was finite-sample error in the operator estimate.
+
+What survives the null is real:
+
+| graded rank | 1 | 2 | 4 | 8 | 16 |
+|---|---:|---:|---:|---:|---:|
+| positional | 0.667 | 0.385 | 0.252 | 0.193 | 0.181 |
+| random null | 0.933 | 0.572 | 0.470 | 0.405 | 0.414 |
+| **gap** | **+0.266** | **+0.187** | **+0.219** | **+0.213** | **+0.233** |
+
+The cleanest number is at rank one, where the tail cannot contribute and the
+null is nearly perfect at 0.933: the **dominant** read direction still moves
+with position, agreeing at 0.667. Fourteen of sixteen cells show a positive
+gap.
+
+**The economic consequence.** Allocating bits against the early operator costs
+the late consumer **225 percent of a uniform split's cost more** than
+allocating against the late one, over and above what random resampling costs.
+Allocating against the whole-sequence operator instead is better on **100
+percent of cells**.
+
+So the long-generation negative has a mechanism candidate: a calibration-time
+codebook is priced for a consumer that has moved by the time it is read. The
+repair the data supports is to allocate against the union operator rather than
+an early one.
+
+**Scope, plainly.** Sixteen head-cells, two layers, one 3B model, 192
+positions. This is a mechanism candidate on a short sequence, not a
+demonstration on the long-generation regime the negative actually concerns,
+and nothing here has been run against a real degradation curve.
+
+### F-25, the fifth universal, and the rule holds
+
+C-11b failed P4 because one cell of sixteen had a window at 0.9465 bits
+against a 1.0 entropy bar. Attention entropy is a quantity real heads vary by
+design, so the bar belongs on the aggregate. C-11c bars the median. That is
+the fifth time in this programme a per-cell universal was declared where a
+distribution belonged, and the rule from F-16 has now paid for itself twice.

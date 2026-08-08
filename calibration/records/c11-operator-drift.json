@@ -1,0 +1,1635 @@
+{
+  "bars": {
+    "P0_operator_moves": true,
+    "P1_drift_monotone": true,
+    "P2_early_misprices_late": true,
+    "P3_union_is_a_fix": true,
+    "P4_anti_vacuity": false,
+    "P5_census": true
+  },
+  "declared": {
+    "budget_bits_per_dim": 3.0,
+    "entropy_bar": 1.0,
+    "graded_rank": 8,
+    "misprice_bar": 0.05,
+    "moves_bar": 0.9,
+    "n_windows": 4,
+    "probe_keys": 24,
+    "seed": 0
+  },
+  "provenance": "post hoc hypothesis from turboquant-pro's unexplained long-generation negative; P0 declared first and can void the sweep",
+  "rows": [
+    {
+      "agreement_with_first_window": [
+        0.9999999999999996,
+        0.11983279113371423,
+        0.09294163665173866,
+        0.10648253529664453
+      ],
+      "cost_early_plan": 0.38096479895218743,
+      "cost_late_plan": 8.090583156441159e-19,
+      "cost_union_plan": 2.0683104601913165e-10,
+      "drift": 0.893517464703355,
+      "effective_rank_first": 1.821740423582766,
+      "effective_rank_last": 1.8679790682612079,
+      "entropies": [
+        2.091975730659179,
+        2.015527687594589,
+        2.0697044155909774,
+        2.2440301151070696
+      ],
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 7,
+      "misprice_fraction": 4.708743382099593e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.10532495436549301,
+        0.1989157868634091,
+        0.17073686406318195
+      ],
+      "cost_early_plan": 0.15701808534860695,
+      "cost_late_plan": 6.028315117579772e-20,
+      "cost_union_plan": 1.160590919369032e-12,
+      "drift": 0.8292631359368183,
+      "effective_rank_first": 1.0191948162913174,
+      "effective_rank_last": 1.0169940116981193,
+      "entropies": [
+        2.332508190499761,
+        2.36186171051857,
+        2.073526691382008,
+        2.0949206839911945
+      ],
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 7,
+      "misprice_fraction": 2.6046761372959887e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.17920210790316635,
+        0.1679374301691394,
+        0.18200054865133244
+      ],
+      "cost_early_plan": 0.009812769592053997,
+      "cost_late_plan": 1.835089356370594e-20,
+      "cost_union_plan": 8.992834930816256e-13,
+      "drift": 0.8179994513486678,
+      "effective_rank_first": 1.4491023757516484,
+      "effective_rank_last": 1.6438182530051495,
+      "entropies": [
+        3.1764238909764217,
+        2.7890784152837917,
+        3.896289223887167,
+        4.010033208262312
+      ],
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 7,
+      "misprice_fraction": 5.347297971070745e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.1510050477743125,
+        0.11759914631230736,
+        0.11643357382171579
+      ],
+      "cost_early_plan": 0.0019287705055784235,
+      "cost_late_plan": 2.2762195845124937e-21,
+      "cost_union_plan": 5.090762808137995e-13,
+      "drift": 0.8835664261782844,
+      "effective_rank_first": 1.372901872211258,
+      "effective_rank_last": 1.2178440833139663,
+      "entropies": [
+        3.883080994451282,
+        4.282457584203511,
+        4.527094990864281,
+        3.889955997123412
+      ],
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 7,
+      "misprice_fraction": 8.473569591887662e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.20104604160247389,
+        0.12479256370491099,
+        0.13569742817291472
+      ],
+      "cost_early_plan": 0.18794073109425705,
+      "cost_late_plan": 4.97535056019102e-19,
+      "cost_union_plan": 1.9810322131573107e-12,
+      "drift": 0.8643025718270857,
+      "effective_rank_first": 1.3450729013960265,
+      "effective_rank_last": 1.257893878778384,
+      "entropies": [
+        3.326572985801299,
+        3.6046487354737193,
+        3.2240665106163044,
+        2.2073751077951043
+      ],
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 14,
+      "misprice_fraction": 3.77743696289496e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.21885929549541985,
+        0.171546966875853,
+        0.1740284534230175
+      ],
+      "cost_early_plan": 0.013340287798636805,
+      "cost_late_plan": 3.055398218068862e-20,
+      "cost_union_plan": 2.1738136843458712e-13,
+      "drift": 0.8259715465769827,
+      "effective_rank_first": 1.3035573206546383,
+      "effective_rank_last": 1.013963023669028,
+      "entropies": [
+        1.7409562337104463,
+        1.6863522991062643,
+        1.0588012580975616,
+        1.1253638553732763
+      ],
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 14,
+      "misprice_fraction": 4.3661371927710355e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.23643240605575191,
+        0.19030339966496276,
+        0.17158926980923495
+      ],
+      "cost_early_plan": 0.07438854924961037,
+      "cost_late_plan": 1.206568785470826e-19,
+      "cost_union_plan": 1.2133762528817483e-13,
+      "drift": 0.8284107301907648,
+      "effective_rank_first": 1.0267356822350815,
+      "effective_rank_last": 1.0335469019509773,
+      "entropies": [
+        1.8441057613232428,
+        1.0560617411237228,
+        1.300652104635986,
+        1.456492419021
+      ],
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 14,
+      "misprice_fraction": 6.165297009617445e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.1606871779191493,
+        0.11570679251896282,
+        0.11476014642275624
+      ],
+      "cost_early_plan": 0.043068868082449356,
+      "cost_late_plan": 5.0996031247004585e-20,
+      "cost_union_plan": 2.277350555834176e-12,
+      "drift": 0.8852398535772436,
+      "effective_rank_first": 1.3567789289612948,
+      "effective_rank_last": 1.1684381882675767,
+      "entropies": [
+        5.910328434151361,
+        5.129193978939238,
+        4.837915952906521,
+        4.347115734459724
+      ],
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 14,
+      "misprice_fraction": 8.445533314904607e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.11659993765077221,
+        0.14416277357197776,
+        0.12777174828217466
+      ],
+      "cost_early_plan": 1.5122956009498865e-05,
+      "cost_late_plan": 1.933679873321717e-23,
+      "cost_union_plan": 6.196555156274877e-14,
+      "drift": 0.8722282517178256,
+      "effective_rank_first": 1.2013341669813624,
+      "effective_rank_last": 1.481543860466732,
+      "entropies": [
+        3.419600321603672,
+        2.002155052913212,
+        1.687994180898666,
+        0.6479033544533881
+      ],
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 21,
+      "misprice_fraction": 7.820816784693696e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.1490209308622051,
+        0.23379102014473804,
+        0.12271896651717462
+      ],
+      "cost_early_plan": 0.00018530816904938622,
+      "cost_late_plan": 3.9437616034123905e-22,
+      "cost_union_plan": 7.430563306474975e-14,
+      "drift": 0.8772810334828256,
+      "effective_rank_first": 1.4773859918321077,
+      "effective_rank_last": 1.3097777200681546,
+      "entropies": [
+        3.450890620844461,
+        2.1362956256629007,
+        1.5308769795067225,
+        1.474905152790734
+      ],
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 21,
+      "misprice_fraction": 4.698767006835452e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.16889770736880663,
+        0.1404863019313519,
+        0.15785943970855618
+      ],
+      "cost_early_plan": 0.0001521744187415977,
+      "cost_late_plan": 3.8035523710348714e-22,
+      "cost_union_plan": 1.2430065927363888e-13,
+      "drift": 0.8421405602914436,
+      "effective_rank_first": 1.2952092074259929,
+      "effective_rank_last": 1.4026516141577938,
+      "entropies": [
+        4.817494820241929,
+        3.5514992692158924,
+        3.464714147067557,
+        1.0838198075452734
+      ],
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 21,
+      "misprice_fraction": 4.0008498344981126e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.09933427301271941,
+        0.11769242464969366,
+        0.08430914646578035
+      ],
+      "cost_early_plan": 0.009872260882154565,
+      "cost_late_plan": 5.43896039118578e-20,
+      "cost_union_plan": 7.453430335799547e-13,
+      "drift": 0.9156908535342201,
+      "effective_rank_first": 1.5268525754524636,
+      "effective_rank_last": 1.1606736259656845,
+      "entropies": [
+        0.48119278209589167,
+        0.22382698157135933,
+        0.3829558071538657,
+        0.3029326645120346
+      ],
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 21,
+      "misprice_fraction": 1.8151007126570112e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "llama32-3b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000007,
+        0.15765927969044338,
+        0.1495727290643462,
+        0.1428743293989284
+      ],
+      "cost_early_plan": 0.0027542872772062096,
+      "cost_late_plan": 1.2406680611436988e-20,
+      "cost_union_plan": 7.101190224796417e-13,
+      "drift": 0.8571256706010723,
+      "effective_rank_first": 1.2964884855833385,
+      "effective_rank_last": 1.169219660986555,
+      "entropies": [
+        5.582899767883435,
+        5.315428440663387,
+        5.047455087535367,
+        4.330780920373782
+      ],
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 7,
+      "misprice_fraction": 2.220003370335168e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.15061363830761407,
+        0.17232977992219425,
+        0.15091364376360655
+      ],
+      "cost_early_plan": 0.0047709714975395275,
+      "cost_late_plan": 8.361740506124294e-21,
+      "cost_union_plan": 2.305923748174954e-12,
+      "drift": 0.8490863562363937,
+      "effective_rank_first": 1.1170210517401498,
+      "effective_rank_last": 1.245154320378134,
+      "entropies": [
+        4.11770753531878,
+        4.753395206113779,
+        4.15860287559032,
+        4.398181367411592
+      ],
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 7,
+      "misprice_fraction": 5.705715806470171e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.15437528765005745,
+        0.16596804213420896,
+        0.10750338775768657
+      ],
+      "cost_early_plan": 0.005890245542922055,
+      "cost_late_plan": 2.0992229886078348e-20,
+      "cost_union_plan": 2.283855744889353e-12,
+      "drift": 0.8924966122423137,
+      "effective_rank_first": 1.425673662582039,
+      "effective_rank_last": 1.3053538086091798,
+      "entropies": [
+        5.811644942668655,
+        5.364324583430312,
+        5.621028167587793,
+        5.646973462028578
+      ],
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 7,
+      "misprice_fraction": 2.8059170344872963e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.2562671892331615,
+        0.2659661368967335,
+        0.27163525499272756
+      ],
+      "cost_early_plan": 0.054438373824624874,
+      "cost_late_plan": 1.029041710222551e-19,
+      "cost_union_plan": 7.810094122742133e-13,
+      "drift": 0.7283647450072727,
+      "effective_rank_first": 1.5534923782595973,
+      "effective_rank_last": 1.4745297087835558,
+      "entropies": [
+        2.745300024815078,
+        2.4658580668658248,
+        2.4252782479855948,
+        2.089316009174367
+      ],
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 7,
+      "misprice_fraction": 5.2902009008800506e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.13857175616232373,
+        0.131966473627184,
+        0.11844471644886218
+      ],
+      "cost_early_plan": 0.10008974002125567,
+      "cost_late_plan": 2.7350079031496117e-19,
+      "cost_union_plan": 3.88391618542146e-13,
+      "drift": 0.881555283551138,
+      "effective_rank_first": 1.041798968134976,
+      "effective_rank_last": 1.0394330043986635,
+      "entropies": [
+        1.7850672932328688,
+        2.2898784633675167,
+        1.7890607812828505,
+        1.9739720538487875
+      ],
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 14,
+      "misprice_fraction": 3.6595777257533037e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.1356052389565931,
+        0.18003798201579577,
+        0.11023057810578084
+      ],
+      "cost_early_plan": 0.5352496562329793,
+      "cost_late_plan": 2.106566474411564e-18,
+      "cost_union_plan": 1.341092328701684e-10,
+      "drift": 0.8897694218942194,
+      "effective_rank_first": 1.9440915746457523,
+      "effective_rank_last": 1.5846652302754705,
+      "entropies": [
+        3.2755561126295794,
+        3.546001729282095,
+        3.8271357939360096,
+        3.4244630064151185
+      ],
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 14,
+      "misprice_fraction": 2.5408628815404115e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.18174456719173332,
+        0.19954501898874405,
+        0.17703382987413993
+      ],
+      "cost_early_plan": 0.05439102387855643,
+      "cost_late_plan": 3.9358834925795075e-20,
+      "cost_union_plan": 5.817883515553302e-13,
+      "drift": 0.8229661701258605,
+      "effective_rank_first": 1.3294433935289929,
+      "effective_rank_last": 1.1541121068270337,
+      "entropies": [
+        2.7825598742399715,
+        2.8462459562163764,
+        2.5052752457591834,
+        5.099513851689347
+      ],
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 14,
+      "misprice_fraction": 1.381926674941019e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999996,
+        0.14655893579272763,
+        0.14591221037573654,
+        0.11946647710159931
+      ],
+      "cost_early_plan": 0.00036434000577172007,
+      "cost_late_plan": 1.5044912352057757e-21,
+      "cost_union_plan": 3.096431879681681e-14,
+      "drift": 0.8805335228984003,
+      "effective_rank_first": 1.0002216541205264,
+      "effective_rank_last": 1.0004471812552598,
+      "entropies": [
+        1.0987178661526238,
+        2.0922647009728292,
+        1.382122737892038,
+        0.41479566390393485
+      ],
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 14,
+      "misprice_fraction": 2.4216824747529203e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.16483456365079888,
+        0.13965541908145038,
+        0.15989130349983702
+      ],
+      "cost_early_plan": 0.0016483476024663677,
+      "cost_late_plan": 1.6194942301184232e-21,
+      "cost_union_plan": 5.786911128248072e-13,
+      "drift": 0.8401086965001634,
+      "effective_rank_first": 1.2865046350609053,
+      "effective_rank_last": 1.2427959695213542,
+      "entropies": [
+        5.5752402172485045,
+        5.875170157025492,
+        5.384580079793095,
+        5.125338004826343
+      ],
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 21,
+      "misprice_fraction": 1.0178162859807377e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.12778140632359117,
+        0.15416201586556297,
+        0.14118354663977406
+      ],
+      "cost_early_plan": 0.010540767457889726,
+      "cost_late_plan": 4.058626601711371e-20,
+      "cost_union_plan": 2.440867819720068e-12,
+      "drift": 0.8588164533602257,
+      "effective_rank_first": 1.398077425591806,
+      "effective_rank_last": 1.358822917917366,
+      "entropies": [
+        6.254941698006923,
+        6.091657222815488,
+        5.643040067455345,
+        4.945481955415812
+      ],
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 21,
+      "misprice_fraction": 2.5971266865114122e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.16362922116977888,
+        0.14719452678201608,
+        0.15690831711336134
+      ],
+      "cost_early_plan": 0.005812531640036884,
+      "cost_late_plan": 2.0631512406110206e-20,
+      "cost_union_plan": 1.1330225641201732e-12,
+      "drift": 0.8430916828866388,
+      "effective_rank_first": 1.4396288321449715,
+      "effective_rank_last": 1.265441826781374,
+      "entropies": [
+        6.056251693494735,
+        5.665129518039219,
+        5.550250601207084,
+        4.335827894402961
+      ],
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 21,
+      "misprice_fraction": 2.817307585417466e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.17569656528380806,
+        0.16937133439044277,
+        0.1531027305106525
+      ],
+      "cost_early_plan": 0.14030561715781215,
+      "cost_late_plan": 2.0567040681934716e-19,
+      "cost_union_plan": 3.738309435778582e-12,
+      "drift": 0.8468972694893477,
+      "effective_rank_first": 1.4912602928397494,
+      "effective_rank_last": 1.1269556916593981,
+      "entropies": [
+        5.682726675227311,
+        5.3050673097910215,
+        5.226967040128239,
+        4.670548347823978
+      ],
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 21,
+      "misprice_fraction": 6.821867050666706e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "qwen25-1.5b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999996,
+        0.09638538328682396,
+        0.16102728220305132,
+        0.1088289183431511
+      ],
+      "cost_early_plan": 0.010397230547325002,
+      "cost_late_plan": 1.3238884351602626e-20,
+      "cost_union_plan": 1.6542832961836835e-12,
+      "drift": 0.8911710816568484,
+      "effective_rank_first": 1.4223065020619567,
+      "effective_rank_last": 1.6407853259880738,
+      "entropies": [
+        4.733546180145671,
+        4.2103865389629656,
+        3.9127924596133923,
+        4.192918657123064
+      ],
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 8,
+      "misprice_fraction": 7.853554930454824e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.1334389010080417,
+        0.09466546165580304,
+        0.1648290535812296
+      ],
+      "cost_early_plan": 0.004268229282033157,
+      "cost_late_plan": 1.069631696896462e-20,
+      "cost_union_plan": 1.4518950318758947e-12,
+      "drift": 0.8351709464187709,
+      "effective_rank_first": 1.332759412163638,
+      "effective_rank_last": 1.8264348086036288,
+      "entropies": [
+        4.134406455751261,
+        3.663834400586058,
+        3.5231680454159706,
+        3.4155977221157046
+      ],
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 8,
+      "misprice_fraction": 3.990372849287686e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.08850302398391567,
+        0.07987883152536088,
+        0.13646436244198912
+      ],
+      "cost_early_plan": 0.006803046573723423,
+      "cost_late_plan": 1.273276634317539e-20,
+      "cost_union_plan": 5.372586086996863e-13,
+      "drift": 0.8635356375580111,
+      "effective_rank_first": 1.4568251794429465,
+      "effective_rank_last": 1.2041381229353496,
+      "entropies": [
+        4.143063320240684,
+        3.1375649567499173,
+        2.8438227317354086,
+        3.427493998766677
+      ],
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 8,
+      "misprice_fraction": 5.342944644051977e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.15210784606521252,
+        0.1068817141260451,
+        0.1611862949308354
+      ],
+      "cost_early_plan": 0.012446056589406817,
+      "cost_late_plan": 3.3611696440785936e-20,
+      "cost_union_plan": 2.82110395491356e-12,
+      "drift": 0.8388137050691644,
+      "effective_rank_first": 1.4910292885726995,
+      "effective_rank_last": 1.3768466001584645,
+      "entropies": [
+        4.449304428918936,
+        3.93515423668621,
+        3.4801282598716523,
+        3.263984811841358
+      ],
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 8,
+      "misprice_fraction": 3.7028945002324294e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.10736455260316653,
+        0.13437426325920415,
+        0.06882813873040311
+      ],
+      "cost_early_plan": 0.03976358314114683,
+      "cost_late_plan": 8.523934632186115e-20,
+      "cost_union_plan": 1.9128526060207793e-11,
+      "drift": 0.9311718612695967,
+      "effective_rank_first": 1.783534724543765,
+      "effective_rank_last": 1.524363320523162,
+      "entropies": [
+        6.191369777084059,
+        5.445366202952841,
+        4.9688427949526695,
+        4.419221581048522
+      ],
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 16,
+      "misprice_fraction": 4.6649329044594925e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.13251785584225262,
+        0.11428454095942546,
+        0.09739523302617702
+      ],
+      "cost_early_plan": 0.005388596688453097,
+      "cost_late_plan": 1.7924260178096568e-20,
+      "cost_union_plan": 7.645092178472379e-13,
+      "drift": 0.9026047669738234,
+      "effective_rank_first": 1.6866934681158325,
+      "effective_rank_last": 1.530590395455804,
+      "entropies": [
+        6.243298422698185,
+        5.68986167794035,
+        5.513657228199836,
+        4.938444559664637
+      ],
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 16,
+      "misprice_fraction": 3.006314701366564e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.1189800188609078,
+        0.10151661575007663,
+        0.0995815646477272
+      ],
+      "cost_early_plan": 0.044182125616473986,
+      "cost_late_plan": 9.583816523804374e-20,
+      "cost_union_plan": 1.7850711489794086e-12,
+      "drift": 0.9004184353522731,
+      "effective_rank_first": 1.749770615610737,
+      "effective_rank_last": 1.2020198154989998,
+      "entropies": [
+        6.665900109284047,
+        5.660900998928531,
+        4.879860567705786,
+        4.31841553103394
+      ],
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 16,
+      "misprice_fraction": 4.6100763205069715e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.08987098354987871,
+        0.09085476351030568,
+        0.0881299964781194
+      ],
+      "cost_early_plan": 0.00338582234774092,
+      "cost_late_plan": 1.022035464185293e-20,
+      "cost_union_plan": 9.962365905226467e-13,
+      "drift": 0.9118700035218804,
+      "effective_rank_first": 1.9876578844124613,
+      "effective_rank_last": 1.9151481416810285,
+      "entropies": [
+        6.081770075383804,
+        5.852602218233272,
+        4.3581360505226066,
+        4.506486219933196
+      ],
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 16,
+      "misprice_fraction": 3.3128227604507834e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.09318821892784798,
+        0.1267099721367318,
+        0.09068116351782501
+      ],
+      "cost_early_plan": 0.07212337597487334,
+      "cost_late_plan": 1.300116603103176e-19,
+      "cost_union_plan": 1.9908831388894507e-13,
+      "drift": 0.9093188364821754,
+      "effective_rank_first": 2.0314901074140748,
+      "effective_rank_last": 1.001549043439165,
+      "entropies": [
+        4.380669533753061,
+        1.784430246829663,
+        1.7045567720817032,
+        0.6844912935453293
+      ],
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 24,
+      "misprice_fraction": 5.5474544208362586e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.179179137076065,
+        0.17403222751967248,
+        0.127321262644678
+      ],
+      "cost_early_plan": 0.0262336277659717,
+      "cost_late_plan": 7.256542534147108e-20,
+      "cost_union_plan": 6.143076969694099e-13,
+      "drift": 0.8726787373553222,
+      "effective_rank_first": 1.833161112710227,
+      "effective_rank_last": 1.0452707332046276,
+      "entropies": [
+        3.417116513634232,
+        2.6922760286776395,
+        1.7544025398781509,
+        1.630633378971809
+      ],
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 24,
+      "misprice_fraction": 3.615169020580274e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.10313843155123567,
+        0.05939857252643434,
+        0.12189710601604563
+      ],
+      "cost_early_plan": 0.048582755566216385,
+      "cost_late_plan": 1.9832326559533598e-19,
+      "cost_union_plan": 1.9728495576478964e-12,
+      "drift": 0.8781028939839548,
+      "effective_rank_first": 2.089559694106348,
+      "effective_rank_last": 1.346034087867726,
+      "entropies": [
+        6.178805666470912,
+        4.740976669969804,
+        4.766855377253896,
+        4.132270756078059
+      ],
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 24,
+      "misprice_fraction": 2.4496750504979037e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.15194526332981056,
+        0.11583525959119463,
+        0.1025463819040904
+      ],
+      "cost_early_plan": 0.10680142061135948,
+      "cost_late_plan": 2.9090595574901766e-19,
+      "cost_union_plan": 3.493792447297151e-11,
+      "drift": 0.8974536180959098,
+      "effective_rank_first": 1.6961828788258184,
+      "effective_rank_last": 1.7785219466017506,
+      "entropies": [
+        4.14838913617286,
+        2.7850281028844854,
+        1.1660736355106947,
+        1.7063084457512177
+      ],
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 24,
+      "misprice_fraction": 3.6713383999433683e+17,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "mistral-7b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.18682303802489647,
+        0.09542185650101422,
+        0.1085646917933442
+      ],
+      "cost_early_plan": 0.3137593113225511,
+      "cost_late_plan": 1.0472412554163664e-19,
+      "cost_union_plan": 4.624328996747013e-17,
+      "drift": 0.8914353082066561,
+      "effective_rank_first": 2.0975670781395923,
+      "effective_rank_last": 1.8901290684725853,
+      "entropies": [
+        5.9173586095450466,
+        4.854207268288237,
+        4.74714749341032,
+        3.34013373290533
+      ],
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 8,
+      "misprice_fraction": 2.9960556815325747e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.221982028462661,
+        0.13624354635050612,
+        0.1453905958066078
+      ],
+      "cost_early_plan": 0.15600103191475556,
+      "cost_late_plan": 3.712148467542959e-20,
+      "cost_union_plan": 1.8858158490480704e-17,
+      "drift": 0.854609404193392,
+      "effective_rank_first": 1.2704703782983235,
+      "effective_rank_last": 1.198117499977181,
+      "entropies": [
+        3.708036424040836,
+        3.68507843744002,
+        2.805003794392512,
+        3.7169035181028756
+      ],
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 8,
+      "misprice_fraction": 4.2024459225902505e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.13464227601547177,
+        0.10223190816152605,
+        0.08466354043174766
+      ],
+      "cost_early_plan": 0.25585878674069995,
+      "cost_late_plan": 6.141145038868423e-20,
+      "cost_union_plan": 1.3743093294337723e-17,
+      "drift": 0.9153364595682526,
+      "effective_rank_first": 1.165440355604012,
+      "effective_rank_last": 1.9699777587194733,
+      "entropies": [
+        5.6227143832325055,
+        5.12016204318196,
+        4.52348215383523,
+        3.173595221494607
+      ],
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 8,
+      "misprice_fraction": 4.166304249799071e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.1995735281780805,
+        0.14821412055781524,
+        0.09022752091967773
+      ],
+      "cost_early_plan": 0.4490316025608464,
+      "cost_late_plan": 5.787382480299725e-20,
+      "cost_union_plan": 2.5286115526537288e-17,
+      "drift": 0.9097724790803221,
+      "effective_rank_first": 2.2351439144584524,
+      "effective_rank_last": 2.975504937085626,
+      "entropies": [
+        5.249591103298782,
+        5.044064625833615,
+        4.356197859732265,
+        3.275639122241521
+      ],
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 8,
+      "misprice_fraction": 7.758802949163147e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.1230080959473983,
+        0.07668890883117284,
+        0.041997112261996386
+      ],
+      "cost_early_plan": 0.01261753549610969,
+      "cost_late_plan": 3.537550375729884e-21,
+      "cost_union_plan": 1.7410473895542202e-18,
+      "drift": 0.9580028877380034,
+      "effective_rank_first": 1.8372742151645165,
+      "effective_rank_last": 1.947670833819467,
+      "entropies": [
+        6.576592997137464,
+        6.61156640007753,
+        5.672187707788929,
+        6.074188254484796
+      ],
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 17,
+      "misprice_fraction": 3.5667436943583826e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        0.9999999999999998,
+        0.15511377008796684,
+        0.08524650340795296,
+        0.09364084541602224
+      ],
+      "cost_early_plan": 0.01768384291853771,
+      "cost_late_plan": 4.978700890688877e-21,
+      "cost_union_plan": 2.4925138714438863e-18,
+      "drift": 0.9063591545839775,
+      "effective_rank_first": 1.9003253182376227,
+      "effective_rank_last": 2.279599390448489,
+      "entropies": [
+        6.516607311900097,
+        6.678361692808733,
+        6.09307728152878,
+        5.965087877078982
+      ],
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 17,
+      "misprice_fraction": 3.5518990408943585e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000004,
+        0.13609793269587603,
+        0.08364594786716469,
+        0.07508829253036507
+      ],
+      "cost_early_plan": 0.017021586377918434,
+      "cost_late_plan": 3.9200057492407984e-21,
+      "cost_union_plan": 2.2182290741015732e-18,
+      "drift": 0.9249117074696354,
+      "effective_rank_first": 2.0040060473889962,
+      "effective_rank_last": 2.872548501227521,
+      "entropies": [
+        6.706134649245415,
+        6.72780091861086,
+        5.973365354029003,
+        6.483574549312365
+      ],
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 17,
+      "misprice_fraction": 4.342235054429465e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.14075792048831104,
+        0.07385281531928717,
+        0.03969411326374048
+      ],
+      "cost_early_plan": 0.041348071619929226,
+      "cost_late_plan": 8.71835032511918e-21,
+      "cost_union_plan": 4.617599288351613e-18,
+      "drift": 0.9603058867362597,
+      "effective_rank_first": 2.0613524500035365,
+      "effective_rank_last": 1.957336966234626,
+      "entropies": [
+        6.135464355449603,
+        5.953302065719153,
+        5.730705492607667,
+        5.810813390120275
+      ],
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 17,
+      "misprice_fraction": 4.742648560565154e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.1026214762772365,
+        0.116574817838388,
+        0.03580851721985052
+      ],
+      "cost_early_plan": 0.0325356133944706,
+      "cost_late_plan": 9.595328912609309e-21,
+      "cost_union_plan": 3.0727671848004048e-18,
+      "drift": 0.9641914827801497,
+      "effective_rank_first": 2.265225824806514,
+      "effective_rank_last": 1.217069541367835,
+      "entropies": [
+        6.190811081851768,
+        6.256405846019766,
+        5.526711920624937,
+        4.125138938092544
+      ],
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 26,
+      "misprice_fraction": 3.3907762506937364e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.10455111864907583,
+        0.052796890490744444,
+        0.04895896003186561
+      ],
+      "cost_early_plan": 0.014620416269646396,
+      "cost_late_plan": 5.3642070435956675e-21,
+      "cost_union_plan": 1.5680661279577366e-18,
+      "drift": 0.9510410399681346,
+      "effective_rank_first": 2.772420388769623,
+      "effective_rank_last": 4.157102635480216,
+      "entropies": [
+        6.04179190745609,
+        5.674877314369648,
+        5.410987261925252,
+        5.057106369872571
+      ],
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 26,
+      "misprice_fraction": 2.7255503284687206e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.07830941109596302,
+        0.06682509902529833,
+        0.07148987659847915
+      ],
+      "cost_early_plan": 0.08746353681236765,
+      "cost_late_plan": 3.475152277912746e-20,
+      "cost_union_plan": 8.72551046778722e-18,
+      "drift": 0.9285101234015211,
+      "effective_rank_first": 2.1648251023434155,
+      "effective_rank_last": 1.6952914140837836,
+      "entropies": [
+        6.3916251628473235,
+        6.298589179741332,
+        5.718660929248593,
+        5.558842715826719
+      ],
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 26,
+      "misprice_fraction": 2.516826021359277e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    },
+    {
+      "agreement_with_first_window": [
+        1.0000000000000002,
+        0.13245502980761323,
+        0.04029252628807438,
+        0.08939133456952784
+      ],
+      "cost_early_plan": 0.06475401530116527,
+      "cost_late_plan": 3.1426983715106715e-20,
+      "cost_union_plan": 5.595702999762661e-18,
+      "drift": 0.9106086654304724,
+      "effective_rank_first": 3.2032918805868653,
+      "effective_rank_last": 1.3179483350597492,
+      "entropies": [
+        6.638667270034714,
+        6.3212211707620165,
+        5.999237126554318,
+        3.8481765848575584
+      ],
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 26,
+      "misprice_fraction": 2.060459122904579e+18,
+      "ranks": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "tag": "gemma3-4b",
+      "union_helps": true
+    }
+  ],
+  "runtime": {
+    "code_commit": "unknown",
+    "generated_utc": "2026-08-08T06:25:34.214201+00:00",
+    "hostname": "atlas",
+    "numpy": "2.5.1",
+    "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]"
+  },
+  "schema": "readscope-c11-operator-drift-v1",
+  "skipped": [],
+  "summary": {
+    "mean_union_helps": 1.0,
+    "median_agreement_last_window": 0.11743914513528898,
+    "median_misprice_fraction": 5.3451213075613606e+17,
+    "n_cells": 48,
+    "total_inversions": 32
+  },
+  "verdict": {
+    "computed_from": [
+      "P0_operator_moves",
+      "P1_drift_monotone",
+      "P2_early_misprices_late",
+      "P3_union_is_a_fix",
+      "P4_anti_vacuity",
+      "P5_census"
+    ],
+    "value": "FAIL"
+  }
+}

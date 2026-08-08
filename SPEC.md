@@ -752,6 +752,48 @@ scalar correction is the wrong shape for this effect.
 
 ---
 
+## Read operators drift along the sequence
+
+C-11c, record `calibration/records/c11c-operator-drift.json`, **PASS on all
+six bars**, on the sixteen source-matched Llama-3.2-3B head-cells.
+
+A head's read operator is spanned by its queries, so if the query
+distribution moves with position then a key compressed against an early
+operator is later read by a different one. That is probe loading along the
+time axis, and it is a mechanism candidate for the long-generation
+degradation turboquant-pro reports and does not explain.
+
+**Every quantity is paired with a null**, because two disjoint samples of one
+distribution do not give identical operators either. Windows cut by position
+are compared against windows of identical size drawn at random, five draws
+per cell.
+
+| graded rank | 1 | 2 | 4 | 8 | 16 |
+|---|---:|---:|---:|---:|---:|
+| positional | 0.667 | 0.385 | 0.252 | 0.193 | 0.181 |
+| random null | 0.933 | 0.572 | 0.470 | 0.405 | 0.414 |
+| **gap** | **+0.266** | **+0.187** | **+0.219** | **+0.213** | **+0.233** |
+
+**The null is more than half the naive effect.** Read against 1.0, the drift
+at rank 2 looks like 0.615; against the null it is 0.224. The earlier attempt
+made exactly that error and this table is why the sweep was rebuilt.
+
+The cleanest reading is at rank one, where the tail cannot contribute and the
+null is nearly perfect: **the dominant read direction itself moves with
+position**, 0.667 against a null of 0.933. Fourteen of sixteen cells show a
+positive gap.
+
+**Cost.** Allocating against the early operator costs the late consumer
+**225 percent of a uniform split's cost more** than allocating against the
+late one, above what resampling alone costs. Allocating against the
+whole-sequence operator is better on **every cell**.
+
+**Scope.** Sixteen cells, two layers, one 3B model, 192 positions. A
+mechanism candidate on a short sequence, not a demonstration on the
+long-generation regime, and never run against a real degradation curve.
+
+---
+
 ## Accuracy: everything measured so far
 
 ---
