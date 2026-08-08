@@ -39,7 +39,8 @@ classifiers = [
 
 [project.optional-dependencies]
 torch = ["torch>=2.0"]
-dev = ["pytest>=7.0", "black==26.1.0", "ruff==0.14.8"]
+viz = ["matplotlib>=3.6"]
+dev = ["pytest>=7.0", "black==26.1.0", "ruff==0.14.8", "matplotlib>=3.6"]
 
 [project.urls]
 Homepage = "https://github.com/ahb-sjsu/readscope"
