@@ -28,6 +28,7 @@ import json
 import os
 import platform
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -485,7 +486,11 @@ def main() -> int:
         # ---- arm 1: fp16 prefill, greedy 512. y* and NLL_fp16 come together,
         # because y* is by construction fp16's own argmax path.
         tap.on = False
+        _t = {}
+        _c = time.time()
         last_logits, cache_a = prefill(model, ids.input_ids, device)
+        _t["prefill_a"] = time.time() - _c
+        _c = time.time()
         k_fp16 = {
             li: cache_keys(cache_a, li)[0][0].float().cpu().numpy()
             for li in LAYERS
@@ -493,11 +498,15 @@ def main() -> int:
         y_star, nll_fp16 = greedy(
             model, tok, cache_a, last_logits, MAXGEN, device
         )
+        _t["greedy_fp16"] = time.time() - _c
+        _c = time.time()
         del cache_a
         torch.cuda.empty_cache()
 
         # ---- arm 2: nf4a prefill, teacher-forced on y*, queries captured.
         logits_q, cache_b = prefill(model, ids.input_ids, device)
+        _t["prefill_b"] = time.time() - _c
+        _c = time.time()
         cache_b = quantize_prefill(cache_b, HARNESS.HOT)
         k_nf4a = {
             li: cache_keys(cache_b, li)[0][0].float().cpu().numpy()
@@ -530,9 +539,13 @@ def main() -> int:
         torch.cuda.empty_cache()
 
         # ---- arm 3: nf4a prefill, free-running greedy, for A0.
+        _t["teacher_forced"] = time.time() - _c
+        _c = time.time()
         logits3, cache_c = prefill(model, ids.input_ids, device)
         cache_c = quantize_prefill(cache_c, HARNESS.HOT)
         y_nf4a, _ = greedy(model, tok, cache_c, logits3, MAXGEN, device)
+        _t["greedy_nf4a"] = time.time() - _c
+        _c = time.time()
         del cache_c
         torch.cuda.empty_cache()
 
@@ -598,6 +611,11 @@ def main() -> int:
                     }
                 )
 
+        _t["geometry"] = time.time() - _c
+        print(
+            "  [timing] " + " ".join(f"{k}={v:.1f}s" for k, v in _t.items()),
+            flush=True,
+        )
         n = min(len(nll_fp16), len(nll_nf4a))
         d_tf = [nll_nf4a[i] - nll_fp16[i] for i in range(n)]
         e0, e1 = EARLY
@@ -639,6 +657,7 @@ def main() -> int:
             ),
             "g_positional": growth("pos"),
             "g_rotated": growth("rot"),
+            "timing_s": _t,
             "cells": cells,
         }
         docs.append(rowd)
