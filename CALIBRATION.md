@@ -537,3 +537,32 @@ same way and only that way, so it is now a standing rule rather than a habit:
 **Before believing a bar of the form "X predicts Y", require a prior bar that
 Y varies.** C-1b had one, as its L3 separation bar. C-7b and C-8 dropped it
 and both produced a confident number out of nothing.
+
+
+### F-22, from C-9: the first valid correction test, and it says no
+
+C-9 is the first of three attempts that measured anything. E0, the separation
+bar the rule from F-21 demands, passed with +0.237 in the fit family, so there
+was real degradation to predict. The dimensionless axis put **100 percent** of
+readings inside the fitted domain against C-7b's 15 percent.
+
+Both repairs worked and the correction still failed. E2: separation is +0.146
+at dimension 16, +0.237 at 32, **-0.005 at 64 and -0.076 at 128**. E4: error
+fell from 0.147 to 0.095, a 36 percent reduction against a 50 percent bar,
+with 67 percent of outputs still pinned.
+
+**The mechanism tells you when probe loading matters at all.** With a random
+planted basis, every read direction sees nearly the same variance from an
+anisotropic probing distribution once the dimension is large, so concentration
+of measure removes the differential saturation that makes loading bite.
+Loading damages a reading when the probing shift is *aligned* with the read
+subspace. A random shift in high dimension is not aligned with anything.
+
+So degradation is not a function of loading alone, and no scalar axis can
+carry it however well normalised. **A scalar correction is the wrong shape for
+this effect.** That is a more useful conclusion than a correction would have
+been, and it took three attempts and two vacuous passes to reach honestly.
+
+Kept from the attempts: the dimensionless axis, the refusal to extrapolate,
+the refusal to read a rank-deficient sample, and the separation bar as a
+standing requirement. Loading stays a warning.

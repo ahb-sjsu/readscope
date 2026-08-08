@@ -1,0 +1,373 @@
+{
+  "bars": {
+    "E0_separation_in_fit_family": true,
+    "E1_monotone": true,
+    "E2_test_family_varies": false,
+    "E3_correction_predicts": true,
+    "E4_beats_null_without_saturating": false,
+    "E5_census": true
+  },
+  "correction": {
+    "attenuation": [
+      0.865680847367344,
+      0.865680847367344,
+      0.83863383839961,
+      0.711076011204114,
+      0.6287758560739188
+    ],
+    "loadings": [
+      0.0,
+      1.0333517006556068,
+      4.333183902587765,
+      12.254984994888517,
+      32.05512044811715
+    ],
+    "model": "reading ~ truth * g(loading), g piecewise linear in log1p(loading), clamped outside the fitted range",
+    "source": "c9 fit at dim 32"
+  },
+  "declared": {
+    "alphas": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "axis": "dimensionless loading from C-8",
+    "decay": 0.85,
+    "dims": [
+      16,
+      32,
+      64,
+      128
+    ],
+    "eps": 0.001,
+    "estimator": "exact, so only the probing region varies",
+    "fit_dim": 32,
+    "graded_rank": 4,
+    "in_domain_bar": 0.7,
+    "mae_bar": 0.1,
+    "n_probe_points": 96,
+    "planted_rank": 12,
+    "reduction_bar": 0.5,
+    "saturation_bar": 0.5,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "separation_bar": 0.15,
+    "tau": 1.0
+  },
+  "fit_inversions": 1,
+  "fit_separation": 0.23690499129342513,
+  "per_dim": {
+    "128": [
+      {
+        "alpha": 0.0,
+        "loading": 31.71577205148664,
+        "reading": 0.9218883294480755
+      },
+      {
+        "alpha": 0.25,
+        "loading": 12.190318834881586,
+        "reading": 0.8795075365090983
+      },
+      {
+        "alpha": 0.5,
+        "loading": 4.336288417238982,
+        "reading": 0.9006082308177329
+      },
+      {
+        "alpha": 0.75,
+        "loading": 1.0369339785211198,
+        "reading": 0.940113236651284
+      },
+      {
+        "alpha": 1.0,
+        "loading": 0.0,
+        "reading": 0.8458555262163373
+      }
+    ],
+    "16": [
+      {
+        "alpha": 0.0,
+        "loading": 31.742415230929506,
+        "reading": 0.6809308071709884
+      },
+      {
+        "alpha": 0.25,
+        "loading": 12.247382053341207,
+        "reading": 0.6357767041898905
+      },
+      {
+        "alpha": 0.5,
+        "loading": 4.406437025440554,
+        "reading": 0.8100564985492045
+      },
+      {
+        "alpha": 0.75,
+        "loading": 1.0616993741231917,
+        "reading": 0.845528591762065
+      },
+      {
+        "alpha": 1.0,
+        "loading": 0.0,
+        "reading": 0.8272126517297301
+      }
+    ],
+    "32": [
+      {
+        "alpha": 0.0,
+        "loading": 32.05512044811715,
+        "reading": 0.6287758560739188
+      },
+      {
+        "alpha": 0.25,
+        "loading": 12.254984994888517,
+        "reading": 0.711076011204114
+      },
+      {
+        "alpha": 0.5,
+        "loading": 4.333183902587765,
+        "reading": 0.83863383839961
+      },
+      {
+        "alpha": 0.75,
+        "loading": 1.0333517006556068,
+        "reading": 0.9404600781711215
+      },
+      {
+        "alpha": 1.0,
+        "loading": 0.0,
+        "reading": 0.865680847367344
+      }
+    ],
+    "64": [
+      {
+        "alpha": 0.0,
+        "loading": 31.998527578697793,
+        "reading": 0.8717441297336422
+      },
+      {
+        "alpha": 0.25,
+        "loading": 12.279817161880345,
+        "reading": 0.9192111393265706
+      },
+      {
+        "alpha": 0.5,
+        "loading": 4.3626064514903495,
+        "reading": 0.9113114687665053
+      },
+      {
+        "alpha": 0.75,
+        "loading": 1.0419416739893779,
+        "reading": 0.9323537105210518
+      },
+      {
+        "alpha": 1.0,
+        "loading": 0.0,
+        "reading": 0.8671593831923388
+      }
+    ]
+  },
+  "runtime": {
+    "code_commit": "unknown",
+    "generated_utc": "2026-08-08T02:13:52.419438+00:00",
+    "hostname": "atlas",
+    "numpy": "2.5.1",
+    "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]"
+  },
+  "schema": "readscope-c9-loading-correction-v1",
+  "summary": {
+    "error_reduction": 0.35736289949700617,
+    "fraction_pinned_at_one": 0.6666666666666666,
+    "in_domain_fraction": 1.0,
+    "mae_corrected": 0.09471365763014905,
+    "mae_raw": 0.14738280369436563
+  },
+  "test_separations": {
+    "128": -0.07603280323173822,
+    "16": 0.1462818445587417,
+    "64": -0.004584746541303475
+  },
+  "transfer": [
+    {
+      "abs_error": 0.05129888569647656,
+      "abs_error_raw": 0.3190691928290116,
+      "alpha": 0.0,
+      "corrected": 1.0,
+      "dim": 16,
+      "in_domain": true,
+      "loading": 31.742415230929506,
+      "predicted_attenuation": 0.6296319214745119,
+      "reading": 0.6809308071709884
+    },
+    {
+      "abs_error": 0.07537969474938955,
+      "abs_error_raw": 0.3642232958101095,
+      "alpha": 0.25,
+      "corrected": 0.8940040547173286,
+      "dim": 16,
+      "in_domain": true,
+      "loading": 12.247382053341207,
+      "predicted_attenuation": 0.7111563989392801,
+      "reading": 0.6357767041898905
+    },
+    {
+      "abs_error": 0.0266660052555594,
+      "abs_error_raw": 0.18994350145079553,
+      "alpha": 0.5,
+      "corrected": 0.968130407471649,
+      "dim": 16,
+      "in_domain": true,
+      "loading": 4.406437025440554,
+      "predicted_attenuation": 0.8367225038047639,
+      "reading": 0.8100564985492045
+    },
+    {
+      "abs_error": 0.019763909620339026,
+      "abs_error_raw": 0.15447140823793504,
+      "alpha": 0.75,
+      "corrected": 0.9771592732067319,
+      "dim": 16,
+      "in_domain": true,
+      "loading": 1.0616993741231917,
+      "predicted_attenuation": 0.865292501382404,
+      "reading": 0.845528591762065
+    },
+    {
+      "abs_error": 0.03846819563761383,
+      "abs_error_raw": 0.17278734827026987,
+      "alpha": 1.0,
+      "corrected": 0.955563074134537,
+      "dim": 16,
+      "in_domain": true,
+      "loading": 0.0,
+      "predicted_attenuation": 0.865680847367344,
+      "reading": 0.8272126517297301
+    },
+    {
+      "abs_error": 0.24281394620669372,
+      "abs_error_raw": 0.12825587026635776,
+      "alpha": 0.0,
+      "corrected": 1.0,
+      "dim": 64,
+      "in_domain": true,
+      "loading": 31.998527578697793,
+      "predicted_attenuation": 0.6289301835269485,
+      "reading": 0.8717441297336422
+    },
+    {
+      "abs_error": 0.20830369687349248,
+      "abs_error_raw": 0.08078886067342939,
+      "alpha": 0.25,
+      "corrected": 1.0,
+      "dim": 64,
+      "in_domain": true,
+      "loading": 12.279817161880345,
+      "predicted_attenuation": 0.7109074424530781,
+      "reading": 0.9192111393265706
+    },
+    {
+      "abs_error": 0.07344846514572212,
+      "abs_error_raw": 0.08868853123349474,
+      "alpha": 0.5,
+      "corrected": 1.0,
+      "dim": 64,
+      "in_domain": true,
+      "loading": 4.3626064514903495,
+      "predicted_attenuation": 0.8378630036207831,
+      "reading": 0.9113114687665053
+    },
+    {
+      "abs_error": 0.06679110940019384,
+      "abs_error_raw": 0.06764628947894824,
+      "alpha": 0.75,
+      "corrected": 1.0,
+      "dim": 64,
+      "in_domain": true,
+      "loading": 1.0419416739893779,
+      "predicted_attenuation": 0.8655626011208579,
+      "reading": 0.9323537105210518
+    },
+    {
+      "abs_error": 0.0014785358249947977,
+      "abs_error_raw": 0.13284061680766124,
+      "alpha": 1.0,
+      "corrected": 1.0,
+      "dim": 64,
+      "in_domain": true,
+      "loading": 0.0,
+      "predicted_attenuation": 0.865680847367344,
+      "reading": 0.8671593831923388
+    },
+    {
+      "abs_error": 0.2921830917181626,
+      "abs_error_raw": 0.07811167055192447,
+      "alpha": 0.0,
+      "corrected": 1.0,
+      "dim": 128,
+      "in_domain": true,
+      "loading": 31.71577205148664,
+      "predicted_attenuation": 0.6297052377299129,
+      "reading": 0.9218883294480755
+    },
+    {
+      "abs_error": 0.16774631770509163,
+      "abs_error_raw": 0.1204924634909017,
+      "alpha": 0.25,
+      "corrected": 1.0,
+      "dim": 128,
+      "in_domain": true,
+      "loading": 12.190318834881586,
+      "predicted_attenuation": 0.7117612188040067,
+      "reading": 0.8795075365090983
+    },
+    {
+      "abs_error": 0.06205592732491527,
+      "abs_error_raw": 0.09939176918226711,
+      "alpha": 0.5,
+      "corrected": 1.0,
+      "dim": 128,
+      "in_domain": true,
+      "loading": 4.336288417238982,
+      "predicted_attenuation": 0.8385523034928176,
+      "reading": 0.9006082308177329
+    },
+    {
+      "abs_error": 0.07448176214258428,
+      "abs_error_raw": 0.05988676334871601,
+      "alpha": 0.75,
+      "corrected": 1.0,
+      "dim": 128,
+      "in_domain": true,
+      "loading": 1.0369339785211198,
+      "predicted_attenuation": 0.8656314745086997,
+      "reading": 0.940113236651284
+    },
+    {
+      "abs_error": 0.01982532115100666,
+      "abs_error_raw": 0.1541444737836627,
+      "alpha": 1.0,
+      "corrected": 0.9770985794461109,
+      "dim": 128,
+      "in_domain": true,
+      "loading": 0.0,
+      "predicted_attenuation": 0.865680847367344,
+      "reading": 0.8458555262163373
+    }
+  ],
+  "verdict": {
+    "computed_from": [
+      "E0_separation_in_fit_family",
+      "E1_monotone",
+      "E2_test_family_varies",
+      "E3_correction_predicts",
+      "E4_beats_null_without_saturating",
+      "E5_census"
+    ],
+    "value": "FAIL"
+  }
+}

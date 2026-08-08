@@ -177,9 +177,13 @@ where the null floor is what the estimator reads with no mismatch at all. A
 fixed mismatch reads within **1.3 percent** across a sixteenfold range of
 dimension, where raw Jeffreys spreads **242 percent**.
 
-**It is still not a correction.** Three attempts are recorded in `SPEC.md`,
-two of which passed their bars for spurious reasons and are written up as
-such.
+**It is still not a correction, and now there is a reason rather than a
+gap.** Three attempts are recorded in `SPEC.md`. Two passed their bars for
+spurious reasons and are written up as such. The third was valid and failed:
+loading degrades a reading only when the probing shift is *aligned* with the
+read subspace, and in high dimension a random shift is not, so the effect
+disappears at dimension 64 and above. Degradation is not a function of loading
+alone, so **a scalar correction is the wrong shape for it**.
 
 | Probe loading, Jeffreys nats | Overlap |
 |---:|---:|

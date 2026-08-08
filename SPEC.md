@@ -37,7 +37,7 @@ frequency bins.
 | Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Measured for this package's estimators, and it is bad** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
-| Input impedance | ohms | Probe loading, on a dimensionless axis. | **Axis works, 1.3% spread across 16x dimension range. Correction still unestablished** |
+| Input impedance | ohms | Probe loading, on a dimensionless axis. | **Axis works. A scalar correction is the wrong shape; effect depends on alignment** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
 | Temperature drift | ppm/°C | Stability of a reading across architectures and scales at matched geometry. | **Four families, spread 1e-15. Four scales, spread 7e-16** |
 | Applicability | probe coupling | Which consumer regimes this probe can be attached to at all. | **Bounded, and enforced in code** |
@@ -663,9 +663,47 @@ the missing bar is one C-1b had and C-8 dropped: **before testing whether a
 correction predicts degradation, bar that degradation exists in the fit
 family.** C-1b's L3 separation bar was exactly that.
 
-Loading therefore remains a **warning, not a correction**. What has changed is
-that the axis is no longer the obstacle, so the next attempt can be about the
-correction rather than the units.
+### C-9, the third attempt, is the first valid one and the answer is no
+
+C-9 carries the separation bar the previous two lacked, on a consumer built so
+that loading can bite: a rank-12 planted subspace graded at rank 4, where the
+gradient weighting ``sech^2(b_j . x)`` moves with position so which four
+directions dominate is a property of where one probes.
+
+**E0 passed**, with a fit-family separation of **+0.237**, so unlike C-7b and
+C-8 there really was degradation for a correction to predict. **The dimension-
+less axis also did its job: 100 percent of readings landed inside the fitted
+domain, against 15 percent for C-7b.** Both repairs worked.
+
+The correction still does not transfer.
+
+| dimension | 16 | 32 (fit) | 64 | 128 |
+|---|---:|---:|---:|---:|
+| separation | +0.146 | **+0.237** | **−0.005** | **−0.076** |
+
+**E2 failed. Loading degrades recovery at low dimension and stops doing so at
+high dimension**, and at 128 the reading is very slightly *better* under
+loading. E4 failed too: the correction cut mean absolute error from 0.147 to
+0.095, a 36 percent reduction against a 50 percent bar, with 67 percent of its
+outputs still pinned at 1.0.
+
+The mechanism is visible and worth stating, because it says when to worry
+about probe loading at all. The planted basis is random, so in high dimension
+every read direction sees nearly the same variance from an anisotropic
+probing distribution. **Concentration of measure removes the differential
+saturation that makes loading bite.** Loading damages a reading when the shift
+in the probing distribution is *aligned* with the read directions, and a
+random shift in high dimension is not.
+
+So loading is not a function of loading alone. Degradation depends on the
+alignment between the probing shift and the read subspace, which a scalar axis
+cannot carry no matter how well normalised it is.
+
+**Loading remains a warning, not a correction, after three attempts.** The two
+repairs those attempts produced are real and are kept: the axis is
+dimensionless and the estimator refuses to extrapolate or to read a
+rank-deficient sample. What is now known, and was not before, is that a
+scalar correction is the wrong shape for this effect.
 
 ---
 
