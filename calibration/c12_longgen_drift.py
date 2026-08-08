@@ -62,7 +62,15 @@ HARNESS_DIR = os.environ.get("HARNESS_DIR", "/archive/c12")
 sys.path.insert(0, HARNESS_DIR)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-import tq_paper_lb_shard as HARNESS  # noqa: E402
+# The harness creates its own output directory at import time, under a path
+# from its deployment. Nothing here writes there, so the call is stubbed for
+# the duration of the import rather than the directory being created.
+_real_makedirs = os.makedirs
+os.makedirs = lambda *a, **k: None
+try:
+    import tq_paper_lb_shard as HARNESS  # noqa: E402
+finally:
+    os.makedirs = _real_makedirs
 
 # The harness patches DynamicCache.update at import so its own runs quantize
 # implicitly. Undo it: this experiment quantizes the caches it chooses,
