@@ -297,6 +297,36 @@ class QueryTap:
 
 
 @torch.no_grad()
+def prefill(model, ids, device, chunk=1024):
+    """Chunked prefill.
+
+    Volta has no flash or memory-efficient SDPA backend, so a full-length
+    prefill falls back to the math path and materialises a 28 x T x T
+    attention matrix, which is 12.8 GiB at T=15k. Feeding the prompt in
+    chunks against the growing cache gives identical results with attention
+    bounded by chunk x T, and `logits_to_keep=1` avoids a T x 152k logit
+    tensor that is never read.
+    """
+    cache = DynamicCache()
+    T = ids.shape[-1]
+    logits = None
+    for i in range(0, T, chunk):
+        blk = ids[:, i : i + chunk]
+        pos = torch.arange(i, i + blk.shape[-1], device=device).unsqueeze(0)
+        out = model(
+            input_ids=blk,
+            past_key_values=cache,
+            position_ids=pos,
+            use_cache=True,
+            logits_to_keep=1,
+        )
+        cache = out.past_key_values
+        logits = out.logits[0, -1]
+        del out
+    return logits, cache
+
+
+@torch.no_grad()
 def greedy(model, tok, cache, first_logits, n_new, device):
     """Greedy decode from a prepared cache. Returns tokens and their NLL."""
     toks, nlls = [], []
@@ -360,26 +390,21 @@ def main() -> int:
         # ---- arm 1: fp16 prefill, greedy 512. y* and NLL_fp16 come together,
         # because y* is by construction fp16's own argmax path.
         tap.on = False
-        out = model(**ids, use_cache=True)
-        cache_a = out.past_key_values
+        last_logits, cache_a = prefill(model, ids.input_ids, device)
         k_fp16 = {
             li: cache_keys(cache_a, li)[0][0].float().cpu().numpy() for li in LAYERS
         }
-        y_star, nll_fp16 = greedy(
-            model, tok, cache_a, out.logits[0, -1], MAXGEN, device
-        )
+        y_star, nll_fp16 = greedy(model, tok, cache_a, last_logits, MAXGEN, device)
         del cache_a
         torch.cuda.empty_cache()
 
         # ---- arm 2: nf4a prefill, teacher-forced on y*, queries captured.
-        tap.on = True
-        out_q = model(**ids, use_cache=True)
-        tap.on = False
-        cache_b = quantize_prefill(out_q.past_key_values, HARNESS.HOT)
+        logits_q, cache_b = prefill(model, ids.input_ids, device)
+        cache_b = quantize_prefill(cache_b, HARNESS.HOT)
         k_nf4a = {
             li: cache_keys(cache_b, li)[0][0].float().cpu().numpy() for li in LAYERS
         }
-        first_lp = torch.log_softmax(out_q.logits[0, -1].float(), -1)
+        first_lp = torch.log_softmax(logits_q.float(), -1)
         yt = torch.tensor([y_star], device=device)
         pos = torch.arange(T, T + len(y_star), device=device).unsqueeze(0)
         tap.on = True
@@ -398,14 +423,14 @@ def main() -> int:
         nll_nf4a = [-float(first_lp[y_star[0]])] + [
             -float(lp[i, y_star[i + 1]]) for i in range(len(y_star) - 1)
         ]
-        del cache_b, out_tf, out_q
+        del cache_b, out_tf, logits_q
         torch.cuda.empty_cache()
 
         # ---- arm 3: nf4a prefill, free-running greedy, for A0.
-        out3 = model(**ids, use_cache=True)
-        cache_c = quantize_prefill(out3.past_key_values, HARNESS.HOT)
-        y_nf4a, _ = greedy(model, tok, cache_c, out3.logits[0, -1], MAXGEN, device)
-        del cache_c, out3
+        logits3, cache_c = prefill(model, ids.input_ids, device)
+        cache_c = quantize_prefill(cache_c, HARNESS.HOT)
+        y_nf4a, _ = greedy(model, tok, cache_c, logits3, MAXGEN, device)
+        del cache_c
         torch.cuda.empty_cache()
 
         refs = rec["answers"]
