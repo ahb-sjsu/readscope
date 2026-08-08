@@ -5,7 +5,7 @@ consumer, get back what that consumer actually reads.
 
 [![PyPI](https://img.shields.io/pypi/v/readscope)](https://pypi.org/project/readscope/)
 [![Spec](https://img.shields.io/badge/spec-partial-orange)](SPEC.md)
-[![Calibration](https://img.shields.io/badge/calibrations-C--0_to_C--10-blue)](CALIBRATION.md)
+[![Calibration](https://img.shields.io/badge/calibrations-C--0_to_C--11-blue)](CALIBRATION.md)
 [![Tests](https://img.shields.io/badge/tests-73-green)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -157,9 +157,29 @@ the number it reports is how much those two references differ. **Two
 reasonable references for one head differ by about 0.3 in overlap**, so a
 recovery number without its reference named is not interpretable.
 
+**Read operators drift along the sequence.** A head's read operator is
+spanned by its queries, so a key compressed against an early operator is read
+later by a different one — a candidate mechanism for the long-generation
+degradation turboquant-pro reports and does not explain. Measured against a
+**paired null**, because two disjoint samples of one distribution do not give
+identical operators either:
+
+| graded rank | 1 | 2 | 4 | 8 | 16 |
+|---|---:|---:|---:|---:|---:|
+| positional | 0.667 | 0.385 | 0.252 | 0.193 | 0.181 |
+| random null | 0.933 | 0.572 | 0.470 | 0.405 | 0.414 |
+
+The null is more than half the naive effect: read against 1.0 the drift at
+rank 2 looks like 0.615, against the null it is 0.224. What survives is real
+— at rank 1, where the null is nearly perfect, the **dominant** read
+direction still moves. Allocating against the early operator costs the late
+consumer **225% of a uniform split's cost more** than allocating against the
+late one. Sixteen cells, two layers, one 3B model, 192 positions: a mechanism
+candidate on a short sequence, never run against a real degradation curve.
+
 ### Honest negatives, kept
 
-**Ten of seventeen calibrations failed**, and the failures moved the
+**Thirteen of twenty-one calibrations failed**, and the failures moved the
 specification further than the successes did. `CALIBRATION.md` keeps all of them
 with the wrong claims left standing for the corrections to point at. Two are
 worth reading before trusting any number here:
@@ -174,6 +194,11 @@ worth reading before trusting any number here:
   saturates the softmax. The shortcut was declared before the run and an
   anti-vacuity bar measured attention entropy, so the artifact announced
   itself instead of becoming a result.
+- **A drift sweep would have measured the wrong axis entirely.** The
+  source-matched query set is stored head-major, so slicing it flat cuts by
+  head rather than by position — it would have reported head-to-head
+  variation as positional drift. Nothing but reading the storage layout
+  caught that one.
 
 ---
 
