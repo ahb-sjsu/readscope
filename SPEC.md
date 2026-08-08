@@ -382,13 +382,58 @@ two published figures, whose resolutions are 0.505 and 0.596. **R3 passed**:
 the probe is exact against its own target, so the disagreement is not a
 degraded instrument.
 
-**R1 failed**, and it matters. The bar asked that the two references disagree
-on *every* cell, and one cell agrees at 0.985. So the reference choice is a
-large and real contributor to the gap and it is **not uniform, and not the
-whole of it**: median reference disagreement sits at 0.796 where the
-published figures sit near 0.55, so something else contributes too. The
-remaining candidates are the query capture, the GQA grouping and the model
-and layer set, none of which this sweep matched to the source.
+**R1 failed**, and it mattered. The bar asked that the two references
+disagree on *every* cell, and one cell agreed at 0.985. So the reference
+choice was a large and real contributor and not the whole of it, with a
+residual left for the query capture, the grouped-query grouping and the model
+and layer set. **C-10 closed that residual.**
+
+### C-10 closes it, and the query set was the cause
+
+C-10 matches all three unmatched factors to `gateB_llama_rematch.py`:
+Llama-3.2-3B, layers {8, 16}, float32, and `Qset` as **every query in a
+key-value head's group across the whole sequence**, 576 vectors rather than
+the 24 C-4 sampled. Probe settings are the source's: 32 probe keys, 160
+unit-norm directions, step 1e-3, pseudoinverse, graded at rank 16. **PASS on
+all six bars.**
+
+| | queries per cell | unweighted reference rank | median overlap |
+|---|---:|---:|---:|
+| C-4 | 24 | 24 | 0.821 |
+| **C-10** | **576** | **128** | **0.703** |
+| published GO-P-2026-021 | 576 | 128 | **0.647** |
+
+**Matching the query set closed 68 percent of the distance to the published
+figure**, from 0.174 away to 0.056. The mechanism is the one the extraction
+predicted: 24 query vectors give a rank-24 covariance whose top-16 is well
+separated, while 576 give a full-rank one whose top-16 is far less
+determined, so the two references disagree more.
+
+**The probe recovers the weighted operator at resolution 1.000000 on all 16
+cells** under the source's own settings, so nothing about the instrument is
+implicated. M3, that the probe-against-unweighted and
+weighted-against-unweighted overlaps agree, came out at 1.6e-9 and is
+**arithmetic given M1 rather than an independent finding**, which the sweep
+said in advance: if the probe *is* the weighted operator then its overlap
+with any third object is that operator's overlap.
+
+**So the published figure is the reference choice, entirely.** A
+finite-difference probe recovers the softmax-weighted Jacobian Gram exactly;
+the source grades it against the unweighted query covariance; and the number
+reported is how much those two differ.
+
+**What is not controlled**, and is the honest size of what remains: the input
+text and the probe-key draw, neither matched to the source. The residual 0.056
+is the scale that explains, and this sweep does not claim to reproduce 0.647
+to the digit. It claims the magnitude and the mechanism, which is what the
+remainder was about.
+
+None of this is a correction of anyone. An unweighted query covariance is a
+defensible account of what a head reads, precisely because it does not depend
+on which key is being perturbed. The datasheet lesson stands and is now
+quantified: **two reasonable references for the same head differ by about
+0.3 in overlap, so a recovery number without its reference named is not
+interpretable.**
 
 **This audits a definition, it does not correct anyone.** An unweighted query
 covariance is a defensible account of what a head reads, precisely because it

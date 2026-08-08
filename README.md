@@ -143,6 +143,16 @@ including rank one. Below full dimension the estimate is a projection onto a
 random subspace, and a projected operator's leading eigenvector is not the
 operator's. **Pay `k >= d` regardless of how many directions you need.**
 
+**What the published 0.647 actually measures.** The probe recovers the
+softmax-weighted Jacobian Gram at resolution **1.000000** under the source
+program's own settings. That program grades against the *unweighted* query
+covariance, and the number it reports is how much those two references
+differ. Matching its query set — 576 queries per cell, not 24 — closed 68
+percent of the remaining distance, from 0.821 to 0.703 against a published
+0.647. **Two reasonable references for one head differ by about 0.3 in
+overlap**, so a recovery number without its reference named is not
+interpretable.
+
 Those three inherited measurements:
 
 | Run | Substrate | Overlap | Chance | Verdict |

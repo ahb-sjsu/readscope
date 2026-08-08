@@ -566,3 +566,32 @@ been, and it took three attempts and two vacuous passes to reach honestly.
 Kept from the attempts: the dimensionless axis, the refusal to extrapolate,
 the refusal to read a rank-deficient sample, and the separation bar as a
 standing requirement. Loading stays a warning.
+
+
+### F-23, from C-10: C-4's remainder is closed, and the query set was it
+
+Matching all three unmatched factors to `gateB_llama_rematch.py` moved the
+median weighted-against-unweighted overlap from **0.821 to 0.703** against a
+published 0.647, closing **68 percent** of the distance. The cause is the
+query set: the source uses every query in a key-value head's group across the
+sequence, 576 vectors, where C-4 sampled 24. That takes the unweighted
+reference from rank 24 with a well separated top-16 to full rank 128 whose
+top-16 is far less determined, so the two references disagree more.
+
+Under the source's own probe settings the instrument recovers the weighted
+operator at resolution **1.000000 on all 16 cells**, so nothing about the
+probe is implicated in the published number.
+
+M3, the closure identity, is **arithmetic given M1** and was declared as such
+before the run rather than presented as a discovery. If the probe is the
+weighted operator, its overlap with any third object is that operator's
+overlap. The bar could have failed only by the probe not being exact, which is
+what made it worth stating.
+
+**Left uncontrolled and stated as such:** the input text and the probe-key
+draw. The residual 0.056 is the scale those explain. This sweep claims the
+magnitude and the mechanism, not the digit.
+
+The datasheet lesson is now quantified rather than qualitative: **two
+reasonable references for one attention head differ by about 0.3 in overlap.**
+A recovery number without its reference named is not interpretable.
