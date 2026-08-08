@@ -33,7 +33,7 @@ from pathlib import Path
 
 import numpy as np
 
-# ---- harness config, matched to tq_abl.sh, set BEFORE importing the harness --
+# ---- harness config, matched to tq_abl.sh; set BEFORE the harness import
 HARNESS_ENV = {
     "CODEBOOK": "nf4a",
     "KEY_BITS": "4",
@@ -105,9 +105,7 @@ try:
     _RS = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
 
     def rouge_l(pred, refs):
-        return 100.0 * max(
-            _RS.score(r, pred)["rougeL"].fmeasure for r in refs
-        )
+        return 100.0 * max(_RS.score(r, pred)["rougeL"].fmeasure for r in refs)
 
     ROUGE_IMPL = "rouge_score.RougeScorer(rougeL, stemmer)"
 except Exception:  # pragma: no cover - recorded in the record either way
@@ -181,7 +179,9 @@ def spearman(x, y):
             elif i % 2 == 0:
                 num = (m * (b - m) * x) / ((a + 2 * m - 1) * (a + 2 * m))
             else:
-                num = -((a + m) * (a + b + m) * x) / ((a + 2 * m) * (a + 2 * m + 1))
+                num = -((a + m) * (a + b + m) * x) / (
+                    (a + 2 * m) * (a + 2 * m + 1)
+                )
             d = 1.0 + num * d
             d = 1e-30 if abs(d) < 1e-30 else d
             d = 1.0 / d
@@ -215,6 +215,49 @@ def random_orthogonal(d, rng):
     A = rng.standard_normal((d, d))
     Q, R = np.linalg.qr(A)
     return Q * np.sign(np.diag(R))[None, :]
+
+
+def operator_fast(K, Q, probe_idx, d):
+    """C11C.operator in closed form, for prefill-sized key sets.
+
+    C-11c's loop rebuilds an (n_query x n_key) array once per probe key. At
+    192 positions that was free; here the key set is the whole settled
+    prefill, tens of thousands of keys, and 24 of those passes per cell and
+    window dominated everything else.
+
+    The sum collapses analytically. With ``P`` the attention and
+    ``w_ij = P_ij (d_js - P_is)``,
+
+        a_is = sum_j P_ij^2 (d_js - P_is)^2
+             = P_is^2 - 2 P_is^3 + P_is^2 * sum_j P_ij^2
+
+    so summing over the probe set needs only the probe columns of ``P`` plus
+    one full row-wise sum of squares. This is the same estimator, not an
+    approximation, and ``verify_operator_fast`` checks that against the
+    imported original before any measurement is taken.
+    """
+    P = C11C.attention(K, Q, d)
+    s2 = np.einsum("ij,ij->i", P, P)
+    Pp = P[:, probe_idx]
+    Pp2 = Pp * Pp
+    A = (1.0 + s2) * Pp2.sum(axis=1) - 2.0 * (Pp2 * Pp).sum(axis=1)
+    M = (Q * A[:, None]).T @ Q / d
+    return 0.5 * (M + M.T)
+
+
+def verify_operator_fast(rng, d=16, n_key=64, n_q=32, n_probe=7):
+    """Assert the closed form reproduces the imported estimator exactly."""
+    K = rng.standard_normal((n_key, d))
+    Q = rng.standard_normal((n_q, d))
+    probe = rng.choice(n_key, size=n_probe, replace=False)
+    a = C11C.operator(K, Q, probe, d)
+    b = operator_fast(K, Q, probe, d)
+    dev = float(np.max(np.abs(a - b)) / max(1e-30, np.max(np.abs(a))))
+    if not dev < 1e-10:
+        raise SystemExit(
+            f"operator_fast disagrees with C11C.operator: {dev:g}"
+        )
+    return dev
 
 
 def cache_keys(cache, li):
@@ -276,8 +319,12 @@ class ProjTap:
         self.q, self.k, self.handles, self.on = {}, {}, [], False
         for li in layers:
             attn = model.model.layers[li].self_attn
-            self.handles.append(attn.q_proj.register_forward_hook(self._mk(li, "q")))
-            self.handles.append(attn.k_proj.register_forward_hook(self._mk(li, "k")))
+            self.handles.append(
+                attn.q_proj.register_forward_hook(self._mk(li, "q"))
+            )
+            self.handles.append(
+                attn.k_proj.register_forward_hook(self._mk(li, "k"))
+            )
 
     def _mk(self, li, which):
         def hook(_m, _i, out):
@@ -312,7 +359,11 @@ def prefill_exposure(K_prefill, K_gen, Qw, step, n_settled, hd, grp):
     sees. Reported because a shrinking exposure with a growing gap rules out
     the trivial reading, that the fixed error simply gets more airtime.
     """
-    keys = np.concatenate([K_prefill, K_gen[:step]], axis=0) if step > 0 else K_prefill
+    keys = (
+        np.concatenate([K_prefill, K_gen[:step]], axis=0)
+        if step > 0
+        else K_prefill
+    )
     z = (Qw @ keys.T) / np.sqrt(hd)
     z -= z.max(axis=-1, keepdims=True)
     e = np.exp(z)
@@ -357,12 +408,18 @@ def greedy(model, tok, cache, first_logits, n_new, device):
     toks, nlls = [], []
     logits = first_logits
     T = cache_keys(cache, 0)[0].shape[2]
+    # the generation config's stop set, not just the tokenizer's single eos:
+    # Qwen2.5-Instruct stops on <|im_end|> and <|endoftext|> both, and the
+    # harness this is matched to went through generate(), which honours it.
+    eos = model.generation_config.eos_token_id
+    eos = set(eos if isinstance(eos, (list, tuple)) else [eos])
+    eos.add(tok.eos_token_id)
     for i in range(n_new):
         lp = torch.log_softmax(logits.float(), dim=-1)
         nt = int(lp.argmax(-1))
         toks.append(nt)
         nlls.append(-float(lp[nt]))
-        if nt == tok.eos_token_id:
+        if nt in eos:
             break
         pos = torch.tensor([[T + i]], device=device)
         out = model(
@@ -382,15 +439,21 @@ def main() -> int:
     torch.manual_seed(SEED)
     rng = np.random.default_rng(SEED)
 
-    prompt_fmt = json.load(open(f"{LB_CONF}/dataset2prompt.json"))["gov_report"]
+    prompt_fmt = json.load(open(f"{LB_CONF}/dataset2prompt.json"))[
+        "gov_report"
+    ]
     data = [json.loads(x) for x in open(LB_DATA)][:N_DOCS]
 
     tok = AutoTokenizer.from_pretrained(HARNESS_ENV["MODEL"], use_fast=True)
-    model = AutoModelForCausalLM.from_pretrained(
-        HARNESS_ENV["MODEL"],
-        dtype=torch.float16,
-        attn_implementation="sdpa",
-    ).to(device).eval()
+    model = (
+        AutoModelForCausalLM.from_pretrained(
+            HARNESS_ENV["MODEL"],
+            dtype=torch.float16,
+            attn_implementation="sdpa",
+        )
+        .to(device)
+        .eval()
+    )
     cfg = model.config
     n_q, n_kv = cfg.num_attention_heads, cfg.num_key_value_heads
     hd = getattr(cfg, "head_dim", cfg.hidden_size // n_q)
@@ -398,6 +461,12 @@ def main() -> int:
     print(
         f"[c12] layers={cfg.num_hidden_layers} q={n_q} kv={n_kv} hd={hd} "
         f"grp={grp} rouge={ROUGE_IMPL}",
+        flush=True,
+    )
+
+    op_dev = verify_operator_fast(rng)
+    print(
+        f"[c12] operator_fast vs C11C.operator: max rel dev {op_dev:.3e}",
         flush=True,
     )
 
@@ -418,9 +487,12 @@ def main() -> int:
         tap.on = False
         last_logits, cache_a = prefill(model, ids.input_ids, device)
         k_fp16 = {
-            li: cache_keys(cache_a, li)[0][0].float().cpu().numpy() for li in LAYERS
+            li: cache_keys(cache_a, li)[0][0].float().cpu().numpy()
+            for li in LAYERS
         }
-        y_star, nll_fp16 = greedy(model, tok, cache_a, last_logits, MAXGEN, device)
+        y_star, nll_fp16 = greedy(
+            model, tok, cache_a, last_logits, MAXGEN, device
+        )
         del cache_a
         torch.cuda.empty_cache()
 
@@ -428,7 +500,8 @@ def main() -> int:
         logits_q, cache_b = prefill(model, ids.input_ids, device)
         cache_b = quantize_prefill(cache_b, HARNESS.HOT)
         k_nf4a = {
-            li: cache_keys(cache_b, li)[0][0].float().cpu().numpy() for li in LAYERS
+            li: cache_keys(cache_b, li)[0][0].float().cpu().numpy()
+            for li in LAYERS
         }
         first_lp = torch.log_softmax(logits_q.float(), -1)
         yt = torch.tensor([y_star], device=device)
@@ -467,7 +540,7 @@ def main() -> int:
         r_fp16 = rouge_l(tok.decode(y_star, skip_special_tokens=True), refs)
         r_nf4a = rouge_l(tok.decode(y_nf4a, skip_special_tokens=True), refs)
 
-        # ---- geometry, per (layer, kv-head) cell -----------------------------
+        # ---- geometry, per (layer, kv-head) cell ----
         n_settled = T - HARNESS.HOT
         cells = []
         for li in LAYERS:
@@ -487,7 +560,7 @@ def main() -> int:
                     Qw = np.ascontiguousarray(
                         qh[:, edges[w] : edges[w + 1], :].reshape(-1, hd)
                     )
-                    M = C11C.operator(Kfh, Qw, probe, hd)
+                    M = operator_fast(Kfh, Qw, probe, hd)
                     trM = float(np.trace(M))
                     if trM <= 0:
                         dw.append(0.0)
@@ -495,15 +568,23 @@ def main() -> int:
                         continue
                     dw.append(float(np.sum(M * Sig)) / trM)
                     dw_rot.append(
-                        [float(np.sum(M * (R @ Sig @ R.T))) / trM for R in rots]
+                        [
+                            float(np.sum(M * (R @ Sig @ R.T))) / trM
+                            for R in rots
+                        ]
                     )
                 expo = []
                 for w in range(N_WINDOWS):
                     step = int(edges[w + 1]) - 1
                     expo.append(
                         prefill_exposure(
-                            Kf[h], k_dec[li][h], qh[:, step, :], step,
-                            n_settled, hd, grp,
+                            Kf[h],
+                            k_dec[li][h],
+                            qh[:, step, :],
+                            step,
+                            n_settled,
+                            hd,
+                            grp,
                         )
                     )
                 cells.append(
@@ -524,7 +605,7 @@ def main() -> int:
         early_tf = float(np.mean(d_tf[e0:e1])) if n > e1 else float("nan")
         late_tf = float(np.mean(d_tf[l0:l1])) if n > l0 else float("nan")
 
-        def growth(key):
+        def growth(key, cells=cells):
             gs = []
             for c in cells:
                 a, b = c["d_windows"][0], c["d_windows"][-1]
@@ -614,10 +695,11 @@ def main() -> int:
         "schema": "readscope-c12-longgen-drift-v1",
         "declaration": "calibration/DECLARATION-C12.md",
         "declaration_commit": "90e2ce2",
-        "provenance": "tests C-11c's drift mechanism against the degradation "
-        "curve in turboquant-pro benchmarks/kvquant_matrix/results_longgen.json; "
-        "quantization imported from tq_paper_lb_shard.py and the read operator "
-        "imported from c11c_operator_drift.py, so neither is re-derived here",
+        "provenance": "tests C-11c's drift mechanism against the "
+        "degradation curve in turboquant-pro "
+        "benchmarks/kvquant_matrix/results_longgen.json; quantization is "
+        "imported from tq_paper_lb_shard.py and the read operator from "
+        "c11c_operator_drift.py, so neither is re-derived here",
         "harness_env": HARNESS_ENV,
         "declared": {
             "n_docs": N_DOCS,
@@ -638,12 +720,15 @@ def main() -> int:
             "construction and so carries no information",
         },
         "rouge_impl": ROUGE_IMPL,
+        "operator_fast_max_rel_dev_vs_c11c": op_dev,
         "summary": {
             "n_docs_graded": len(docs),
             "rouge_fp16": float(np.mean([d["rouge_fp16"] for d in docs])),
             "rouge_nf4a": float(np.mean([d["rouge_nf4a"] for d in docs])),
             "rouge_gap": rouge_gap,
-            "median_d_tf_early": float(np.median([d["d_tf_early"] for d in ok])),
+            "median_d_tf_early": float(
+                np.median([d["d_tf_early"] for d in ok])
+            ),
             "median_d_tf_late": float(np.median([d["d_tf_late"] for d in ok])),
             "median_d_tf_rise": med_rise,
             "sign_test_p": p_sign,
@@ -677,18 +762,27 @@ def main() -> int:
     out = OUTDIR / "c12-longgen-drift.json"
     out.write_text(json.dumps(record, indent=2, sort_keys=True))
 
-    print(f"\nROUGE-L fp16 {record['summary']['rouge_fp16']:.2f} "
-          f"nf4a {record['summary']['rouge_nf4a']:.2f} "
-          f"gap {rouge_gap:+.2f} (bar {A0_ROUGE_BAR})")
-    print(f"teacher-forced D_tf {record['summary']['median_d_tf_early']:.4f} -> "
-          f"{record['summary']['median_d_tf_late']:.4f} "
-          f"rise {med_rise:+.4f} nats, sign p={p_sign:.4f} (bar {A1_NATS_BAR})")
-    print(f"geometric growth positional {np.median(g_pos):+.4f} vs rotated "
-          f"{np.median(g_rot):+.4f}, margin {b1:+.4f} (bar {B1_GROWTH_BAR})")
-    print(f"prefill attention mass {record['summary']['median_exposure_early']:.4f}"
-          f" -> {record['summary']['median_exposure_late']:.4f} (control, no bar)")
-    print(f"spearman g vs D_tf rise rho={rho:+.3f} p={p_rho:.4f}; "
-          f"null rho={rho_rot:+.3f} p={p_rot:.4f}")
+    print(
+        f"\nROUGE-L fp16 {record['summary']['rouge_fp16']:.2f} "
+        f"nf4a {record['summary']['rouge_nf4a']:.2f} "
+        f"gap {rouge_gap:+.2f} (bar {A0_ROUGE_BAR})"
+    )
+    print(
+        f"teacher-forced D_tf {record['summary']['median_d_tf_early']:.4f} -> "
+        f"{record['summary']['median_d_tf_late']:.4f} "
+        f"rise {med_rise:+.4f} nats, sign p={p_sign:.4f} (bar {A1_NATS_BAR})"
+    )
+    print(
+        f"geometric growth positional {np.median(g_pos):+.4f} vs rotated "
+        f"{np.median(g_rot):+.4f}, margin {b1:+.4f} (bar {B1_GROWTH_BAR})"
+    )
+    ee = record["summary"]["median_exposure_early"]
+    el = record["summary"]["median_exposure_late"]
+    print(f"prefill attention mass {ee:.4f} -> {el:.4f} (control, no bar)")
+    print(
+        f"spearman g vs D_tf rise rho={rho:+.3f} p={p_rho:.4f}; "
+        f"null rho={rho_rot:+.3f} p={p_rot:.4f}"
+    )
     for k in sorted(bars):
         print(f"{k:<32} {'PASS' if bars[k] else 'FAIL'}")
     print("VERDICT", verdict)
