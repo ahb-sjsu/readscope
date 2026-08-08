@@ -37,7 +37,7 @@ frequency bins.
 | Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Measured for this package's estimators, and it is bad** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
-| Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **One curve measured, synthetic consumer** |
+| Input impedance | ohms | Probe loading. Divergence between the probing distribution and the activation distribution. | **One curve measured. The correction does NOT yet transfer** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
 | Temperature drift | ppm/°C | Stability of a reading across architectures and scales at matched geometry. | **Four families, spread 1e-15. Four scales, spread 7e-16** |
 | Applicability | probe coupling | Which consumer regimes this probe can be attached to at all. | **Bounded, and enforced in code** |
@@ -551,6 +551,78 @@ threshold C-3b applied to the median *across* cells. One cell of 48 sits at
 unchanged to three decimals and every required budget is still 1.0, so the
 S2 conclusion does not depend on it. That is the fourth time in this
 programme I have declared a universal where a distribution was called for.
+
+---
+
+## The loading correction does not work yet, and the sweep that said it did was wrong
+
+`CALIBRATION.md` has said since C-1b that turning the loading curve into a
+correction is the point of having it. C-7 and C-7b tried. Neither produced a
+usable correction and the second one produced a **false pass**, which is worth
+more space than a success would be.
+
+### C-7 was invalid, not failed
+
+It estimated loading from the 16 operating points it probed at, in a
+128-dimensional head. A covariance fitted from 16 points in 128 dimensions has
+rank 15, the ridge dominates its log determinant, and the divergence came back
+around **1e11 nats**. No bar was tested. The run was stopped once the
+readings were seen to be degenerate, so it wrote no record; the script stays
+in `calibration/` as the design that was wrong.
+
+The instrument now refuses that case. `probe_loading` raises when the sample
+count does not exceed the dimension and warns below five samples per
+dimension. **An instrument that reports 1e11 without complaint is worse than
+one that stops.**
+
+The conceptual error underneath was mine: loading is a property of two
+*distributions*, not of the sample a probe happens to visit. Conflating them
+tied the loading estimate's quality to the probe budget, which are unrelated.
+
+### C-7b passed all six bars and the pass is an artifact
+
+With loading estimated from 1024 independent draws per distribution, C-7b
+reported a **92.1 percent reduction in mean absolute error** and PASS on
+every bar including T2, the falsifiable one.
+
+It is not a result. The correction was fitted over 0.89 to 91.64 nats. In
+C-7b:
+
+- **only 15 percent of readings fell inside that range**, and the maximum
+  loading was 1.9e12 nats
+- outside it the correction clamps to its endpoint attenuation of 0.437, so
+  every reading was divided by the same constant
+- **202 of 240 corrected values came out at exactly 1.0**, pinned by the
+  output clip
+- the truth being compared against is also 1.0
+
+So the correction did not predict anything. It divided by a constant and the
+clip did the rest, and the error against a target of 1.0 went to zero because
+the answer was clipped onto the target. **T2 passed for a reason that has
+nothing to do with the correction working.**
+
+`LoadingCorrection.correct` now refuses to extrapolate by default. That is the
+bar C-7b was missing: a correction must be evaluated inside its fitted domain,
+and a reading that needs extrapolation must be recorded as out of range rather
+than clamped into an answer.
+
+### Why it does not transfer, and what would fix it
+
+The loading axis is **not dimensionless**. Jeffreys divergence between fitted
+Gaussians grows with dimension and with estimator bias, so a curve fitted on a
+24-dimensional synthetic consumer sits at 0.89 to 92 nats while the same
+qualitative mismatch at head_dim 128 reads in the thousands and at head_dim
+256 in the billions. The consumer family was never the obstacle. The units
+were.
+
+**Until loading is normalised so that the same physical mismatch reads the
+same number at any dimension, no correction fitted at one dimension can be
+applied at another.** That is the next piece of work, and it is a change to
+the axis rather than to the curve.
+
+Loading therefore remains a **warning, not a correction**, which is exactly
+what this document said before the attempt and is now said with two records
+behind it.
 
 ---
 

@@ -15,7 +15,9 @@ produce before any accuracy claim here is worth the name.
 
 from readscope.allocate import Allocation, uniform_allocation, water_fill
 from readscope.loading import (
+    LoadingCorrection,
     LoadingReading,
+    fit_loading_correction,
     interpolate_distribution,
     probe_loading,
 )
@@ -53,6 +55,7 @@ __version__ = "0.0.1"
 __all__ = [
     "Allocation",
     "Applicability",
+    "LoadingCorrection",
     "LoadingReading",
     "OverlapReading",
     "ProbeResult",
@@ -68,6 +71,7 @@ __all__ = [
     "decay_sensitivity",
     "differential_fraction",
     "displacement_decomposition",
+    "fit_loading_correction",
     "interpolate_distribution",
     "jacobian_probe",
     "probe_loading",

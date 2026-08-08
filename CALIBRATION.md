@@ -59,10 +59,10 @@ needs a correction factor before it is usable, and that too is a result worth
 having early.
 
 **A correction is the goal, not just a warning.** A scope specifies input
-impedance so the measurement can be corrected for it. If the curve is
-well-behaved, the same is available here: given a measured loading, deflate
-the reported overlap by the curve. That is what would let the instrument be
-trusted off its calibration points.
+impedance so the measurement can be corrected for it.
+
+**Attempted in C-7 and C-7b, and it does not work yet.** See F-17 and F-18.
+Loading remains a warning.
 
 ---
 
@@ -449,3 +449,54 @@ state as a rule. **A bar on every cell is only appropriate for a quantity the
 substrate has no freedom to vary.** Entropy, decay rate and trace
 concentration are all properties real models differ in by design, and they
 belong in reported distributions with bars on their aggregates.
+
+
+### F-17, from C-7: the instrument reported 1e11 nats without complaining
+
+C-7 estimated loading from the 16 points it probed at, in a 128-dimensional
+head. A covariance fitted from n <= d is rank deficient, the ridge dominates
+its log determinant, and the divergence came back around 1e11 nats. The sweep
+was **invalid rather than failed** and no bar was tested. It was stopped once
+the readings were seen to be degenerate, so it produced no record; the script
+remains in `calibration/` as the design that was wrong.
+
+`probe_loading` now raises when n <= d and warns below five samples per
+dimension. The underlying mistake was conceptual: loading is a property of
+two distributions, not of the sample a probe happens to visit, and tying its
+estimate to the probe budget confused two unrelated concerns.
+
+### F-18, from C-7b: a bar passed because the correction saturated
+
+C-7b reported a 92.1 percent error reduction and PASS on all six bars,
+including the falsifiable T2. It is an artifact.
+
+The correction was fitted over 0.89 to 91.64 nats. Only 15 percent of C-7b's
+readings fell inside that range and the largest was 1.9e12 nats. Outside the
+range the correction clamps to its endpoint attenuation of 0.437, so every
+reading was divided by one constant, and **202 of 240 corrected values came
+out at exactly 1.0** because the output clip pinned them onto the target the
+error was measured against.
+
+**This is the most dangerous failure in the programme so far, because it
+passed.** Every other declaration error produced a FAIL that demanded
+attention. This one produced a success that would have gone into the
+specification.
+
+Two repairs. `LoadingCorrection.correct` refuses to extrapolate by default,
+so a reading outside the fitted domain is an error rather than a clamped
+guess. And the missing bar is now named: **a correction sweep must require
+that its readings lie inside the correction's fitted domain**, and report the
+fraction that do.
+
+### F-19, why the correction cannot transfer as currently defined
+
+The loading axis is not dimensionless. Jeffreys divergence between fitted
+Gaussians grows with dimension, so the same qualitative mismatch reads 0.89
+to 92 nats at the 24-dimensional synthetic consumer, thousands at head_dim
+128, and billions at head_dim 256.
+
+The consumer family was never the obstacle, which is what C-7 was designed to
+test. **The units are.** Normalising loading so the same physical mismatch
+reads the same number at any dimension is a change to the axis rather than to
+the curve, and it has to happen before any correction fitted at one dimension
+can be applied at another.

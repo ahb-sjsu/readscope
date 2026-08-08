@@ -19,6 +19,7 @@ from readscope import (
     decay_sensitivity,
     differential_fraction,
     displacement_decomposition,
+    fit_loading_correction,
     interpolate_distribution,
     jacobian_probe,
     probe_loading,
@@ -689,3 +690,109 @@ def test_vector_output_carries_more_directions_than_a_scalar():
         lambda x: A @ x, pts, n_directions=d, rng=np.random.default_rng(129)
     )
     assert np.linalg.matrix_rank(res.S, tol=1e-8) == m
+
+
+# ------------------------------------------ the loading correction itself
+
+
+def test_correction_is_identity_at_zero_loading():
+    c = fit_loading_correction([0.0, 10.0, 100.0], [1.0, 0.9, 0.4])
+    assert c.expected_attenuation(0.0) == pytest.approx(1.0)
+    assert c.correct(0.8, 0.0) == pytest.approx(0.8)
+
+
+def test_correction_undoes_a_known_attenuation():
+    c = fit_loading_correction([0.0, 50.0], [1.0, 0.5])
+    assert c.correct(0.25, 50.0) == pytest.approx(0.5, abs=1e-9)
+
+
+def test_correction_is_monotone_non_increasing():
+    """More loading can never be reported as helping."""
+    c = fit_loading_correction([0.0, 5.0, 10.0, 20.0], [1.0, 0.7, 0.8, 0.3])
+    xs = [0.0, 2.0, 5.0, 10.0, 15.0, 20.0, 40.0]
+    g = [c.expected_attenuation(x) for x in xs]
+    assert all(g[i] >= g[i + 1] - 1e-12 for i in range(len(g) - 1))
+
+
+def test_correction_clamps_outside_the_fitted_range():
+    c = fit_loading_correction([1.0, 10.0], [1.0, 0.5])
+    assert c.expected_attenuation(0.0) == pytest.approx(1.0)
+    assert c.expected_attenuation(1e6) == pytest.approx(0.5)
+
+
+def test_correction_output_stays_a_valid_resolution():
+    c = fit_loading_correction([0.0, 100.0], [1.0, 0.01])
+    assert c.correct(0.9, 100.0) <= 1.0
+
+
+def test_correction_rejects_bad_calibration():
+    with pytest.raises(ValueError):
+        fit_loading_correction([1.0], [1.0])
+    with pytest.raises(ValueError):
+        fit_loading_correction([1.0, 2.0], [1.0])
+
+
+def test_correction_round_trips_its_own_calibration():
+    load = [0.9, 3.2, 10.7, 25.3, 50.5, 91.6]
+    read = [0.992, 0.989, 0.975, 0.852, 0.491, 0.437]
+    c = fit_loading_correction(load, read, source="c1b")
+    for x, y in zip(load, read, strict=False):
+        assert c.correct(y, x) == pytest.approx(1.0, abs=1e-6)
+    assert c.to_dict()["source"] == "c1b"
+
+
+def test_loading_refuses_a_rank_deficient_sample():
+    """16 points in 128 dimensions produced 1e11 nats before this guard."""
+    rng = np.random.default_rng(130)
+    activation = rng.standard_normal((2000, 128))
+    too_few = rng.standard_normal((16, 128))
+    with pytest.raises(ValueError, match="rank deficient"):
+        probe_loading(too_few, activation)
+
+
+def test_loading_warns_below_five_samples_per_dimension():
+    rng = np.random.default_rng(131)
+    activation = rng.standard_normal((2000, 16))
+    thin = rng.standard_normal((40, 16))
+    with pytest.warns(RuntimeWarning, match="per dimension"):
+        probe_loading(thin, activation)
+
+
+def test_loading_is_quiet_when_well_sampled():
+    import warnings
+
+    rng = np.random.default_rng(132)
+    a = rng.standard_normal((2000, 8))
+    b = rng.standard_normal((2000, 8))
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        probe_loading(a, b)
+
+
+def test_strict_false_downgrades_to_a_warning():
+    rng = np.random.default_rng(133)
+    activation = rng.standard_normal((300, 32))
+    too_few = rng.standard_normal((8, 32))
+    with pytest.warns(RuntimeWarning, match="rank deficient"):
+        r = probe_loading(too_few, activation, strict=False)
+    assert np.isfinite(r.jeffreys)
+
+
+def test_correction_refuses_to_extrapolate():
+    """The failure mode that manufactured C-7b's 92% error reduction."""
+    c = fit_loading_correction([1.0, 90.0], [1.0, 0.44])
+    assert c.in_domain(50.0)
+    assert not c.in_domain(1e11)
+    with pytest.raises(ValueError, match="outside the fitted range"):
+        c.correct(0.78, 1e11)
+
+
+def test_extrapolation_can_be_forced_but_is_the_documented_failure():
+    c = fit_loading_correction([1.0, 90.0], [1.0, 0.44])
+    forced = c.correct(0.78, 1e11, strict_domain=False)
+    assert forced == pytest.approx(1.0)
+
+
+def test_in_domain_correction_still_works():
+    c = fit_loading_correction([1.0, 90.0], [1.0, 0.44])
+    assert c.correct(0.44, 90.0) == pytest.approx(1.0, abs=1e-9)

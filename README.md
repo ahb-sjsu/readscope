@@ -170,7 +170,10 @@ the activation distribution the consumer meets in service, so the recovered
 operator is the read operator averaged over the wrong measure.
 
 That is not a flaw that invalidates the instrument. It is a characterizable
-effect, and the first curve is measured.
+effect, and the first curve is measured. **It is not yet a correction** — two
+attempts are recorded in `SPEC.md`, the second of which passed all its bars
+for a spurious reason and is written up as the most dangerous failure in the
+programme.
 
 | Probe loading, Jeffreys nats | Overlap |
 |---:|---:|

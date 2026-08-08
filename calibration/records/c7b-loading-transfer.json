@@ -1,0 +1,2039 @@
+{
+  "bars": {
+    "T1_loading_bites": true,
+    "T2_correction_transfers": true,
+    "T3_no_harm": true,
+    "T4_bounded": true,
+    "T5_anti_vacuity": true,
+    "T6_census": true
+  },
+  "by_alpha": {
+    "0.0": {
+      "mae_corrected": 0.022294681347947615,
+      "mae_raw": 0.2921103824606542,
+      "mean_corrected": 0.9777053186520525,
+      "mean_loading": 173677373213.92484,
+      "mean_reading": 0.7078896175393458
+    },
+    "0.25": {
+      "mae_corrected": 0.0,
+      "mae_raw": 0.24261146369979106,
+      "mean_corrected": 1.0,
+      "mean_loading": 21575373808.481197,
+      "mean_reading": 0.757388536300209
+    },
+    "0.5": {
+      "mae_corrected": 0.0,
+      "mae_raw": 0.22681364453985178,
+      "mean_corrected": 1.0,
+      "mean_loading": 9264504920.130247,
+      "mean_reading": 0.773186355460148
+    },
+    "0.75": {
+      "mae_corrected": 0.0,
+      "mae_raw": 0.21778905125100667,
+      "mean_corrected": 1.0,
+      "mean_loading": 2286854174.2667136,
+      "mean_reading": 0.7822109487489933
+    },
+    "1.0": {
+      "mae_corrected": 0.07167461983356742,
+      "mae_raw": 0.2127579778838423,
+      "mean_corrected": 0.9283253801664326,
+      "mean_loading": 35402002.76685962,
+      "mean_reading": 0.7872420221161577
+    }
+  },
+  "correction": {
+    "attenuation": [
+      0.9919078054982201,
+      0.9889341458857895,
+      0.9748335865038078,
+      0.8521213557899479,
+      0.4914198293712909,
+      0.4365329466151769
+    ],
+    "loadings": [
+      0.8898541830277417,
+      3.2255546295452175,
+      10.729987859564796,
+      25.24599190149031,
+      50.502462390545745,
+      91.64202885589137
+    ],
+    "model": "reading ~ truth * g(loading), g piecewise linear in log1p(loading), clamped outside the fitted range",
+    "source": "c1b-loading-curve.json"
+  },
+  "declared": {
+    "alphas": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "eps": 0.001,
+    "error_reduction_bar": 0.5,
+    "fit_family": "C-1b synthetic gated consumer",
+    "graded_rank": 16,
+    "ladder_span_bar": 2.0,
+    "loading_samples": 1024,
+    "max_harmed_rungs": 1,
+    "model": "reading ~ truth * g(loading), multiplicative",
+    "probe_keys": 16,
+    "ratio": 1.25,
+    "seed": 0,
+    "test_family": "real attention heads, four families"
+  },
+  "rows": [
+    {
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 7,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 0.8494054208124924,
+          "loading": 13544.323458585717,
+          "reading": 0.3707934512181816
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3547.025299813466,
+          "reading": 0.8455438907078522
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 823.4542564304212,
+          "reading": 0.8000410206897063
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 168.34738233088075,
+          "reading": 0.764652891742756
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9298366824157331,
+          "loading": 22.37903272265315,
+          "reading": 0.808722096265856
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 7,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 0.6902160351045987,
+          "loading": 13589.69116432889,
+          "reading": 0.30130203960525487
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3007.341735706643,
+          "reading": 0.6595058146635138
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 866.0135691294621,
+          "reading": 0.6597995109604428
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 167.19311206955905,
+          "reading": 0.6836115327001837
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9098776199075072,
+          "loading": 22.37903272265342,
+          "reading": 0.7913627737349145
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 7,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 14292.04705701075,
+          "reading": 0.8142697230907247
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3632.1853648228357,
+          "reading": 0.776825127147128
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 883.2148996911162,
+          "reading": 0.8229916447847325
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 173.10653824559063,
+          "reading": 0.8260486832115375
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.886929691605678,
+          "loading": 22.37903272265325,
+          "reading": 0.7714038959747926
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 7,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11034.372677432117,
+          "reading": 0.7895975043240453
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2504.703857839907,
+          "reading": 0.7536068015380832
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 571.4478760070765,
+          "reading": 0.7831341986263738
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 108.7300604221443,
+          "reading": 0.8041647564754301
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9584397876240179,
+          "loading": 20.40666030913478,
+          "reading": 0.8464707943336837
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 14,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11134.003612236838,
+          "reading": 0.7321001946342223
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2873.305266710711,
+          "reading": 0.7371387920097306
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 605.3343924594051,
+          "reading": 0.7376126804842219
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 112.82114102433397,
+          "reading": 0.7198774348308692
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8967659771554002,
+          "loading": 22.822213726158864,
+          "reading": 0.7773930396388886
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 14,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 0.5197999631181087,
+          "loading": 12182.247305688014,
+          "reading": 0.22690980955040826
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2678.6771800255383,
+          "reading": 0.8348687647862366
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 618.0056222752246,
+          "reading": 0.7904974736230219
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 112.07880848976527,
+          "reading": 0.7826096748567245
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.829677345976899,
+          "loading": 22.822213726158907,
+          "reading": 0.7192349066971103
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 14,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11118.006195791288,
+          "reading": 0.4394021358882561
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2627.29524208787,
+          "reading": 0.7950573786766443
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 630.3764843306255,
+          "reading": 0.8040544459455796
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 115.10048356863858,
+          "reading": 0.8571979987317616
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9104543509985782,
+          "loading": 22.82221372615905,
+          "reading": 0.7892592865982296
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 14,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 17607.978320811315,
+          "reading": 0.7348291924375167
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 4174.254608953646,
+          "reading": 0.7351850509945992
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 768.112578675199,
+          "reading": 0.7377930724643458
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 133.38287471585784,
+          "reading": 0.7502956630371846
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8423546533685791,
+          "loading": 21.91099434512482,
+          "reading": 0.7352304655976544
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 21,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13448.106483875428,
+          "reading": 0.8782754748562096
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3026.6390331218513,
+          "reading": 0.8587007688853914
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 643.9063564658348,
+          "reading": 0.8618448649201823
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 116.6308212935261,
+          "reading": 0.864325121768732
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9686943990438122,
+          "loading": 22.07084753936111,
+          "reading": 0.8444770542653798
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 21,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13151.638643055674,
+          "reading": 0.7459852286997746
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2957.53939396086,
+          "reading": 0.7481393480335451
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 670.6255835468975,
+          "reading": 0.7509146392146466
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 114.41429138255675,
+          "reading": 0.8039903954297712
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9825226833047717,
+          "loading": 22.070847539359903,
+          "reading": 0.8565321139103761
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 21,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 15697.959925718354,
+          "reading": 0.7937258997400773
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3082.609086562696,
+          "reading": 0.7904437887480382
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 660.4212420895145,
+          "reading": 0.793861473635206
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 113.4772010119936,
+          "reading": 0.7964838186700238
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9005707971105923,
+          "loading": 22.070847539360827,
+          "reading": 0.7850890586877267
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "llama",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 21,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 0.8704338762633145,
+          "loading": 16394.801487928755,
+          "reading": 0.3799730648388949
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3147.8342164645487,
+          "reading": 0.7248191464029451
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 634.5490984964346,
+          "reading": 0.7070894739747221
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 112.56849353449553,
+          "reading": 0.813540572865471
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9442447742170821,
+          "loading": 22.315152341422205,
+          "reading": 0.8216471362261372
+        }
+      ],
+      "tag": "llama32-3b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 7,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11370.617891188365,
+          "reading": 0.7123257162393583
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3926.258640839851,
+          "reading": 0.7187369500367163
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 1306.5989272955485,
+          "reading": 0.7277261919461339
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 305.02287107137875,
+          "reading": 0.78255129986034
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8947745970083576,
+          "loading": 22.039948616865004,
+          "reading": 0.7802188325833851
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 7,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 15125.00552652734,
+          "reading": 0.8341236330131527
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 4351.025072958986,
+          "reading": 0.8396506064273587
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 1404.4138731567964,
+          "reading": 0.849886844345702
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 308.23148603518985,
+          "reading": 0.8616870470418031
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8432606917022977,
+          "loading": 22.03994861686492,
+          "reading": 0.7353001243477183
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 7,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 16778.547193132774,
+          "reading": 0.648856896367939
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 4727.1136292092415,
+          "reading": 0.654171455405527
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 1386.6885875152984,
+          "reading": 0.6558950910294428
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 291.95747835192617,
+          "reading": 0.6403820235108822
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8257345788576949,
+          "loading": 22.03994861686482,
+          "reading": 0.7200178361054511
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 7,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13207.933964039832,
+          "reading": 0.8432973468737621
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 4183.23887254921,
+          "reading": 0.8526724425251918
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 1294.6847902410982,
+          "reading": 0.8419515735748916
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 302.7426313195242,
+          "reading": 0.8141716089325983
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9006087115590194,
+          "loading": 22.039948616865317,
+          "reading": 0.7853060199701218
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 14,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 10490.510522873974,
+          "reading": 0.8582667795775459
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2665.8150827419386,
+          "reading": 0.8582837761935688
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 659.7994680043029,
+          "reading": 0.8158514633736428
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 140.48110012905823,
+          "reading": 0.7770238694097833
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8385026651891082,
+          "loading": 20.412784251332468,
+          "reading": 0.7405086899522565
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 14,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 10338.992772871517,
+          "reading": 0.8013405760519356
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2730.6453919456544,
+          "reading": 0.7459548924030978
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 685.1133334607446,
+          "reading": 0.7697180836809377
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 139.30890709978567,
+          "reading": 0.7980197716752025
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8839872261723292,
+          "loading": 20.412784251334983,
+          "reading": 0.7806775696291374
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 14,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 10080.419516837714,
+          "reading": 0.8253078596314554
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2558.7656111615674,
+          "reading": 0.8262198267612672
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 662.4875813823035,
+          "reading": 0.8205692514788215
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 131.9290760039732,
+          "reading": 0.8206178919132107
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8737620225546885,
+          "loading": 20.412784251334415,
+          "reading": 0.7716473632270106
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 14,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11436.08465998343,
+          "reading": 0.6281318083068482
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2862.0852667911163,
+          "reading": 0.7455708191224742
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 689.4943878172348,
+          "reading": 0.7652616987040786
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 143.34470407677313,
+          "reading": 0.8187993202594888
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8427382832056814,
+          "loading": 20.41278425133345,
+          "reading": 0.7442493005415841
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 21,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11534.530710297267,
+          "reading": 0.6748350539511909
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2684.4544489181562,
+          "reading": 0.6737035225024134
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 598.4950624065959,
+          "reading": 0.6783690790853012
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 115.05404737302229,
+          "reading": 0.7106286255338868
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9532205996194197,
+          "loading": 21.656566511519088,
+          "reading": 0.8336192630569157
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 21,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 10274.787469523573,
+          "reading": 0.8868891034174816
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2557.0983380986563,
+          "reading": 0.8886934900998638
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 585.2820422443128,
+          "reading": 0.894481042975552
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 109.8417795080598,
+          "reading": 0.8803705183016858
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.980832193283134,
+          "loading": 21.656566511520396,
+          "reading": 0.8577664083986699
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 21,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11187.087635641115,
+          "reading": 0.78783346160928
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2362.3214557573465,
+          "reading": 0.7913466171284752
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 575.8369237848227,
+          "reading": 0.7938385159899657
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 110.71509503283579,
+          "reading": 0.8022566881168898
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.94737024325031,
+          "loading": 21.656566511519856,
+          "reading": 0.8285029554918155
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "qwen",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 21,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11063.6670474666,
+          "reading": 0.6802680142531646
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2581.135115100866,
+          "reading": 0.683435424702959
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 612.3453995620011,
+          "reading": 0.7329701340195431
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 110.42737508599284,
+          "reading": 0.7219894438447253
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8049862269327817,
+          "loading": 21.65656651151879,
+          "reading": 0.7039839734208393
+        }
+      ],
+      "tag": "qwen25-1.5b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 8,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 9864.903834047329,
+          "reading": 0.6933696237500693
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2451.2181646644917,
+          "reading": 0.7387620841784962
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 563.7172155095294,
+          "reading": 0.7184702005599808
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 117.03068996321397,
+          "reading": 0.7283811796206805
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9010170657066509,
+          "loading": 23.759017508642913,
+          "reading": 0.7757829243403417
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 8,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 14271.18856502011,
+          "reading": 0.7027572591763294
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2815.5116307958524,
+          "reading": 0.651241696540949
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 600.9086078266498,
+          "reading": 0.7051543937754233
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 117.68358134352832,
+          "reading": 0.7035412611776127
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8578606267268176,
+          "loading": 23.759017508643055,
+          "reading": 0.7386248840432541
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 8,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13586.20834068428,
+          "reading": 0.7785185502773497
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2926.323290089821,
+          "reading": 0.7811149210175229
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 630.3803047168716,
+          "reading": 0.7859352770594221
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 118.09591681550086,
+          "reading": 0.8249836566207857
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 23.759017508642984,
+          "reading": 0.8685065930364433
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 8,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 9900.937442321536,
+          "reading": 0.6811239191083333
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2266.7402291124768,
+          "reading": 0.6804415966168438
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 585.7489390729653,
+          "reading": 0.6830474243163301
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 119.72954103353501,
+          "reading": 0.6867785216217234
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8473267851613706,
+          "loading": 23.759017508642856,
+          "reading": 0.7295551619200997
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 16,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13630.977967483168,
+          "reading": 0.6683285698652804
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3009.051415542555,
+          "reading": 0.6576464455144967
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 638.9191344447738,
+          "reading": 0.6909481364964342
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 117.93103996660506,
+          "reading": 0.7049717247362102
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9204271765316366,
+          "loading": 23.35658180922239,
+          "reading": 0.7947934578245085
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 16,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13672.316029903164,
+          "reading": 0.5202030149702025
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2884.494159651623,
+          "reading": 0.5216664890182121
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 659.4806135675938,
+          "reading": 0.5265875724015707
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 119.53802950211445,
+          "reading": 0.5844145075075486
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.7857850538609259,
+          "loading": 23.356581809222305,
+          "reading": 0.6785293133328912
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 16,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11805.356668994575,
+          "reading": 0.7840334606395529
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2710.459526668823,
+          "reading": 0.7869294326222426
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 651.6477612048022,
+          "reading": 0.8010822628448819
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 114.02357329259641,
+          "reading": 0.8382755976942499
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.983027373359293,
+          "loading": 23.356581809222362,
+          "reading": 0.8488490400212798
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 16,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13117.951640901283,
+          "reading": 0.8744084535408946
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3045.6583778898903,
+          "reading": 0.8778620991238814
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 671.231081667841,
+          "reading": 0.8766542244017616
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 121.73047750831066,
+          "reading": 0.8800791878306581
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9828871731228848,
+          "loading": 23.356581809222405,
+          "reading": 0.8487279764178528
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 0,
+      "head_dim": 128,
+      "layer": 24,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13063.249799024952,
+          "reading": 0.873987085134014
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3333.1356001684576,
+          "reading": 0.8074288969375447
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 901.9113957516805,
+          "reading": 0.7731818973930876
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 201.12442711567357,
+          "reading": 0.8436161578603759
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 21.88088893587843,
+          "reading": 0.8912033841936043
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 1,
+      "head_dim": 128,
+      "layer": 24,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 11071.80247534756,
+          "reading": 0.8689860307017757
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 2954.640755899336,
+          "reading": 0.8671529847087617
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 851.9189534283998,
+          "reading": 0.8695662308531901
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 193.50004637720642,
+          "reading": 0.9192682213148714
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.9664796880975937,
+          "loading": 21.880888935878275,
+          "reading": 0.8437638634830369
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 2,
+      "head_dim": 128,
+      "layer": 24,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 13665.23462938119,
+          "reading": 0.7805122445233897
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3343.9278334936203,
+          "reading": 0.7910763150072135
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 916.8633704649642,
+          "reading": 0.8108815663681916
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 193.654752777833,
+          "reading": 0.8267985299347602
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8968472812810966,
+          "loading": 21.88088893587836,
+          "reading": 0.7829728201505486
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "mistral",
+      "head": 3,
+      "head_dim": 128,
+      "layer": 24,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 14607.540404734433,
+          "reading": 0.8583980853460121
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 3637.217307675472,
+          "reading": 0.8414215546691587
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 951.2994059854766,
+          "reading": 0.8569270686261756
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 201.64131582731477,
+          "reading": 0.8091737850901605
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 0.8678132220770209,
+          "loading": 21.88088893587856,
+          "reading": 0.757625272480045
+        }
+      ],
+      "tag": "mistral-7b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 8,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 333060660603.4409,
+          "reading": 0.6872820890118778
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 158543802058.4046,
+          "reading": 0.7073894180617883
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 70010432187.24225,
+          "reading": 0.7275933627962472
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 17377966757.892803,
+          "reading": 0.6918326223121938
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 176883906.08280906,
+          "reading": 0.7516543922811979
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 8,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 351697426519.4746,
+          "reading": 0.768509259798871
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 169338629378.88452,
+          "reading": 0.7694801996287813
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 74850253025.20111,
+          "reading": 0.8312448805437666
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 18596901667.08325,
+          "reading": 0.8251019303235674
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 176883988.14242846,
+          "reading": 0.7451248491337511
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 8,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 246562067485.4162,
+          "reading": 0.6703041110705438
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 77186705985.18321,
+          "reading": 0.664401564101024
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 33864946999.93637,
+          "reading": 0.6585109968729577
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 8479973797.395292,
+          "reading": 0.655272242231584
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 217106273.03439277,
+          "reading": 0.7327954344330863
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 8,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 268056018592.329,
+          "reading": 0.7258066686555709
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 81237606107.28873,
+          "reading": 0.7328849920042249
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 35595954843.758354,
+          "reading": 0.767521332461951
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 8911402085.126938,
+          "reading": 0.7661481747196125
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 217106353.73903492,
+          "reading": 0.7810128030635752
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 17,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 1183441545769.7625,
+          "reading": 0.6920340613272821
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 82048941265.0416,
+          "reading": 0.7379337528928883
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 34142235507.732605,
+          "reading": 0.7569957738046025
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 8169904503.346195,
+          "reading": 0.8490910068563949
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 48865988.772840455,
+          "reading": 0.7352502678749763
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 17,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 1469635834955.4731,
+          "reading": 0.7243239984362905
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 83300883815.6806,
+          "reading": 0.7779488042049485
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 34186749291.021454,
+          "reading": 0.8769108993560447
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 8237630879.920927,
+          "reading": 0.8423038095630068
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 48860999.89856593,
+          "reading": 0.8195525527626303
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 17,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 1283855655808.8562,
+          "reading": 0.7067336805385547
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 70717005560.13391,
+          "reading": 0.7689828132985388
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 28809012391.891262,
+          "reading": 0.8346320769984525
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 6916927549.272018,
+          "reading": 0.7330355119527255
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 92005505.4579508,
+          "reading": 0.8964424556447752
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 17,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 1867209771092.8738,
+          "reading": 0.7086130120659557
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 74901407726.92377,
+          "reading": 0.6947174514269692
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 29879688150.85235,
+          "reading": 0.7243656141834272
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 7208918694.374489,
+          "reading": 0.7803462337717206
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 92007068.22974159,
+          "reading": 0.8280605829044555
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 0,
+      "head_dim": 256,
+      "layer": 26,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 337253308198.82056,
+          "reading": 0.7203256311002678
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 61659746899.8507,
+          "reading": 0.7689551757128379
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 26701816135.34848,
+          "reading": 0.8345539520325433
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 6687387281.79177,
+          "reading": 0.761892768393991
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 124928070.25051263,
+          "reading": 0.7912282124508434
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 1,
+      "head_dim": 256,
+      "layer": 26,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 368342744791.2898,
+          "reading": 0.6477802955147347
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 63967643946.63826,
+          "reading": 0.6972495269523835
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 27686811827.38858,
+          "reading": 0.7671931796864396
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 6875908586.112353,
+          "reading": 0.8237470722337766
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 124928141.24978489,
+          "reading": 0.7988828847627221
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 2,
+      "head_dim": 256,
+      "layer": 26,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 286695813889.8219,
+          "reading": 0.7801652366148905
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 53248780577.6956,
+          "reading": 0.8207154761080215
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 23133642773.313507,
+          "reading": 0.8013512787854018
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 5804188338.468374,
+          "reading": 0.7555937288490828
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 189859416.9136049,
+          "reading": 0.7746350680119869
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    },
+    {
+      "family": "gemma",
+      "head": 3,
+      "head_dim": 256,
+      "layer": 26,
+      "rungs": [
+        {
+          "alpha": 0.0,
+          "corrected": 1.0,
+          "loading": 340702608219.8043,
+          "reading": 0.6735573325438745
+        },
+        {
+          "alpha": 0.25,
+          "corrected": 1.0,
+          "loading": 59466678657.62642,
+          "reading": 0.6729715561596777
+        },
+        {
+          "alpha": 0.5,
+          "corrected": 1.0,
+          "loading": 25834665571.83651,
+          "reading": 0.8374819899416356
+        },
+        {
+          "alpha": 0.75,
+          "corrected": 1.0,
+          "loading": 6501884731.426691,
+          "reading": 0.8161814550134464
+        },
+        {
+          "alpha": 1.0,
+          "corrected": 1.0,
+          "loading": 189859622.16535604,
+          "reading": 0.745421908352008
+        }
+      ],
+      "tag": "gemma3-4b",
+      "truth_rank": 24
+    }
+  ],
+  "runtime": {
+    "code_commit": "unknown",
+    "generated_utc": "2026-08-08T01:12:27.031027+00:00",
+    "hostname": "atlas",
+    "numpy": "2.5.1",
+    "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]"
+  },
+  "schema": "readscope-c7b-loading-transfer-v1",
+  "skipped": [],
+  "summary": {
+    "error_reduction": 0.9211721507379287,
+    "harmed_rungs": 0,
+    "mae_corrected": 0.018793860236303007,
+    "mae_raw": 0.23841650396702918,
+    "n_cells": 48
+  },
+  "supersedes": "calibration/records/c7-loading-transfer.json",
+  "verdict": {
+    "computed_from": [
+      "T1_loading_bites",
+      "T2_correction_transfers",
+      "T3_no_harm",
+      "T4_bounded",
+      "T5_anti_vacuity",
+      "T6_census"
+    ],
+    "value": "PASS"
+  }
+}
