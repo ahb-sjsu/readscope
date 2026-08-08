@@ -110,7 +110,10 @@ def test_drift_always_draws_its_null():
 def test_overlap_matrix_masks_its_diagonal():
     M = np.array([[1.0, 0.4], [0.4, 1.0]])
     fig, ax = viz.plot_overlap_matrix(M, labels=["a", "b"])
-    drawn = ax.images[0].get_array()
+    # imshow hands back a masked array, so a masked cell is the blank one
+    drawn = np.ma.filled(
+        np.ma.asarray(ax.images[0].get_array(), dtype=float), np.nan
+    )
     assert np.isnan(drawn[0, 0]) and np.isnan(drawn[1, 1])
     assert not np.isnan(drawn[0, 1])
     assert M[0, 0] == 1.0, "the caller's array must not be mutated"
