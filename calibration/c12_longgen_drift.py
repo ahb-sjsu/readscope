@@ -53,8 +53,10 @@ HARNESS_ENV = {
 os.environ.update(HARNESS_ENV)
 
 import torch  # noqa: E402
+from torch.nn.attention import SDPBackend, sdpa_kernel  # noqa: E402
 from transformers import AutoModelForCausalLM, AutoTokenizer  # noqa: E402
 from transformers.cache_utils import DynamicCache  # noqa: E402
+from transformers.integrations import sdpa_attention as _SDPA  # noqa: E402
 from transformers.models.qwen2.modeling_qwen2 import (  # noqa: E402
     apply_rotary_pos_emb,
 )
@@ -274,19 +276,6 @@ def n_cache_layers(cache):
     return len(cache.layers)
 
 
-def quantize_prefill(cache, hot):
-    """Exactly what _patched_update does on the first update of each layer."""
-    for li in range(n_cache_layers(cache)):
-        fk, fv = cache_keys(cache, li)
-        T = fk.shape[2]
-        n = max(0, T - hot)
-        if n > 0:
-            HARNESS._CUR_LAYER = li
-            fk[:, :, :n, :] = HARNESS.qdq_key_block(fk[:, :, :n, :])
-            fv[:, :, :n, :] = HARNESS.qdq_val_block(fv[:, :, :n, :])
-    return cache
-
-
 def build_prompt(tok, rec, prompt_fmt):
     prompt = prompt_fmt.format(**rec)
     tp = tok(prompt, truncation=False, return_tensors="pt").input_ids[0]
@@ -373,64 +362,78 @@ def prefill_exposure(K_prefill, K_gen, Qw, step, n_settled, hd, grp):
     return float(np.mean(settled / np.maximum(tot, 1e-30)))
 
 
-@torch.no_grad()
-def prefill(model, ids, device, chunk=1024):
-    """Chunked prefill.
+# Volta exposes no flash kernel and PyTorch's memory-efficient kernel
+# refuses `enable_gqa`, so transformers' default GQA path falls back to the
+# math backend and materialises a 28 x T x T attention matrix, 12.8 GiB at
+# T=15k. Forcing the repeat_kv path makes the memory-efficient kernel
+# available again, which peaks at 0.43 GiB on the same shape. That matters
+# for more than speed: it is what allows a **single-pass** prefill, and the
+# prefill has to be single-pass for the quantization to be faithful.
+_SDPA.use_gqa_in_sdpa = lambda *a, **k: False
 
-    Volta has no flash or memory-efficient SDPA backend, so a full-length
-    prefill falls back to the math path and materialises a 28 x T x T
-    attention matrix, which is 12.8 GiB at T=15k. Feeding the prompt in
-    chunks against the growing cache gives identical results with attention
-    bounded by chunk x T, and `logits_to_keep=1` avoids a T x 152k logit
-    tensor that is never read.
+
+def EFFICIENT():
+    return sdpa_kernel(SDPBackend.EFFICIENT_ATTENTION)
+
+
+class nf4a_cache:
+    """Quantize exactly the way the harness does, by using its own hook.
+
+    The harness patches ``DynamicCache.update`` so that the settled prefill
+    is quantized **in place and then handed to the attention call**. The
+    prefill therefore attends over quantized keys, and that error propagates
+    forward through all 28 layers, shifting the cached keys and values of
+    every deeper layer.
+
+    An earlier version of this experiment prefilled cleanly and quantized
+    afterwards. That perturbs each layer independently, with no compounding,
+    and it reproduced almost none of the published degradation: a mean ROUGE
+    gap of 0.7 against the recorded 13.7. Using the harness's own hook
+    removes the re-implementation, and with it that whole class of error.
     """
-    cache = DynamicCache()
-    T = ids.shape[-1]
-    logits = None
-    for i in range(0, T, chunk):
-        blk = ids[:, i : i + chunk]
-        pos = torch.arange(i, i + blk.shape[-1], device=device).unsqueeze(0)
-        out = model(
-            input_ids=blk,
-            past_key_values=cache,
-            position_ids=pos,
-            use_cache=True,
-            logits_to_keep=1,
+
+    def __init__(self, on):
+        self.on = on
+
+    def __enter__(self):
+        DynamicCache.update = (
+            HARNESS._patched_update if self.on else HARNESS._orig_update
         )
-        cache = out.past_key_values
-        logits = out.logits[0, -1]
-        del out
-    return logits, cache
+        return self
+
+    def __exit__(self, *exc):
+        DynamicCache.update = HARNESS._orig_update
+        return False
 
 
 @torch.no_grad()
-def greedy(model, tok, cache, first_logits, n_new, device):
-    """Greedy decode from a prepared cache. Returns tokens and their NLL."""
-    toks, nlls = [], []
-    logits = first_logits
-    T = cache_keys(cache, 0)[0].shape[2]
-    # the generation config's stop set, not just the tokenizer's single eos:
-    # Qwen2.5-Instruct stops on <|im_end|> and <|endoftext|> both, and the
-    # harness this is matched to went through generate(), which honours it.
-    eos = model.generation_config.eos_token_id
-    eos = set(eos if isinstance(eos, (list, tuple)) else [eos])
-    eos.add(tok.eos_token_id)
-    for i in range(n_new):
-        lp = torch.log_softmax(logits.float(), dim=-1)
-        nt = int(lp.argmax(-1))
-        toks.append(nt)
-        nlls.append(-float(lp[nt]))
-        if nt in eos:
-            break
-        pos = torch.tensor([[T + i]], device=device)
-        out = model(
-            input_ids=torch.tensor([[nt]], device=device),
-            past_key_values=cache,
-            position_ids=pos,
-            use_cache=True,
-        )
-        logits = out.logits[0, -1]
-    return toks, nlls
+def prefill(model, ids, device):
+    """Single-pass prefill, so the harness hook sees the whole prompt at once.
+
+    The hook quantizes on a layer's *first* update. Chunking would hand it
+    only the first chunk and leave the rest of the prefill unquantized.
+    """
+    out = model(input_ids=ids, use_cache=True, logits_to_keep=1)
+    return out.logits[0, -1], out.past_key_values
+
+
+@torch.no_grad()
+def generate_tokens(model, tok, ids, n_new):
+    """Greedy generation with the harness's own generate() arguments.
+
+    Going through generate() rather than a hand-rolled loop keeps whatever
+    the model's generation config contributes, which is what the recorded
+    run had.
+    """
+    out = model.generate(
+        **ids,
+        max_new_tokens=n_new,
+        num_beams=1,
+        do_sample=False,
+        temperature=1.0,
+        pad_token_id=tok.eos_token_id,
+    )[0]
+    return out[ids.input_ids.shape[-1] :].tolist()
 
 
 @torch.no_grad()
@@ -483,71 +486,80 @@ def main() -> int:
             print(f"[doc {di}] too short ({T}), skipped", flush=True)
             continue
 
-        # ---- arm 1: fp16 prefill, greedy 512. y* and NLL_fp16 come together,
-        # because y* is by construction fp16's own argmax path.
+        # ---- arm 1: fp16, free-running. y* is fp16's own greedy output.
         tap.on = False
         _t = {}
         _c = time.time()
-        last_logits, cache_a = prefill(model, ids.input_ids, device)
-        _t["prefill_a"] = time.time() - _c
+        with nf4a_cache(False), EFFICIENT():
+            y_star = generate_tokens(model, tok, ids, MAXGEN)
+        _t["gen_fp16"] = time.time() - _c
         _c = time.time()
-        k_fp16 = {
-            li: cache_keys(cache_a, li)[0][0].float().cpu().numpy()
-            for li in LAYERS
-        }
-        y_star, nll_fp16 = greedy(
-            model, tok, cache_a, last_logits, MAXGEN, device
-        )
-        _t["greedy_fp16"] = time.time() - _c
-        _c = time.time()
-        del cache_a
-        torch.cuda.empty_cache()
 
-        # ---- arm 2: nf4a prefill, teacher-forced on y*, queries captured.
-        logits_q, cache_b = prefill(model, ids.input_ids, device)
-        _t["prefill_b"] = time.time() - _c
+        # ---- arm 2: nf4a, free-running, for A0.
+        with nf4a_cache(True), EFFICIENT():
+            y_nf4a = generate_tokens(model, tok, ids, MAXGEN)
+        _t["gen_nf4a"] = time.time() - _c
         _c = time.time()
-        cache_b = quantize_prefill(cache_b, HARNESS.HOT)
-        k_nf4a = {
-            li: cache_keys(cache_b, li)[0][0].float().cpu().numpy()
-            for li in LAYERS
-        }
-        first_lp = torch.log_softmax(logits_q.float(), -1)
+
+        # ---- arm 3: teacher-forced NLL for both arms on the identical y*.
         yt = torch.tensor([y_star], device=device)
         pos = torch.arange(T, T + len(y_star), device=device).unsqueeze(0)
-        tap.on = True
-        out_tf = model(
-            input_ids=yt,
-            past_key_values=cache_b,
-            position_ids=pos,
-            use_cache=True,
-        )
-        tap.on = False
-        q_dec = {
-            li: tap.rotated_q(li, pos, out_tf.logits)[0].float().cpu().numpy()
-            for li in LAYERS
-        }
-        k_dec = {
-            li: tap.rotated_k(li, pos, out_tf.logits)[0].float().cpu().numpy()
-            for li in LAYERS
-        }
-        lp = torch.log_softmax(out_tf.logits[0].float(), -1)
-        nll_nf4a = [-float(first_lp[y_star[0]])] + [
-            -float(lp[i, y_star[i + 1]]) for i in range(len(y_star) - 1)
-        ]
-        del cache_b, out_tf, logits_q
-        torch.cuda.empty_cache()
 
-        # ---- arm 3: nf4a prefill, free-running greedy, for A0.
+        def teacher_forced(
+            quantized,
+            capture,
+            ids=ids,
+            T=T,
+            yt=yt,
+            pos=pos,
+            y_star=y_star,
+        ):
+            with nf4a_cache(quantized), EFFICIENT():
+                first, cache = prefill(model, ids.input_ids, device)
+                keys = {
+                    li: cache_keys(cache, li)[0][0, :, :T, :]
+                    .float()
+                    .cpu()
+                    .numpy()
+                    for li in LAYERS
+                }
+                tap.on = capture
+                out = model(
+                    input_ids=yt,
+                    past_key_values=cache,
+                    position_ids=pos,
+                    use_cache=True,
+                )
+                tap.on = False
+            flp = torch.log_softmax(first.float(), -1)
+            lp = torch.log_softmax(out.logits[0].float(), -1)
+            nll = [-float(flp[y_star[0]])] + [
+                -float(lp[i, y_star[i + 1]]) for i in range(len(y_star) - 1)
+            ]
+            qd = kd = None
+            if capture:
+                qd = {
+                    li: tap.rotated_q(li, pos, out.logits)[0]
+                    .float()
+                    .cpu()
+                    .numpy()
+                    for li in LAYERS
+                }
+                kd = {
+                    li: tap.rotated_k(li, pos, out.logits)[0]
+                    .float()
+                    .cpu()
+                    .numpy()
+                    for li in LAYERS
+                }
+            del cache, out
+            torch.cuda.empty_cache()
+            return nll, keys, qd, kd
+
+        nll_fp16, k_fp16, _, _ = teacher_forced(False, False)
+        nll_nf4a, k_nf4a, q_dec, k_dec = teacher_forced(True, True)
         _t["teacher_forced"] = time.time() - _c
         _c = time.time()
-        logits3, cache_c = prefill(model, ids.input_ids, device)
-        cache_c = quantize_prefill(cache_c, HARNESS.HOT)
-        y_nf4a, _ = greedy(model, tok, cache_c, logits3, MAXGEN, device)
-        _t["greedy_nf4a"] = time.time() - _c
-        _c = time.time()
-        del cache_c
-        torch.cuda.empty_cache()
 
         refs = rec["answers"]
         r_fp16 = rouge_l(tok.decode(y_star, skip_special_tokens=True), refs)
@@ -720,6 +732,13 @@ def main() -> int:
         "imported from tq_paper_lb_shard.py and the read operator from "
         "c11c_operator_drift.py, so neither is re-derived here",
         "harness_env": HARNESS_ENV,
+        "fidelity_note": "quantization is driven by the harness's own "
+        "_patched_update, which modifies the cache in place and hands it to "
+        "the attention call, so the prefill attends over quantized keys and "
+        "the error propagates through all 28 layers. An earlier version "
+        "prefilled cleanly and quantized afterwards, which perturbs each "
+        "layer independently and reproduced a mean ROUGE gap of 0.7 against "
+        "the recorded 13.7; that run was discarded, not reported",
         "declared": {
             "n_docs": N_DOCS,
             "layers": LAYERS,
