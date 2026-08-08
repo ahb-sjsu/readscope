@@ -91,6 +91,43 @@ water-filling is not an analogy to power allocation across frequency bins. It
 is the same optimization, with a downstream task's sensitivity in place of a
 signal's power.
 
+## It has a screen
+
+`pip install 'readscope[viz]'`, then `from readscope import viz`. matplotlib
+is optional and the module is not imported by the package, so the measuring
+core stays numpy-only.
+
+Six displays, one per thing the calibration program measured. Each draws the
+caveat that belongs with it, because the annotation is the part that stops
+the picture from lying.
+
+![read operator spectrum](docs/figures/spectrum.png)
+
+A real head, recovered blind. The effective rank is drawn because the tail
+of a concentrated spectrum is not small structure, it is no structure. Note
+that the two summaries disagree in an informative way here: the
+participation ratio is **3.97**, while **39** directions are needed to carry
+90% of the sensitivity. A few directions dominate and a long tail still
+holds real mass, and any display showing only one of those numbers would
+misrepresent the operator.
+
+![operator drift against its null](docs/figures/operator_drift.png)
+
+The drift display refuses to plot a positional curve without its null. That
+is not a stylistic choice: comparing against 1.0 instead of against the null
+is exactly what C-11b did, and it overstated the effect by more than a
+factor of two.
+
+![recovery against direction budget](docs/figures/budget_cliff.png)
+
+The budget law, drawn. Every operator rank lands on the same cliff at
+`k = d`.
+
+Regenerate them all from the committed records with
+`python calibration/make_figures.py`. It invents nothing: a figure whose
+data is missing is skipped and reported rather than filled in with something
+illustrative.
+
 ## What it is for
 
 Compression and quantization decide what to keep, and they almost always
