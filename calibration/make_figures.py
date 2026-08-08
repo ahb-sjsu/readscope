@@ -40,8 +40,11 @@ def fig_budget_cliff(viz):
         return "c6 record missing"
     surf = rec["surface_mean_resolution"]
     ranks = sorted(surf, key=int)
-    budgets = sorted({float(b) for r in ranks for b in surf[r]})
-    curves = [[surf[r][f"{b:g}"] for b in budgets] for r in ranks]
+    # the record's own key strings, since "1.0" does not survive a round
+    # trip through float formatting
+    keys = sorted(set.intersection(*(set(surf[r]) for r in ranks)), key=float)
+    budgets = [float(k) for k in keys]
+    curves = [[surf[r][k] for k in keys] for r in ranks]
     fig, ax = viz.plot_budget_curve(
         budgets,
         np.array(curves),
