@@ -258,42 +258,67 @@ def build_prompt(tok, rec, prompt_fmt):
     )
 
 
-class QueryTap:
-    """Capture pre-RoPE queries on the declared layers, then rotate them.
+class ProjTap:
+    """Capture pre-RoPE queries and keys on the declared layers, then rotate.
 
-    Hooking q_proj gives pre-RoPE queries; the rotation is applied here with
-    the position ids this experiment already knows exactly, so nothing about
-    the model's internal rope plumbing has to be guessed at.
+    Hooking q_proj/k_proj gives pre-RoPE tensors; the rotation is applied here
+    with the position ids this experiment already knows exactly, so nothing
+    about the model's internal rope plumbing has to be guessed at.
+
+    The keys are captured for the exposure control only: it needs the
+    generated tokens' own keys to work out how much attention mass is still
+    landing on the perturbed prefill.
     """
 
-    def __init__(self, model, layers, n_heads, head_dim):
+    def __init__(self, model, layers, n_heads, n_kv, head_dim):
         self.model, self.layers = model, layers
-        self.n_heads, self.head_dim = n_heads, head_dim
-        self.buf, self.handles, self.on = {}, [], False
+        self.n_heads, self.n_kv, self.head_dim = n_heads, n_kv, head_dim
+        self.q, self.k, self.handles, self.on = {}, {}, [], False
         for li in layers:
-            mod = model.model.layers[li].self_attn.q_proj
-            self.handles.append(
-                mod.register_forward_hook(self._mk(li))
-            )
+            attn = model.model.layers[li].self_attn
+            self.handles.append(attn.q_proj.register_forward_hook(self._mk(li, "q")))
+            self.handles.append(attn.k_proj.register_forward_hook(self._mk(li, "k")))
 
-    def _mk(self, li):
+    def _mk(self, li, which):
         def hook(_m, _i, out):
             if self.on:
-                self.buf[li] = out.detach()
+                (self.q if which == "q" else self.k)[li] = out.detach()
 
         return hook
 
-    def rotated(self, li, position_ids, ref):
-        q = self.buf[li]
-        B, S, _ = q.shape
-        q = q.view(B, S, self.n_heads, self.head_dim).transpose(1, 2)
+    def _rot(self, x, n_heads, position_ids, ref):
+        B, S, _ = x.shape
+        x = x.view(B, S, n_heads, self.head_dim).transpose(1, 2)
         cos, sin = self.model.model.rotary_emb(ref, position_ids)
-        q_rot, _ = apply_rotary_pos_emb(q, q, cos, sin)
-        return q_rot
+        x_rot, _ = apply_rotary_pos_emb(x, x, cos, sin)
+        return x_rot
+
+    def rotated_q(self, li, position_ids, ref):
+        return self._rot(self.q[li], self.n_heads, position_ids, ref)
+
+    def rotated_k(self, li, position_ids, ref):
+        return self._rot(self.k[li], self.n_kv, position_ids, ref)
 
     def close(self):
         for h in self.handles:
             h.remove()
+
+
+def prefill_exposure(K_prefill, K_gen, Qw, step, n_settled, hd, grp):
+    """Attention mass on the perturbed prefill, for the queries at `step`.
+
+    Exact for those queries: they see every prefill key and every generated
+    key strictly before them, which is the causal set the real decode step
+    sees. Reported because a shrinking exposure with a growing gap rules out
+    the trivial reading, that the fixed error simply gets more airtime.
+    """
+    keys = np.concatenate([K_prefill, K_gen[:step]], axis=0) if step > 0 else K_prefill
+    z = (Qw @ keys.T) / np.sqrt(hd)
+    z -= z.max(axis=-1, keepdims=True)
+    e = np.exp(z)
+    tot = e.sum(axis=-1)
+    settled = e[:, :n_settled].sum(axis=-1)
+    return float(np.mean(settled / np.maximum(tot, 1e-30)))
 
 
 @torch.no_grad()
@@ -350,6 +375,7 @@ def greedy(model, tok, cache, first_logits, n_new, device):
     return toks, nlls
 
 
+@torch.no_grad()
 def main() -> int:
     OUTDIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda:0")
@@ -375,7 +401,7 @@ def main() -> int:
         flush=True,
     )
 
-    tap = QueryTap(model, LAYERS, n_q, hd)
+    tap = ProjTap(model, LAYERS, n_q, n_kv, hd)
     rots = [random_orthogonal(hd, rng) for _ in range(N_ROT_DRAWS)]
     docs = []
 
@@ -416,7 +442,11 @@ def main() -> int:
         )
         tap.on = False
         q_dec = {
-            li: tap.rotated(li, pos, out_tf.logits)[0].float().cpu().numpy()
+            li: tap.rotated_q(li, pos, out_tf.logits)[0].float().cpu().numpy()
+            for li in LAYERS
+        }
+        k_dec = {
+            li: tap.rotated_k(li, pos, out_tf.logits)[0].float().cpu().numpy()
             for li in LAYERS
         }
         lp = torch.log_softmax(out_tf.logits[0].float(), -1)
@@ -467,12 +497,22 @@ def main() -> int:
                     dw_rot.append(
                         [float(np.sum(M * (R @ Sig @ R.T))) / trM for R in rots]
                     )
+                expo = []
+                for w in range(N_WINDOWS):
+                    step = int(edges[w + 1]) - 1
+                    expo.append(
+                        prefill_exposure(
+                            Kf[h], k_dec[li][h], qh[:, step, :], step,
+                            n_settled, hd, grp,
+                        )
+                    )
                 cells.append(
                     {
                         "layer": li,
                         "kv_head": h,
                         "d_windows": dw,
                         "d_rot_windows": dw_rot,
+                        "prefill_exposure": expo,
                         "sigma_trace": float(np.trace(Sig)),
                     }
                 )
@@ -510,6 +550,12 @@ def main() -> int:
             "d_tf_curve": [
                 float(np.mean(d_tf[i : i + 64])) for i in range(0, n - 63, 64)
             ],
+            "exposure_early": float(
+                np.median([c["prefill_exposure"][0] for c in cells])
+            ),
+            "exposure_late": float(
+                np.median([c["prefill_exposure"][-1] for c in cells])
+            ),
             "g_positional": growth("pos"),
             "g_rotated": growth("rot"),
             "cells": cells,
@@ -608,6 +654,12 @@ def main() -> int:
             "spearman_p": p_rho,
             "spearman_rot_vs_rise": rho_rot,
             "spearman_rot_p": p_rot,
+            "median_exposure_early": float(
+                np.median([d["exposure_early"] for d in ok])
+            ),
+            "median_exposure_late": float(
+                np.median([d["exposure_late"] for d in ok])
+            ),
         },
         "docs": docs,
         "bars": bars,
@@ -633,6 +685,8 @@ def main() -> int:
           f"rise {med_rise:+.4f} nats, sign p={p_sign:.4f} (bar {A1_NATS_BAR})")
     print(f"geometric growth positional {np.median(g_pos):+.4f} vs rotated "
           f"{np.median(g_rot):+.4f}, margin {b1:+.4f} (bar {B1_GROWTH_BAR})")
+    print(f"prefill attention mass {record['summary']['median_exposure_early']:.4f}"
+          f" -> {record['summary']['median_exposure_late']:.4f} (control, no bar)")
     print(f"spearman g vs D_tf rise rho={rho:+.3f} p={p_rho:.4f}; "
           f"null rho={rho_rot:+.3f} p={p_rot:.4f}")
     for k in sorted(bars):
