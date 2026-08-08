@@ -4,32 +4,71 @@
 consumer, get back what that consumer actually reads.
 
 [![Spec](https://img.shields.io/badge/spec-partial-orange)](SPEC.md)
-[![Calibration](https://img.shields.io/badge/calibration-C--0_C--1b_pass-yellow)](CALIBRATION.md)
+[![Calibration](https://img.shields.io/badge/calibrations-C--0_to_C--10-blue)](CALIBRATION.md)
+[![Tests](https://img.shields.io/badge/tests-73-green)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ```python
 from readscope import blind_probe, spectrum_of, water_fill
 
-probe = blind_probe(consumer, operating_points, mode="sketch", sketch_dim=32)
+# consumer: a callable from a vector to a scalar margin
+probe = blind_probe(consumer, operating_points)
 spec = spectrum_of(probe.S)
 
-print(spec.effective_rank)      # how many directions this consumer reads
-print(spec.energy_rank(0.9))    # how many carry 90% of its sensitivity
+spec.effective_rank      # how many directions this consumer really reads
+spec.energy_rank(0.9)    # how many carry 90% of its sensitivity
 
 alloc = water_fill(spec.eigenvalues, budget=4.0 * spec.dim)
-print(alloc.n_starved)          # directions that earn no bits
+alloc.n_starved          # directions that earn no bits
 ```
 
-`consumer` is any callable from a vector to a **scalar margin**. A logit, a
-ranking score, an attention weight. The probe never sees a label, a Jacobian,
-or a hint about which directions matter.
+The probe never sees a label, a Jacobian, or a hint about which directions
+matter. It sees `consumer(x)` and reconstructs what `consumer` is sensitive
+to.
 
-It will refuse a consumer it cannot couple to. Point it at a top-k router and
-it raises rather than reporting the confident zero that finite differencing
-would produce, because selection reads the *order* of its logits and its
-derivative vanishes almost everywhere. `readscope.regimes` carries the right
-instruments for that case, the routing margin and the differential fraction,
-inherited from turboquant-pro.
+---
+
+## The one thing to know before using it
+
+**Budget `2d` consumer calls per operating point, or expect the dominant
+direction and nothing else.**
+
+Recovery quality against the direction budget `k/d` is a cliff, not a slope:
+
+| `k/d` | 0.25 | 0.5 | 0.75 | **1.0** | 1.25 | 1.5 |
+|---|---:|---:|---:|---:|---:|---:|
+| directions resolved | 1 | 2 | 2 | **16** | 16 | 16 |
+
+Three quarters of the directions buys two of sixteen; the last quarter buys
+the other fourteen. **This does not soften if you only want the top
+directions** — the required budget is the same whether you grade at rank 16
+or rank 1, because below full dimension the estimate is a projection onto a
+random subspace and a projected operator's leading eigenvector is not the
+operator's.
+
+The default `mode="exact"` spends `2d` calls and is correct. `mode="lstsq"`
+with `sketch_dim >= dim` is equivalent and is what the source program uses.
+The cheaper `"sketch"` and `"ortho"` modes exist, are honestly characterized
+in [SPEC.md](SPEC.md), and resolve one or two directions — reach for them
+only if that is genuinely all you need.
+
+If your consumer returns a **vector** rather than a scalar, use
+`jacobian_probe`: each direction then returns `m` numbers instead of one, and
+at half the direction budget it reaches roughly its output width in resolved
+directions.
+
+## It refuses consumers it cannot couple to
+
+Point it at a top-k router and it raises rather than reporting the confident
+zero that finite differencing would produce, because selection reads the
+*order* of its logits and its derivative vanishes almost everywhere.
+`readscope.regimes` carries the right instruments for that case — the routing
+margin and the differential fraction — inherited from
+[turboquant-pro](https://github.com/ahb-sjsu/turboquant-pro).
+
+Recurrences are admitted but flagged: a pointwise Jacobian is well defined
+and misleading, because decay error compounds along the sequence as
+`1/(1-a)^2`.
 
 ---
 
@@ -74,145 +113,66 @@ not you find the theory it came out of interesting.
 
 ---
 
-## Status: read SPEC.md first
-
-**This instrument does not have a specification yet, and the calibration so
-far has been unkind to it.** Read [SPEC.md](SPEC.md) before relying on
-anything here.
-
-**Bandwidth, measured.** The exact estimator resolves all 32 read directions
-swept. The affordable estimators resolve **one or two**.
-
-I first blamed an isotropic bias and proposed debiasing as the fix. The bias
-is real and now derived exactly, and `debias_sketch` inverts it, but it is a
-multiple of the identity and so **cannot rotate an eigenvector or buy a
-single direction of bandwidth**. It does fix the spectrum, which matters for
-bit allocation: mean trace error drops from 6.21 to 0.068 at `k=8`. The
-bandwidth limit is variance, not bias, and both the wrong diagnosis and its
-correction are in `CALIBRATION.md`.
-
-**The budget law, which is the number to plan against.** Bandwidth against
-direction budget `k/d` goes **1, 2, 2, 16, 16, 16** across 0.25 to 1.5. It is
-a cliff at `k = d`, not a slope: three quarters of the directions buys two
-directions of sixteen and the last quarter buys the other fourteen. For a
-scalar-margin consumer, pay `2d` calls per operating point or expect the
-dominant direction and nothing else. The source program pays exactly this,
-running 160 directions in a 128-dimensional head.
-
-**A vector consumer buys a partial discount.** At half the direction budget,
-`jacobian_probe` reaches bandwidth 2, 2, 4, 8 for output widths 1, 2, 4, 8 —
-a fourfold gain over a scalar margin at identical cost, still short of the
-full 16.
-
-**The published accuracy figures came from a different probe.** Expressed on
-a common statistic, the Llama result scores 0.596 at rank 16 where this
-package's sketch scores 0.03 to 0.06. The 32-key probe in the source program
-and the Gaussian sketch shipped here are not the same instrument, and until
-that is closed the table below is provenance rather than specification.
-
-**Real attention heads, four families.** On 48 head-cells from
-Llama-3.2-3B, Qwen2.5-1.5B, Mistral-7B and Gemma-3-4B — the last at head_dim
-256, so dimension varies too — graded against the exact closed-form Jacobian
-Gram of the softmax, the probe recovers the read operator at **resolution
-1.000** at `k/d = 1.25`, with an across-family spread of **1e-15**. The
-budget cliff reproduces on real activations, 0.366 against 1.000.
-
-The first attempt at this drew queries from the key stream and would have
-reported "real attention heads are degenerate" — a striking claim, and false.
-The shortcut was declared before the run and the anti-vacuity bar measured
-attention entropy, so the artifact announced itself instead of becoming a
-result.
-
-**A non-transformer consumer.** On twelve channel-cells of a real
-Mamba-790m, graded against the closed-form operator of a selective SSM, the
-probe again recovers at **resolution 1.000** at `k/d = 1.25`. At `k/d = 0.5`
-resolution runs **−0.32 to 0.10**, at or below chance — so the budget cliff
-belongs to the estimator, not to softmax. Measured alongside: Mamba channel
-memory runs **1.8 to 82 steps**, median 7.9.
-
-**Scale.** Across Qwen2.5 at 1.5B, 7B, 14B and 32B — head_dim held at 128
-throughout, so only the substrate grows — resolution at `k/d = 1.25` is
-1.0000 at every scale, **across-scale spread 6.7e-16**. The budget law has no
-scale term.
-
-**The cliff does not care about rank.** Every real head's read operator has
-exact rank 24 and effective rank about 1.8, which suggested a cheap probe
-might suffice for the directions that carry the mass. C-6 tested it across
-graded ranks 1 to 16 and the required budget is **1.0 at every one of them**,
-including rank one. Below full dimension the estimate is a projection onto a
-random subspace, and a projected operator's leading eigenvector is not the
-operator's. **Pay `k >= d` regardless of how many directions you need.**
-
-**What the published 0.647 actually measures.** The probe recovers the
-softmax-weighted Jacobian Gram at resolution **1.000000** under the source
-program's own settings. That program grades against the *unweighted* query
-covariance, and the number it reports is how much those two references
-differ. Matching its query set — 576 queries per cell, not 24 — closed 68
-percent of the remaining distance, from 0.821 to 0.703 against a published
-0.647. **Two reasonable references for one head differ by about 0.3 in
-overlap**, so a recovery number without its reference named is not
-interpretable.
-
-Those three inherited measurements:
-
-| Run | Substrate | Overlap | Chance | Verdict |
-|---|---|---|---|---|
-| GO-P-2026-011 | planted low-rank subspace | 0.936 | 0.059 | PASS 5/5 |
-| GO-P-2026-020 | Llama-3.2-3B, 16 heads | 0.567 | 0.126 | **missed the 0.60 bar** |
-| GO-P-2026-021 | Llama-3.2-3B, 16 heads | 0.647 | 0.126 | PASS, 32-key probe |
-
-The 16 cells are layers {8, 16} × 8 KV heads of one 3B model. The two Llama
-numbers bracket the sealed bar and differ only by probe design, which is
-exactly why a single accuracy figure would be misleading. The earlier miss
-stays on the record as its own negative.
+## Status
 
 An instrument is trusted because it is specified, not because it worked once.
-A scope ships with bandwidth, sample rate, noise floor, and accuracy over
-range. This one currently ships with a sample rate, a noise floor, and three
-points on one accuracy axis. [SPEC.md](SPEC.md) names every field and marks
-the empty ones.
+A scope ships with bandwidth, sample rate, noise floor and accuracy over
+range. Here is what this one ships with. [SPEC.md](SPEC.md) has every number
+and every empty cell.
 
-### The known error term
+| Field | Status |
+|---|---|
+| Sample rate | Exact. `2d` calls per point, or `2k` sketched |
+| Noise floor | Exact. Chance overlap `rank/dim`, reported with every reading |
+| Minimum usable budget | **Measured. A cliff at `k = d`, rank-independent** |
+| Accuracy | **124 real model cells at resolution 1.000 at `k/d = 1.25`** |
+| Applicability | Bounded, and enforced in code |
+| Temperature drift | Four families spread 1e-15; four scales spread 7e-16 |
+| Input impedance | Axis measured and dimensionless. **Correction: no** |
+| Linearity | Partial. Direction transfers across domains, magnitude does not |
 
-Probe loading. A scope's input impedance draws current from the node, so what
-you read is not quite what was there. Here, the probing distribution is not
-the activation distribution the consumer meets in service, so the recovered
-operator is the read operator averaged over the wrong measure.
+**Accuracy, on real weights.** 48 attention head-cells across Llama-3.2-3B,
+Qwen2.5-1.5B, Mistral-7B and Gemma-3-4B; 48 more across the Qwen2.5 ladder at
+1.5B, 7B, 14B and 32B; 12 channel-cells of a Mamba-790m; 16 more matched to
+the source program's protocol. Every one graded against an **exact closed-form
+ground truth**, since the read subspace of an attention head with respect to a
+key is spanned by its queries, and that of a recurrent state by its
+decay-attenuated readout vectors. Resolution is 1.000 at `k/d = 1.25`
+throughout, with across-family spread 1e-15 and across-scale spread 7e-16.
 
-That is not a flaw that invalidates the instrument. It is a characterizable
-effect, and the first curve is measured.
-
-The axis is now **dimensionless**: `max(0, jeffreys - null_floor) / dim`,
-where the null floor is what the estimator reads with no mismatch at all. A
-fixed mismatch reads within **1.3 percent** across a sixteenfold range of
-dimension, where raw Jeffreys spreads **242 percent**.
-
-**It is still not a correction, and now there is a reason rather than a
-gap.** Three attempts are recorded in `SPEC.md`. Two passed their bars for
-spurious reasons and are written up as such. The third was valid and failed:
+**Probe loading is the known error term** — the probing distribution is not
+the activation distribution, so the recovered operator is averaged over the
+wrong measure. The axis for it is now dimensionless and a fixed mismatch
+reads within 1.3% across a sixteenfold range of dimension. **It is still not a
+correction**, and after three attempts there is a reason rather than a gap:
 loading degrades a reading only when the probing shift is *aligned* with the
-read subspace, and in high dimension a random shift is not, so the effect
-disappears at dimension 64 and above. Degradation is not a function of loading
-alone, so **a scalar correction is the wrong shape for it**.
+read subspace, and in high dimension a random shift is not. Degradation is not
+a function of loading alone, so a scalar correction is the wrong shape for it.
 
-| Probe loading, Jeffreys nats | Overlap |
-|---:|---:|
-| 0.89 | 0.992 |
-| 10.73 | 0.975 |
-| 25.25 | 0.852 |
-| 50.50 | 0.491 |
-| 91.64 | 0.437 |
+**What the source program's published 0.647 measures.** Under its own
+settings this probe recovers the softmax-weighted Jacobian Gram at resolution
+1.000000. That program grades against the *unweighted* query covariance, and
+the number it reports is how much those two references differ. **Two
+reasonable references for one head differ by about 0.3 in overlap**, so a
+recovery number without its reference named is not interpretable.
 
-Near-exact below about 11 nats, a knee between 25 and 50, then a shelf around
-0.44 that stays well clear of the 0.125 chance floor, so a badly loaded probe
-degrades rather than dissolving into noise. One synthetic consumer family,
-five seeds, record `calibration/records/c1b-loading-curve.json`.
+### Honest negatives, kept
 
-The first attempt at this curve failed four of five declared bars, and one of
-its three defects was not a bug: **probe loading cannot degrade recovery at
-all for a consumer whose read subspace is the same everywhere in the input
-space.** That bounds where the error term applies, and it came out of the
-instrument's own calibration rather than from thinking about it.
+**Ten of seventeen calibrations failed**, and the failures moved the
+specification further than the successes did. `CALIBRATION.md` keeps all of them
+with the wrong claims left standing for the corrections to point at. Two are
+worth reading before trusting any number here:
+
+- **Two sweeps passed every bar for spurious reasons** — one because a
+  correction saturated against its output clip, one because the quantity it
+  measured was pinned by construction. Both are written up as failures. They
+  produced the rule the later sweeps obey: *before believing a bar of the
+  form "X predicts Y", require a prior bar that Y varies.*
+- **One sweep nearly reported that real attention heads are degenerate.**
+  They are not; the query set had been drawn from the key stream, which
+  saturates the softmax. The shortcut was declared before the run and an
+  anti-vacuity bar measured attention entropy, so the artifact announced
+  itself instead of becoming a result.
 
 ---
 
@@ -222,33 +182,39 @@ instrument's own calibration rather than from thinking about it.
 pip install -e ".[dev]"
 ```
 
-Pure numpy. Torch is optional and only needed for the model-facing
-calibration harnesses.
+Pure numpy. Torch is optional and only needed by the model-facing extraction
+scripts under `calibration/`.
 
 ## Layout
 
 ```
 readscope/       the instrument
-  probe.py       blind recovery of S = E[g g^T]
+  probe.py       blind recovery of S = E[g g^T]; exact, lstsq, sketch, ortho
   spectrum.py    the response spectrum, effective rank, energy rank
   allocate.py    reverse water-filling against the spectrum
-  loading.py     probe loading, the calibration axis
-  metrics.py     subspace overlap, always with its chance floor
+  metrics.py     subspace overlap and resolution, always with a chance floor
+  loading.py     probe loading on a dimensionless axis
   regimes.py     which consumers the probe may be attached to
   quotient.py    tangential/radial displacement split
-calibration/     the program that has to produce a spec sheet
-tests/           exact controls with closed forms
-SPEC.md          the specification, mostly empty on purpose
-CALIBRATION.md   what has to be measured, and what would sink it
+calibration/     the sweeps, their declared bars, and their records
+tests/           exact controls with closed-form answers
+SPEC.md          the specification, including the empty fields
+CALIBRATION.md   what has been measured, what failed, and what would sink it
 ```
+
+Calibration records are append-only JSON with the declaration, every cell,
+every bar and a verdict computed from the data rather than written in
+advance. A sweep that is superseded keeps its record and names what replaced
+it.
 
 ## Provenance
 
-The theory and the three measurements come from the observation-theory
+The theory and the first measurements come from the observation-theory
 program: [geometric-observation](https://github.com/ahb-sjsu/geometric-observation)
 (the blind probe, the sealed preregistrations, the claims ledger) and
 [turboquant-pro](https://github.com/ahb-sjsu/turboquant-pro) (the production
-compression path that consumes a read operator).
+compression path that consumes a read operator, and the consumer-regime
+analysis this package inherits).
 
 This repository is the instrument pulled out of that program and specified on
 its own terms, so it can be used by people with no interest in the program.
