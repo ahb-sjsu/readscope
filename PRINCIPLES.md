@@ -1,23 +1,17 @@
 # The five principles
 
-> **FROZEN as Observation Theory v0.1 (2026-08-15).** The five principle
-> statements below are sealed at commit `a490e4e` — no edits to them, and
-> no sixth principle, until the Crucible campaign resolves. The campaign
-> (seven preregistered tests, graduation rule, kill conditions) lives in
-> the program repo:
-> [geometric-observation/crucible](https://github.com/ahb-sjsu/geometric-observation/tree/master/crucible).
-> This banner is the only permitted kind of post-freeze edit.
-
-*An external reviewer (2026-08-15) observed that the results in this
-repository read as excellent-but-separate sensitivity findings, and would
-read as a theory exactly when a small set of general principles makes them
-instances. This document adopts that frame, with one correction the
-measurements force (P3), and with the honesty flag the frame requires: the
-principles below were articulated **after** most of the results existed.
-A principle earns the word "theory" by what it forbids and by the untested
-predictions it makes — so each one here carries both. When one of the
-predictions fails, the principle changes or dies; this file is where that
-gets recorded.*
+> **Observation Theory v0.2 (2026-08-15).** v0.1 was frozen at commit
+> `a490e4e`, put through the seven-test Crucible campaign, and **did not
+> graduate** (three of the five core predictions survived; the campaign
+> verdict, scorecard, and rules are in
+> [geometric-observation/crucible](https://github.com/ahb-sjsu/geometric-observation/tree/master/crucible),
+> `OT-CAMPAIGN-VERDICT.md`). Per the freeze rules, revision happened
+> only after closure: **P1–P3 are unchanged** (their owed predictions
+> were tested and survived; results are now instances), **P4 and P5 are
+> revised** exactly as the refuting measurements demand (full
+> before/after diff in `OT-V0.2-REVISION.md`), and each principle owes
+> one **new** untested prediction. Still five principles — the
+> no-sixth-principle rule held and holds.
 
 The object throughout: a consumer `C` reading a representation `x`, with
 read operator
@@ -27,138 +21,153 @@ read operator
 
 ---
 
-## P1 — Consumer relativity
+## P1 — Consumer relativity *(unchanged; prediction survived)*
 
 **The geometry that matters on a representation is induced by what reads
-it, not by the representation itself.** A substrate has no privileged
-metric; every consumer equips it with one (`P_C`), and different consumers
-equip it with different ones.
+it, not by the representation itself.**
 
-*Forbids:* any consumer-independent notion of "important directions," and
-any expectation that reconstruction error (the substrate's own metric)
-tracks downstream damage in general.
+*Forbids:* any consumer-independent notion of "important directions,"
+and any expectation that reconstruction error tracks downstream damage
+in general.
 
-*Instances:* the codec experiment — two codecs tied on reconstruction at
-7.5e-9 differing downstream by 1.85 median relative-KL (postdiction: the
-result motivated the principle). The closed-form ground truths — an
-attention head's read subspace is spanned by its queries; a recurrent
-state's by its decay-attenuated readouts (derived, then measured at
-resolution 1.000 across 124 cells). The `regimes` refusal: selection
-consumers induce a geometry finite differences cannot see, so the
-instrument declines rather than reporting a confident zero.
+*Instances:* the codec experiment (16/16 vs 2/16); the closed-form read
+subspaces (queries; decay-attenuated readouts) at resolution 1.000;
+**OT-1 (prospective):** damage ratio `cos²θ` to four decimals with zero
+free parameters, codec-preference disagreement switching on at the
+derived 45°, and the sign of real head-pair disagreement predicted 8/8
+by blind-probed operators with no refit. **OT-6 (prospective,
+cross-domain):** the same trace picked the ranking-destroyer among
+equal-Euclidean-energy perturbations on 400/400 queries over real book
+embeddings, machinery verbatim.
 
-*Owed prediction (untested):* two consumers of the same representation
-disagree about a codec in proportion to the principal angles between
-their read subspaces. Measurable today with two heads reading one KV
-cache; nobody has run it.
+*Owed prediction (new, untested):* **composition.** For a weighted
+ensemble of consumers, the ensemble's codec preference is predicted by
+the weight-averaged traces `Σᵢ wᵢ tr(P_i Σ_δ)` computed from component
+operators alone — no probe of the ensemble. Runnable on multi-head
+attention today.
 
-## P2 — Measure dependence
+## P2 — Measure dependence *(unchanged; prediction survived)*
 
 **`P_C` is an expectation over a probing distribution, so every reading
-is a reading *somewhere*.** Change where you probe and you change what
-you measure — not as noise but as a different, equally well-defined
-operator.
+is a reading *somewhere*.**
 
-*Forbids:* "the" sensitivity of a consumer, unqualified; and scalar
-corrections for probe loading (a correction would have to be a function
-of the probing shift alone, and degradation measurably is not).
+*Forbids:* "the" sensitivity of a consumer, unqualified; scalar
+corrections for probe loading.
 
-*Instances:* probe loading as the known error term — three failed
-attempts at a correction, resolved by the alignment result: loading
-degrades a reading only when the probing shift aligns with the read
-subspace, which no function of loading alone can capture (postdiction,
-and the sharpest evidence for P2). The 0.647 affair: a published recovery
-number turned out to measure the distance between two *references*
-(softmax-weighted vs unweighted query covariance, ~0.3 apart), not probe
-error — reference choice is measure choice (postdiction).
+*Instances:* probe loading as the known error term and the alignment
+result; the 0.647 reference-dependence affair; **OT-2 (prospective):**
+the first-order law `dP_C/dε|₀ = E_D[h·A]` measured — the entire
+reading-error curve predicted from under the unshifted measure (shape
+deviation 0.003), a full-magnitude functionally-orthogonal shift
+producing machine-zero, and linear convergence in ε. Loading is a
+covariance, not a distance; three failed scalar corrections now have
+their closing statement.
 
-*Owed prediction (untested):* loading damage is predictable from the
-measured probing-shift/read-subspace angle, quantitatively, across
-families — the alignment result run forward instead of forensically.
+*Owed prediction (new, untested):* **forward transfer of readings.**
+Given the operator probed under a synthetic measure and the measured
+alignment functional between that measure and the activation measure,
+the law predicts the real-activation operator without probing under
+it — graded on real heads against direct activation-measure probes.
 
-## P3 — Observation complexity (stated as the cliff measured it, not as first intuition says it)
+## P3 — Observation complexity *(unchanged; prediction survived, and became a theorem)*
 
-**Identifying `P_C` blind costs the ambient dimension, not the effective
-rank.** First intuition — and the reviewer's draft of this principle —
-says a low-rank operator should be cheap to find (`rank_eff ⇒ cost`). The
-budget-cliff measurement says the opposite, and the theory adopts the
-measurement: below `k = d` probe directions the estimate is a projection
-onto a random subspace, and a projected operator's leading eigenvector is
-not the operator's. **Rank sets the cost of *describing and allocating
-against* `P_C` once found; ambient dimension sets the cost of *finding*
-it.** Blindness is expensive; structure only pays after identification.
+**Identifying `P_C` blind costs the ambient dimension, not the
+effective rank; rank prices description and allocation after
+identification.** Blindness is expensive; structure only pays once
+found — in every basis (rank is GL-invariant; the spectrum is not).
 
-*Forbids:* cheap discovery of "just the top direction"; any budget story
-in which recovery degrades gracefully below `k = d`.
+*Forbids:* cheap discovery of "just the top direction"; graceful
+degradation below `k = d`; buying the cliff down by reparameterization.
 
-*Instances:* the cliff itself — 16 ranks, one cliff at `k = d`,
-rank-independent (this one ran as a *prediction* of the projection
-argument and confirmed it). The vector-consumer discount: `m` outputs per
-probe direction reach output-width resolution at half budget — the cost
-is per-scalar-observation, which is the same principle counted correctly.
+*Instances:* the budget cliff (predicted, then measured,
+rank-independent); **OT-3 (prospective):** the confinement lower-bound
+*theorem* (adaptive to d−2, oblivious to d−1; adaptive d−1 recorded
+open) and its side-information consequence — a known k₀-dimensional
+exclusion moves the cliff to exactly d−k₀ and never softens it —
+measured in six cells at the predicted location, with sub-cliff "lucky
+recoveries" matching the Haar chance-alignment rate analytically.
 
-*Owed prediction (untested):* side information changes the constant, not
-the cliff — a probe seeded with an approximate subspace (e.g., yesterday's
-`P_C`) should identify at `k ≈ d − k₀` but still fail catastrophically
-below it, not degrade smoothly.
+*Owed prediction (new, untested):* **the noisy cliff.** With
+observation noise of scale σ on each scalar reading, identification at
+`k ≥ d` floors at an error derivable from σ and the spectrum gap, while
+the cliff's location does not move — noise prices accuracy, never
+admission. Theorem extension first, then measurement.
 
-## P4 — Temporal nonstationarity
+## P4 — Temporal nonstationarity *(REVISED after OT-4's refutation)*
 
-**`P_C` is a process, not a constant: `P_C(t₁) ≠ P_C(t₂)` in general,
-and the difference is operationally priced.** A reading is stamped with
-its moment; acting on a stale operator has a computable cost.
+**`P_C` is a process, not a constant, and staleness has a measured
+price — but drift explains a system's degradation only where the
+staleness channel dominates, and demonstrating that dominance is part
+of the claim.** A feedback-severing control (teacher forcing or its
+domain equivalent) is not an optional robustness check; it is the
+discriminator the principle must *predict it will pass* before drift
+may be named as mechanism. Where feedback compounds a constant error,
+drift is not entitled to the wreckage.
 
-*Forbids:* compress-once-against-one-operator as a correctness argument;
-gradings of drift against 1.0 rather than against a paired null (two
-samples of the *same* moment do not give identical operators either —
-C-11b overstated drift by >2× exactly this way).
+*Forbids:* compress-once-as-correctness (unchanged); drift-based
+explanations of production degradations without a feedback-severed
+control (new — this is what OT-4 punished); gradings of drift against
+1.0 instead of a paired null (unchanged).
 
-*Instances:* operator drift along the sequence — the dominant read
-direction moves even where the null is nearly perfect; allocating against
-the early operator costs the late consumer 225% (of a uniform split's
-cost) more than allocating against the late one (postdiction, null-
-corrected). The turboquant-pro long-generation degradation is the named
-candidate consequence.
+*Instances:* operator drift along the sequence, null-corrected, with
+the 225% stale-allocation penalty (C-11c — stands as measurement);
+**OT-4 (prospective, REFUTING the old owed prediction):** the real
+long-generation collapse (+13.4 ROUGE under the symmetric codebook)
+survives A0, then teacher forcing removes the consistent growth (sign
+p = 0.42) and orientation does no work against the rotated null — the
+mechanism is feedback compounding of a ~4.3-nat constant error, and
+C-11c's claim to explain it is dead by the declaration's own sentence.
 
-*Owed prediction (untested, already flagged in the README):* the drift
-curve, run against a *real* degradation curve — if drift is the
-mechanism, degradation onset should track the measured 225% allocation
-penalty, and a drift-aware refresh cadence should flatten it.
+*Owed prediction (new, untested):* **a feedback-free staleness
+system.** Streaming retrieval has no autoregression: an embedding
+index quantized against the day-0 query operator, served under a
+drifting query stream, has damage that grows with measured
+`d(P_C(t₀), P_C(t))` and is removed by re-allocation at a cadence
+derived from the drift rate — and the feedback-severing control passes
+trivially because the channel does not exist. Runnable on the OT-6
+substrate with query drift by book/language strata.
 
-## P5 — Metric consequence
+## P5 — Metric consequence *(REVISED after OT-5's refutation)*
 
-**`δxᵀ P_C δx` predicts consumer damage better than any substrate metric,
-exactly where the consumer is differential.** The applicability clause is
-part of the principle, and it is enforced in code (`regimes`): where a
-consumer's differential fraction is low — selection, argmax, top-k — the
-quadratic form is undefined as a damage model and the claim is *not made*.
+**`δxᵀP_Cδx` predicts consumer damage at full fidelity wherever the
+consumer emits any differential signal, and at the response floor it
+fails closed — silence, never confident error.** The boundary is a
+floor, not a slope: OT-5 measured ceiling accuracy down to a
+differential fraction of 0.094 and then zero informative comparisons,
+with not one wrong-while-differential cell. The applicability
+measurement locates the floor; it does not meter a gradual decay.
 
 *Forbids:* gating codecs on reconstruction error where a differential
-consumer is known; and, symmetrically, applying `tr(P_C Σ_δ)` to
-selection consumers as if it meant something.
+consumer is known (unchanged); applying the quadratic form to
+selection consumers (unchanged); and now also *discounting* the metric
+in low-but-nonzero differential regimes — partial smoothness is full
+writ, per measurement.
 
-*Instances:* 16/16 vs 2/16 on exactly-tied codecs (postdiction — the
-founding one). The refusal behavior as the boundary of the claim,
-inherited from the turboquant-pro consumer-regime analysis.
+*Instances:* 16/16 vs 2/16 (the founding one); the regime-gate refusal
+behavior; **OT-5 (prospective, REFUTING the old monotone shape):** the
+step — accuracy 0.93–1.00 from DF 1.0 down to 0.094, then 0/30
+informative pairs; **OT-6:** ceiling prediction of a *discrete*
+ranking metric (top-10 overlap), consistent with writ-until-the-floor.
 
-*Owed prediction (untested):* the quality of `tr(P_C Σ_δ)` as a damage
-ranking degrades monotonically with a consumer's measured differential
-fraction — a dose-response curve across the regime boundary, which would
-turn the applicability clause from a fence into a measurement.
+*Owed prediction (new, untested):* **the two curves at the floor.** In
+a consumer family approaching its floor gradually (output quantized to
+g levels, g decreasing), the *informative fraction* of codec
+comparisons decays with g while accuracy *on informative pairs* stays
+at ceiling — both curves predicted, jointly falsifiable: accuracy
+sagging while informative pairs remain would kill the revision.
 
 ---
 
-## What this document is, status-wise
+## Status
 
-Four of five principles are currently organized *around* existing results
-(postdictive); one (P3) ran as a genuine prediction and survived, and one
-reviewer-proposed form of it was corrected by the data before adoption.
-The five owed predictions above are the theory's live exposure. The
-research question they jointly serve, stated once:
+v0.1's campaign: OT-1 ✅ OT-2 ✅ OT-3 ✅ (theorem) OT-5 ❌ OT-6 ✅
+(cross-domain, 400/400) OT-7 ✅ (invariance) OT-4 ❌ — graduation
+denied under the pre-registered rule, and the two refutations are the
+sources of the two revisions above. v0.2 carries five new owed
+predictions; they are the theory's live exposure, and none has been
+run. The research question is unchanged:
 
 > **What can be known about an internal representation by observing how
-> another system consumes it; what geometry does that observation induce;
-> and what are the fundamental limits of measuring that geometry?**
-
-KV-cache compression is the first paying customer of that question, not
-its content.
+> another system consumes it; what geometry does that observation
+> induce; and what are the fundamental limits of measuring that
+> geometry?**
