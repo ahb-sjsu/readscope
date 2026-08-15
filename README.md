@@ -4,6 +4,7 @@
 the outside, with nothing but function calls.**
 
 [![PyPI](https://img.shields.io/pypi/v/readscope)](https://pypi.org/project/readscope/)
+[![Principles](https://img.shields.io/badge/principles-5,_with_owed_predictions-purple)](PRINCIPLES.md)
 [![Spec](https://img.shields.io/badge/spec-partial-orange)](SPEC.md)
 [![Calibration](https://img.shields.io/badge/calibrations-C--0_to_C--11-blue)](CALIBRATION.md)
 [![Tests](https://img.shields.io/badge/tests-73-green)](tests/)
@@ -247,6 +248,8 @@ advance. A superseded sweep keeps its record and names what replaced it.
 
 ## Provenance
 
+The general principles this instrument instantiates — and the untested
+predictions they owe — are stated in [PRINCIPLES.md](PRINCIPLES.md).
 The theory and first measurements come from the observation-theory program:
 [geometric-observation](https://github.com/ahb-sjsu/geometric-observation)
 (the blind probe, the sealed preregistrations, the claims ledger) and
