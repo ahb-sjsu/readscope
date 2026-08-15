@@ -36,7 +36,10 @@ import numpy as np
 
 # ---- harness config, matched to tq_abl.sh; set BEFORE the harness import
 HARNESS_ENV = {
-    "CODEBOOK": "nf4a",
+    # OT-4 amendment 1 (2026-08-15): env passthrough so the amended run
+    # can target the codebook where the phenomenon reproduces (nf4);
+    # default preserves the original declaration.
+    "CODEBOOK": os.environ.get("CODEBOOK", "nf4a"),
     "KEY_BITS": "4",
     "VAL_BITS": "4",
     "GROUP": "32",
