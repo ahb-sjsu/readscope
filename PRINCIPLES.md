@@ -1,5 +1,13 @@
 # The five principles
 
+> **FROZEN as Observation Theory v0.1 (2026-08-15).** The five principle
+> statements below are sealed at commit `a490e4e` — no edits to them, and
+> no sixth principle, until the Crucible campaign resolves. The campaign
+> (seven preregistered tests, graduation rule, kill conditions) lives in
+> the program repo:
+> [geometric-observation/crucible](https://github.com/ahb-sjsu/geometric-observation/tree/master/crucible).
+> This banner is the only permitted kind of post-freeze edit.
+
 *An external reviewer (2026-08-15) observed that the results in this
 repository read as excellent-but-separate sensitivity findings, and would
 read as a theory exactly when a small set of general principles makes them
