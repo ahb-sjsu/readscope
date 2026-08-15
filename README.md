@@ -1,6 +1,6 @@
 # readscope
 
-**An oscilloscope and spectrum analyzer for model consumers.** Point it at a
+**An analyzer for model consumers.** Point it at a
 consumer, get back what that consumer actually reads.
 
 [![PyPI](https://img.shields.io/pypi/v/readscope)](https://pypi.org/project/readscope/)
