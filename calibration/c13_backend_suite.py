@@ -13,17 +13,20 @@ from __future__ import annotations
 import argparse
 import json
 import platform
+import sys
 import time
 from pathlib import Path
 
 import numpy as np
 
-import sys
-
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from readscope import (blind_probe, jacobian_probe, spectrum_of,  # noqa: E402
-                       top_spectrum)
+from readscope import (  # noqa: E402
+    blind_probe,
+    jacobian_probe,
+    spectrum_of,
+    top_spectrum,
+)
 
 SEED = 20260816
 DIMS = [128, 1024, 4096, 8192]
@@ -150,7 +153,9 @@ def main():
     cells, ok = {}, True
     for d in DIMS:
         row = {}
-        for label, res in (("cpu", cpu.get(d)), ("gpu", gpu.get(d) if gpu else None)):
+        pairs = (("cpu", cpu.get(d)),
+                 ("gpu", gpu.get(d) if gpu else None))
+        for label, res in pairs:
             if res is None:
                 continue
             row[label] = {k: v for k, v in res.items()

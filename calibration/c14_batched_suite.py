@@ -3,7 +3,7 @@
 DECLARATION-C14.md, sealed before this ran.
 
     python c14_batched_suite.py --device-label cpu            # B1-B3 + timing
-    python c14_batched_suite.py --device-label nrp-3090 --gpu # batched GPU timing
+    python c14_batched_suite.py --device-label nrp-3090 --gpu
 """
 
 from __future__ import annotations

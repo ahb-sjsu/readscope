@@ -49,8 +49,7 @@ from readscope.regimes import (
     differential_fraction,
     routing_margins,
 )
-from readscope.spectrum import (Spectrum, TopSpectrum, spectrum_of,
-                                top_spectrum)
+from readscope.spectrum import Spectrum, TopSpectrum, spectrum_of, top_spectrum
 
 __version__ = "0.1.0"
 
