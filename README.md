@@ -177,6 +177,11 @@ Regenerate everything from the committed records with
 data is missing is skipped and reported, never filled in with something
 illustrative.
 
+**The write-up:** [*A Reading Is a Reading*](docs/articles/a-reading-is-a-reading.md)
+— the five-device backend calibration (C-13/C-14), the cross-silicon
+agreement table, the derived-tolerance law, and the commons-GPU
+enforcement finding, in publishable form.
+
 ## How much to trust it
 
 An instrument is trusted because it is specified, not because it worked
