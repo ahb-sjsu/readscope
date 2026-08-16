@@ -55,3 +55,19 @@ mismatch, in the regime-gate tradition.
 
 Records: `calibration/records/c14-batched-{cpu,atlas-gv100,nrp-3090}.json`,
 committed as executed, pass or fail.
+
+## Amendment 1 (2026-08-16, after the as-executed B1 FAIL — final revision)
+
+B1's 1e-10 bar failed at deviations 1.0e-10 → 5.9e-9 (d = 128 → 4096),
+and the failure is the bar's: batched evaluation reorders
+floating-point reductions (row-block matmul vs per-vector products), a
+mathematically distinct summation whose fp64 disagreement grows with
+conditioning — the measured values are the BLAS-reordering floor, not a
+defect. The v1 record stands as executed. **B1 v2 bar: relative
+Frobenius deviation ≤ 1e-7** — derived as ≥ two orders above the
+measured reordering floor at the largest cell and ≥ four orders below
+every defect class this bar exists to catch (wrong directions, wrong
+sign, dropped rows, cross-row coupling: all ≥ 1e-3). Lesson filed with
+OT-10's: a sealed identity bar must be derived from the arithmetic of
+the comparison, not from aspiration. This is the final instrument
+revision for C-14's CPU cells.

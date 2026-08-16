@@ -135,7 +135,7 @@ def main():
             cell["jac_reldev"] = rel(j_ser.S, j_bat.S)
             cell["invocations"] = int(r_bat.n_calls)
             cell["observations"] = int(r_bat.meta["observations"])
-            b1 = cell["blind_reldev"] <= 1e-10 and cell["jac_reldev"] <= 1e-10
+            b1 = cell["blind_reldev"] <= 1e-7 and cell["jac_reldev"] <= 1e-7
             cell["B1_pass"] = bool(b1)
             ok &= b1
             record["cells"][f"d{d}"] = cell

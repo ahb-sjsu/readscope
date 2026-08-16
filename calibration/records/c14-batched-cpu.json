@@ -1,0 +1,56 @@
+{
+ "cells": {
+  "B2_cliff": {
+   "hidden_recoveries": 0,
+   "pass": true,
+   "trials": 50
+  },
+  "B3_gate": {
+   "pass": true
+  },
+  "d1024": {
+   "B1_pass": false,
+   "blind_batched_s": 2.365,
+   "blind_reldev": 3.3175267947688453e-10,
+   "blind_serial_s": 2.029,
+   "invocations": 4,
+   "jac_batched_s": 3.653,
+   "jac_reldev": 9.128557632062792e-10,
+   "jac_serial_s": 3.915,
+   "observations": 4096
+  },
+  "d128": {
+   "B1_pass": false,
+   "blind_batched_s": 0.039,
+   "blind_reldev": 1.019507304912315e-10,
+   "blind_serial_s": 0.037,
+   "invocations": 4,
+   "jac_batched_s": 0.039,
+   "jac_reldev": 8.077974008469554e-11,
+   "jac_serial_s": 0.033,
+   "observations": 512
+  },
+  "d4096": {
+   "B1_pass": false,
+   "blind_batched_s": 137.959,
+   "blind_reldev": 5.86988881215867e-09,
+   "blind_serial_s": 142.454,
+   "invocations": 4,
+   "jac_batched_s": 129.854,
+   "jac_reldev": 3.2969944671003035e-09,
+   "jac_serial_s": 133.671,
+   "observations": 16384
+  }
+ },
+ "declaration": "DECLARATION-C14.md",
+ "device_label": "cpu",
+ "runtime": {
+  "hostname": "OWNEROW-67O05MG",
+  "numpy": "2.3.5",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.12.2"
+ },
+ "schema": "readscope-c14-batched-v1",
+ "seed": 20260816,
+ "verdict": "FAIL"
+}
