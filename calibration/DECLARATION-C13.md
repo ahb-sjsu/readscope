@@ -1,0 +1,66 @@
+# C-13 declaration: backend equivalence and scaling
+
+Written and committed **before the runs**. Bars are numerical and fixed
+here; verdicts are computed by `c13_backend_suite.py` per device and
+never written in advance.
+
+## What is being tested
+
+The 2026-08-16 backend-generic core claims: (1) CuPy-backed probes and
+spectra are **the same readings** as numpy's — same seed, same
+directions, same operator, to linear-algebra rounding; (2) `top_spectrum`
+agrees with the full decomposition on the directions it computes; (3)
+the GPU path buys wall-clock at large `d`. Claims (1) and (2) carry
+bars; (3) is measured and reported, never barred — a speedup is a fact
+about hardware, not about the instrument's correctness.
+
+The budget law is out of scope by construction: consumer-call counts are
+identical across backends (directions are drawn once, in numpy), so no
+cell here can even appear to move the cliff.
+
+## Cells
+
+Per device (CPU-numpy reference runs on the same host as its GPU
+comparator, so BLAS-vs-BLAS is the only variable):
+
+- d ∈ {128, 1024, 4096, 8192}; operating points n = 4; seed 20260816.
+- Probes: `blind_probe` (lstsq, sketch_dim = d) on a planted rank-8
+  tanh margin consumer; `jacobian_probe` (n_directions = d) on its
+  8-output vector form. Consumers are written namespace-agnostically so
+  the identical closure serves both backends.
+- Spectra: `spectrum_of` on each recovered operator; `top_spectrum`
+  (r = 16, defaults) on the same.
+- CPU reference at d = 8192 runs on Atlas only (48-thread host); the
+  NRP job caps its CPU reference at d ≤ 4096 to keep the pod short and
+  GPU-dominated, and its d = 8192 GPU cells are graded against bars
+  (2) and self-consistency, with cross-backend identity at 8192 carried
+  by the Atlas record.
+
+## Bars (sealed)
+
+- **E1 (probe identity):** for every (d, probe) cell with both backends
+  on-host: relative Frobenius deviation of recovered operators
+  ≤ **1e-9**.
+- **E2 (spectrum identity):** eigenvalues of `spectrum_of` across
+  backends: relative deviation ≤ **1e-9** (matched cells as E1).
+- **E3 (top_spectrum fidelity, per backend):** top-16 eigenvalues match
+  the full decomposition to rel **1e-8**; per-direction eigenvector
+  overlap ≥ 1 − 1e-8; `effective_rank` exact-match to `spectrum_of`'s
+  within rel 1e-10 (it is computed from invariants and must not depend
+  on r).
+- **Timing:** wall-clock per cell, reported per device. No bar. The
+  GV100 (strong fp64) and consumer GPUs (weak fp64) are expected to
+  differ qualitatively; that expectation is written here so nobody
+  reads a 3090 fp64 eigh as a defect.
+
+## Devices declared
+
+- Atlas workstation, Quadro GV100 (`CUDA_VISIBLE_DEVICES=1`), cupy
+  13.6.x (sm_70 support), numpy reference on the same host.
+- NRP Nautilus, one RTX 3090 (swarm-class batch job via the polite
+  nats-bursting path, right-sized per platform policy; the job clones
+  this public repo, installs nothing beyond it, computes, terminates).
+
+Records: `calibration/records/c13-backend-{atlas,nrp3090}.json`; both
+committed as executed, pass or fail, with a NOTES file and the SPEC
+table updated only to what the verdicts support.
