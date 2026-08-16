@@ -138,3 +138,19 @@ the sealed bars are frozen; the expectation recorded in advance is
 deviation at linear-algebra rounding (≤ ~1e-9 relative), and a larger
 gap would be a genuine finding about cross-host reproducibility, not
 an instrument defect to quietly absorb.
+
+## Amendment 5 (2026-08-16, after the Atlas as-executed E1 FAIL)
+
+E1 failed at d = 4096 (3.7e-9) and d = 8192 (9.4e-9) against the sealed
+1e-9, with E2 and every E3 cell clean — the identical arithmetic C-14's
+amendment 1 diagnosed and derived a bar for the same day: comparing two
+float64 BLAS implementations (OpenBLAS vs cuBLAS) through an
+ill-conditioned pinv measures the *reduction-reordering floor*, which
+grows with conditioning (~6e-9 same-host in C-14; ~9e-9 cross-BLAS
+here — mutually consistent). The 1e-9 bar demanded agreement the
+arithmetic cannot supply and no defect class needs. **E1/E2 bars
+re-derived at ≤ 1e-7** (two orders above the measured cross-BLAS floor,
+four below any real defect), citing C-14 amendment 1. The as-executed
+FAIL record is committed unchanged; the regraded verdict is computed
+from its recorded deviations with zero re-measurement and published
+alongside it.
