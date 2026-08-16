@@ -81,3 +81,16 @@ Two instrument changes forced by platform facts, neither touching bars:
    reference stops at d = 1024; E1/E2 cross-backend identity at 4096
    and 8192 is carried by the Atlas record, and the pod's large-d GPU
    cells are graded on E3 and reported for timing.
+
+## Amendment 2 (2026-08-16, before the additional submissions)
+
+Device set extended for GPU variety, bars unchanged: **NVIDIA A10**
+(Ampere, fp64 1:64), **Tesla V100** (Volta sm_70, strong fp64 — the
+same architecture class as the Atlas GV100 reference, making it the
+cross-substrate same-silicon cell), and **RTX A6000** (Ampere). Same
+manifest shape and pod sizing as the 3090 job; per-device records
+`c13-backend-nrp-{a10,v100,a6000}.json`, each graded on E3 + the
+d ≤ 1024 E1/E2 cells, timing reported. Submissions staggered to hold
+at most **three** concurrent C-13 pods against the namespace's
+four-heavy-pod allowance — variety is not an excuse to fill the
+commons; the A6000 waits for the 3090 to finish.
