@@ -64,3 +64,20 @@ comparator, so BLAS-vs-BLAS is the only variable):
 Records: `calibration/records/c13-backend-{atlas,nrp3090}.json`; both
 committed as executed, pass or fail, with a NOTES file and the SPEC
 table updated only to what the verdicts support.
+
+## Amendment 1 (2026-08-16, before the NRP submission)
+
+Two instrument changes forced by platform facts, neither touching bars:
+
+1. **Submission path.** The nats-bursting descriptor has no
+   nodeSelector field (documented code gap in the ops runbook), so the
+   declared RTX 3090 pinning cannot ride the controller. The NRP job
+   goes as a policy-shaped manifest instead: requests == limits,
+   ephemeral-storage declared, backoffLimit 0, TTL-after-finished,
+   fresh name verified by creationTimestamp, deleted after collection.
+2. **NRP CPU-reference cap 4096 → 1024.** A 2-CPU pod running a
+   d = 4096 float64 pinv holds the GPU idle for minutes — the exact
+   under-utilization pattern platform enforcement kills. The pod's CPU
+   reference stops at d = 1024; E1/E2 cross-backend identity at 4096
+   and 8192 is carried by the Atlas record, and the pod's large-d GPU
+   cells are graded on E3 and reported for timing.
