@@ -7,7 +7,7 @@ the outside, with nothing but function calls.**
 [![Principles](https://img.shields.io/badge/principles-5,_with_owed_predictions-purple)](PRINCIPLES.md)
 [![Spec](https://img.shields.io/badge/spec-partial-orange)](SPEC.md)
 [![Calibration](https://img.shields.io/badge/calibrations-C--0_to_C--11-blue)](CALIBRATION.md)
-[![Tests](https://img.shields.io/badge/tests-73-green)](tests/)
+[![Tests](https://img.shields.io/badge/tests-86-green)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## The problem it solves
@@ -76,6 +76,33 @@ If your consumer returns a **vector** rather than a scalar, use
 `jacobian_probe` instead — each probe direction then yields `m` numbers
 instead of one, so it resolves roughly its output width in directions at
 half the budget.
+
+## Backends, and big `d`
+
+The measuring core is numpy and stays numpy: every default path is
+byte-for-byte what it always was. Two additions change what happens at
+scale, without changing what a reading means:
+
+- **GPU when the data is GPU.** Hand the probes CuPy arrays and the
+  linear algebra (pinv, QR, eigh) runs where the data lives; hand them
+  numpy and nothing new is imported. Random directions are always drawn
+  with numpy in the same order, so a GPU run and a CPU run of the same
+  seed probe the same directions exactly. With torch, the
+  [tqp-readscope](https://github.com/ahb-sjsu/turboquant-pro/tree/master/plugins/tqp-readscope)
+  bridge moves CUDA activations in zero-copy via DLPack.
+- **`top_spectrum(S, r)` for large operators.** At `d` in the
+  thousands, a full `eigh` dominates the cost of reading a spectrum.
+  `top_spectrum` computes the leading `r` directions by block subspace
+  iteration — pure numpy, GPU-generic — and reports whole-spectrum
+  aggregates *exactly* (effective rank needs only the trace and the
+  Frobenius norm, no eigenvalues). Its `energy_rank` answers only as
+  far as the computed directions reach and **raises rather than
+  extrapolates** past its coverage.
+
+What none of this changes: **the budget law.** The cliff at `k = d` is
+a property of consumer calls, not FLOPs — it is a theorem
+([PRINCIPLES.md](PRINCIPLES.md), P3) — and a faster backend buys speed,
+never admission.
 
 ## The one rule: budget `2d` calls per operating point
 
@@ -230,7 +257,9 @@ distortion `tr(P_C Σ_δ)` becomes a number you can gate a codec on.
 ```
 readscope/       the instrument
   probe.py       blind recovery of S = E[g gᵀ]; exact, lstsq, sketch, ortho
-  spectrum.py    the response spectrum, effective rank, energy rank
+  spectrum.py    the response spectrum, effective rank, energy rank;
+                 top_spectrum for leading-r at large d
+  _xp.py         backend dispatch (numpy default; CuPy when handed CuPy)
   allocate.py    reverse water-filling against the spectrum
   metrics.py     subspace overlap and resolution, always with a chance floor
   loading.py     probe loading on a dimensionless axis
