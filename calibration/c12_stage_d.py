@@ -25,11 +25,9 @@ from __future__ import annotations
 
 import json
 import time
-from pathlib import Path
-
-import numpy as np
 
 import c12_longgen_drift as C12  # noqa: E402  (module setup, no run)
+import numpy as np
 import torch  # noqa: E402
 
 OUTDIR = C12.OUTDIR
@@ -142,7 +140,9 @@ def main() -> int:
         yt = torch.tensor([y_star], device=device)
         pos = torch.arange(T, T + len(y_star), device=device).unsqueeze(0)
 
-        def tf_pass(key_patch=None, capture=False):
+        def tf_pass(key_patch=None, capture=False, ids=ids,
+                    T=T, n_settled=n_settled, yt=yt, pos=pos,
+                    y_star=y_star):
             """Teacher-forced NLL on y*; optionally patch settled keys."""
             with C12.nf4a_cache(False), C12.EFFICIENT():
                 first, cache = C12.prefill(model, ids.input_ids, device)
@@ -213,7 +213,7 @@ def main() -> int:
         nll_e, _, _ = tf_pass(key_patch=patches["early"])
         nll_u, _, _ = tf_pass(key_patch=patches["union"])
 
-        def late_excess(nll_arm):
+        def late_excess(nll_arm, nll_fp16=nll_fp16):
             d_tf = nll_arm - nll_fp16
             lo, hi = LATE
             hi = min(hi, len(d_tf))
