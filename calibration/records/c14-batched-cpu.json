@@ -9,36 +9,36 @@
    "pass": true
   },
   "d1024": {
-   "B1_pass": false,
-   "blind_batched_s": 2.365,
+   "B1_pass": true,
+   "blind_batched_s": 4.135,
    "blind_reldev": 3.3175267947688453e-10,
-   "blind_serial_s": 2.029,
+   "blind_serial_s": 4.329,
    "invocations": 4,
-   "jac_batched_s": 3.653,
+   "jac_batched_s": 4.943,
    "jac_reldev": 9.128557632062792e-10,
-   "jac_serial_s": 3.915,
+   "jac_serial_s": 5.221,
    "observations": 4096
   },
   "d128": {
-   "B1_pass": false,
-   "blind_batched_s": 0.039,
+   "B1_pass": true,
+   "blind_batched_s": 0.056,
    "blind_reldev": 1.019507304912315e-10,
-   "blind_serial_s": 0.037,
+   "blind_serial_s": 0.075,
    "invocations": 4,
-   "jac_batched_s": 0.039,
+   "jac_batched_s": 0.072,
    "jac_reldev": 8.077974008469554e-11,
-   "jac_serial_s": 0.033,
+   "jac_serial_s": 0.077,
    "observations": 512
   },
   "d4096": {
-   "B1_pass": false,
-   "blind_batched_s": 137.959,
+   "B1_pass": true,
+   "blind_batched_s": 130.166,
    "blind_reldev": 5.86988881215867e-09,
-   "blind_serial_s": 142.454,
+   "blind_serial_s": 131.628,
    "invocations": 4,
-   "jac_batched_s": 129.854,
+   "jac_batched_s": 129.236,
    "jac_reldev": 3.2969944671003035e-09,
-   "jac_serial_s": 133.671,
+   "jac_serial_s": 129.944,
    "observations": 16384
   }
  },
@@ -52,5 +52,5 @@
  },
  "schema": "readscope-c14-batched-v1",
  "seed": 20260816,
- "verdict": "FAIL"
+ "verdict": "PASS"
 }
