@@ -115,8 +115,19 @@ def blind_probe(
     eps: float = 1e-3,
     rng: np.random.Generator | None = None,
     check_regime: bool = True,
+    batched: bool = False,
 ) -> ProbeResult:
     """Recover ``S = E[g g^T]`` from consumer outputs alone.
+
+    ``batched=True`` treats ``consumer`` as batch-shaped — one call on an
+    ``(m, d)`` array returns ``m`` outputs — and reads all of a point's
+    finite differences from a single invocation (calibration C-14).
+    Batching collapses *invocations*, never *observations*: the same
+    directions are probed from the same seed, the recovered operator is
+    the serial one to rounding, and the budget cliff at ``k = d`` — a
+    statement about directional observations — stands untouched. The
+    batched path self-checks row-independence on sampled rows and
+    refuses consumers with cross-row coupling.
 
     Parameters
     ----------
@@ -161,14 +172,21 @@ def blind_probe(
         # A fixed independent stream. Drawing from the caller's rng here
         # would shift the sketch's directions and silently change every
         # result recorded before this guard existed.
+        gate_consumer = consumer if not batched else (
+            lambda x_: np.asarray(consumer(x_[None, :])).ravel()[0])
         verdict = applicability(
-            consumer, pts, eps=eps, rng=np.random.default_rng(20260807)
+            gate_consumer, pts, eps=eps, rng=np.random.default_rng(20260807)
         )
         if not verdict.probeable:
             raise ValueError(
                 f"blind probe does not apply: {verdict.reason}. Pass "
                 "check_regime=False to override"
             )
+
+    if batched:
+        return _blind_probe_batched(
+            consumer, pts, xp, mode=mode, sketch_dim=sketch_dim, eps=eps,
+            rng=rng, verdict=verdict)
 
     if mode == "exact":
         k = d
@@ -305,8 +323,12 @@ def jacobian_probe(
     n_directions: int,
     eps: float = 1e-3,
     rng: np.random.Generator | None = None,
+    batched: bool = False,
 ) -> ProbeResult:
     """Recover a read operator from a **vector-valued** consumer.
+
+    ``batched=True``: consumer maps ``(m, d)`` to ``(m, out)``; one
+    invocation per operating point; observations unchanged (C-14).
 
     This is the estimator the `geometric-observation` program used for the
     published Llama figures, ported here because the difference from
@@ -342,6 +364,10 @@ def jacobian_probe(
     if rng is None:
         rng = np.random.default_rng(0)
 
+    if batched:
+        return _jacobian_probe_batched(consumer, pts, xp, k=k, eps=eps,
+                                       rng=rng)
+
     M = xp.zeros((d, d), dtype=xp.float64)
     calls = 0
     out_dim = None
@@ -373,4 +399,110 @@ def jacobian_probe(
         eps=eps,
         sketch_dim=k,
         meta={"dim": d, "out_dim": out_dim, "regime": None},
+    )
+
+
+# --------------------------------------------------------------- batched
+
+def _check_row_independence(consumer, X, xp, atol=1e-9):
+    """Refuse batch-shaped consumers with cross-row coupling (C-14 B3)."""
+    m = int(X.shape[0])
+    for i in (0, m // 2):
+        full = xp.asarray(consumer(X)).reshape(m, -1)[i]
+        single = xp.asarray(consumer(X[i:i + 1])).reshape(1, -1)[0]
+        dev = float(abs(full - single).max())
+        scale = float(abs(single).max()) + 1e-12
+        if dev > atol * max(1.0, scale):
+            raise ValueError(
+                "batched consumer is not row-independent: row "
+                f"{i} differs by {dev:.3e} between batch and single-row "
+                "evaluation. Cross-row coupling (shared normalization, "
+                "cache state) corrupts every finite difference; fix the "
+                "consumer or use the serial probe."
+            )
+
+
+def _blind_probe_batched(consumer, pts, xp, *, mode, sketch_dim, eps,
+                         rng, verdict):
+    n, d = int(pts.shape[0]), int(pts.shape[1])
+    if mode == "exact":
+        k = d
+    else:
+        if sketch_dim is None:
+            raise ValueError(f"{mode} mode requires sketch_dim")
+        k = int(sketch_dim)
+        if mode == "ortho" and k > d:
+            raise ValueError("ortho mode needs sketch_dim <= dim")
+        if rng is None:
+            rng = np.random.default_rng(0)
+
+    S = xp.zeros((d, d), dtype=xp.float64)
+    invocations = 0
+    checked = False
+    for x in pts:
+        if mode == "exact":
+            U = xp.eye(d)
+        elif mode == "ortho":
+            U = _xp.to_xp(xp, np.linalg.qr(
+                rng.standard_normal((d, k)))[0].T)
+        else:
+            U_np = rng.standard_normal((k, d))
+            if mode == "lstsq":
+                U_np /= np.linalg.norm(U_np, axis=1, keepdims=True) + 1e-12
+            U = _xp.to_xp(xp, U_np)
+        X = xp.concatenate([x[None, :] + eps * U, x[None, :] - eps * U])
+        if not checked:
+            _check_row_independence(consumer, X, xp)
+            checked = True
+        y = xp.asarray(consumer(X), dtype=xp.float64).ravel()
+        invocations += 1
+        diffs = (y[:k] - y[k:]) / (2.0 * eps)
+        if mode in ("exact", "lstsq"):
+            g = (diffs if mode == "exact"
+                 else xp.linalg.pinv(U) @ diffs)
+        else:
+            g = U.T @ diffs
+            if mode == "sketch":
+                g /= k
+        S += xp.outer(g, g)
+    S /= n
+    S = 0.5 * (S + S.T)
+    return ProbeResult(
+        S=S, n_points=n, n_calls=invocations, mode=mode, eps=eps,
+        sketch_dim=None if mode == "exact" else k,
+        meta={"dim": d, "batched": True,
+              "observations": k * n,
+              "regime": None if verdict is None else verdict.to_dict()},
+    )
+
+
+def _jacobian_probe_batched(consumer, pts, xp, *, k, eps, rng):
+    n, d = int(pts.shape[0]), int(pts.shape[1])
+    M = xp.zeros((d, d), dtype=xp.float64)
+    invocations = 0
+    out_dim = None
+    checked = False
+    for x in pts:
+        U_np = rng.standard_normal((k, d))
+        U_np /= np.linalg.norm(U_np, axis=1, keepdims=True) + 1e-12
+        U = _xp.to_xp(xp, U_np)
+        X = xp.concatenate([x[None, :] + eps * U, x[None, :] - eps * U])
+        if not checked:
+            _check_row_independence(consumer, X, xp)
+            checked = True
+        Y = xp.asarray(consumer(X), dtype=xp.float64)
+        Y = Y.reshape(2 * k, -1)
+        invocations += 1
+        dC = (Y[:k] - Y[k:]) / (2.0 * eps)
+        if out_dim is None:
+            out_dim = int(dC.shape[1])
+        Jt = xp.linalg.pinv(U) @ dC
+        M += Jt @ Jt.T
+    M /= n
+    M = 0.5 * (M + M.T)
+    return ProbeResult(
+        S=M, n_points=n, n_calls=invocations, mode="jacobian", eps=eps,
+        sketch_dim=k,
+        meta={"dim": d, "out_dim": out_dim, "batched": True,
+              "observations": k * n, "regime": None},
     )
