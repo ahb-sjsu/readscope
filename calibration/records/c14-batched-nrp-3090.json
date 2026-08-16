@@ -1,0 +1,28 @@
+{
+ "cells": {
+  "gpu_d1024": {
+   "blind_batched_s": 2.005,
+   "jac_batched_s": 1.727
+  },
+  "gpu_d4096": {
+   "blind_batched_s": 50.588,
+   "jac_batched_s": 48.812
+  },
+  "gpu_d8192": {
+   "blind_batched_s": 312.43,
+   "jac_batched_s": 308.621
+  }
+ },
+ "declaration": "DECLARATION-C14.md",
+ "device_label": "nrp-3090",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "runtime": {
+  "hostname": "c14-batched-3090-6bghg",
+  "numpy": "2.2.6",
+  "platform": "Linux-6.8.0-137-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12"
+ },
+ "schema": "readscope-c14-batched-v1",
+ "seed": 20260816,
+ "verdict": "DESCRIPTIVE"
+}

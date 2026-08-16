@@ -41,6 +41,7 @@ frequency bins.
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
 | Temperature drift | ppm/°C | Stability of a reading across architectures and scales at matched geometry. | **Four families, spread 1e-15. Four scales, spread 7e-16** |
 | Applicability | probe coupling | Which consumer regimes this probe can be attached to at all. | **Bounded, and enforced in code** |
+| Backend equivalence | inter-lab calibration | Whether a reading depends on where it was computed: CPU vs GPU, one machine vs another, one silicon generation vs another. | **Measured (C-13/C-14). Same-seed spectra agree to ≤ 4e-11 across five devices, two architectures, two sites; cross-BLAS operator floor ~1e-8 (a derived tolerance, not an aspiration). Serial probing is enforcement-incompatible on utilization-policed commons GPUs (median 0% util); the batched variant (C-14) is compatible and identical to the serial reading at the arithmetic floor** |
 
 ---
 

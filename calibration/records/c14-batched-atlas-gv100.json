@@ -1,0 +1,28 @@
+{
+ "cells": {
+  "gpu_d1024": {
+   "blind_batched_s": 0.862,
+   "jac_batched_s": 0.829
+  },
+  "gpu_d4096": {
+   "blind_batched_s": 18.823,
+   "jac_batched_s": 18.746
+  },
+  "gpu_d8192": {
+   "blind_batched_s": 139.423,
+   "jac_batched_s": 138.229
+  }
+ },
+ "declaration": "DECLARATION-C14.md",
+ "device_label": "atlas-gv100",
+ "gpu": "Quadro GV100",
+ "runtime": {
+  "hostname": "atlas",
+  "numpy": "2.5.2",
+  "platform": "Linux-6.8.0-107-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3"
+ },
+ "schema": "readscope-c14-batched-v1",
+ "seed": 20260816,
+ "verdict": "DESCRIPTIVE"
+}
