@@ -100,8 +100,10 @@ def run_cells(xp_label, as_backend, dims):
         ovl = [abs(float(vec_f[:, i] @ vec_t[:, i])) for i in range(RANK)]
         er_full = float(spec.effective_rank)
         er_top = float(top.effective_rank)
+        keep_S = "--gpu-only" not in sys.argv
         cell.update({
-            "S_blind": to_np(rb.S), "S_jac": to_np(rj.S),
+            **({"S_blind": to_np(rb.S), "S_jac": to_np(rj.S)}
+               if keep_S else {}),
             "eigvals": ev_full[:TOP_R].tolist(),
             "e3_val_dev": e3_vals,
             "e3_min_overlap": min(ovl),
@@ -118,17 +120,25 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--device-label", required=True)
     ap.add_argument("--max-cpu-d", type=int, default=8192)
+    ap.add_argument("--gpu-only", action="store_true",
+                    help="skip CPU reference cells and cross-backend "
+                         "grading; E3 + timing only (NRP amendment 3)")
+    ap.add_argument("--desc", action="store_true",
+                    help="run dimensions largest-first so heavy kernels "
+                         "reach the GPU immediately (NRP amendment 3)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
-    cpu_dims = [d for d in DIMS if d <= args.max_cpu_d]
-    cpu = run_cells("numpy", lambda a: a, cpu_dims)
+    dims = sorted(DIMS, reverse=True) if args.desc else DIMS
+    cpu_dims = [] if args.gpu_only else [d for d in dims
+                                         if d <= args.max_cpu_d]
+    cpu = run_cells("numpy", lambda a: a, cpu_dims) if cpu_dims else {}
 
     gpu = None
     try:
         import cupy as cp
 
-        gpu = run_cells("cupy", cp.asarray, DIMS)
+        gpu = run_cells("cupy", cp.asarray, dims)
         gpu_name = cp.cuda.runtime.getDeviceProperties(0)["name"].decode()
     except ImportError:
         gpu_name = None
@@ -147,7 +157,7 @@ def main():
                   and res["e3_er_reldev"] <= 1e-10)
             row[label]["E3_pass"] = bool(e3)
             ok &= e3
-        if gpu and d in cpu:
+        if gpu and d in cpu and "S_blind" in cpu[d] and "S_blind" in gpu[d]:
             for probe in ("S_blind", "S_jac"):
                 num = np.linalg.norm(cpu[d][probe] - gpu[d][probe])
                 den = max(np.linalg.norm(cpu[d][probe]), 1e-300)

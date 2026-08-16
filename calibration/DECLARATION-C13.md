@@ -94,3 +94,32 @@ d ≤ 1024 E1/E2 cells, timing reported. Submissions staggered to hold
 at most **three** concurrent C-13 pods against the namespace's
 four-heavy-pod allowance — variety is not an excuse to fill the
 commons; the A6000 waits for the 3090 to finish.
+
+## Amendment 3 (2026-08-16, after the A10 enforcement kill)
+
+The first NRP submission was killed 31 s after container start — Job
+object deleted, `Killing` the only event — the platform's resource-
+floor enforcement acting exactly as the program's own policy memory
+describes: during its opening seconds (tarball fetch + small CPU
+cells) the pod under-used its 2-CPU/4Gi requests while holding an
+idle GPU. Recorded as a finding, not fought. The NRP arm is reshaped,
+bars untouched:
+
+- **GPU-only cells on NRP** (`--gpu-only`): no CPU-reference cells in
+  the pod at all — E1/E2 cross-backend identity is carried entirely by
+  the Atlas record (completing amendment 2's direction); NRP grades E3
+  and reports timing.
+- **Descending dimension order** (`--desc`): d = 8192 runs first, so
+  the heaviest kernels hit the GPU within seconds of start.
+- **No host retention of operators** in GPU-only mode (nothing to
+  compare on-pod), collapsing host memory.
+- **Right-sized to the floors:** cpu 1, memory 1Gi, unchanged
+  ephemeral. Utilization floors (20% cpu, 20% mem) are now satisfiable
+  through every phase of the pod's life, not just its peak.
+
+If the reshaped jobs are still killed, the recorded conclusion is the
+workload-class one — serial consumer-call probing is kernel-launch
+bound and structurally cannot hold a >40% GPU floor — and the NRP
+device rows close as `enforcement-incompatible`, with Atlas carrying
+C-13. Either outcome is publishable; only one of them was worth a
+second submission.
