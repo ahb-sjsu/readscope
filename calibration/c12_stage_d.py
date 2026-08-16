@@ -32,7 +32,7 @@ import torch  # noqa: E402
 
 OUTDIR = C12.OUTDIR
 GATE_RECORD = OUTDIR / "c12-longgen-drift.json"
-BITS_PER_DIM = 4.0            # matched to the arms' KEY_BITS
+BITS_PER_DIM = 4.0  # matched to the arms' KEY_BITS
 BIT_CAP = 12
 EARLY_WINDOW = 128
 LATE = C12.LATE
@@ -140,9 +140,16 @@ def main() -> int:
         yt = torch.tensor([y_star], device=device)
         pos = torch.arange(T, T + len(y_star), device=device).unsqueeze(0)
 
-        def tf_pass(key_patch=None, capture=False, ids=ids,
-                    T=T, n_settled=n_settled, yt=yt, pos=pos,
-                    y_star=y_star):
+        def tf_pass(
+            key_patch=None,
+            capture=False,
+            ids=ids,
+            T=T,
+            n_settled=n_settled,
+            yt=yt,
+            pos=pos,
+            y_star=y_star,
+        ):
             """Teacher-forced NLL on y*; optionally patch settled keys."""
             with C12.nf4a_cache(False), C12.EFFICIENT():
                 first, cache = C12.prefill(model, ids.input_ids, device)
@@ -152,9 +159,11 @@ def main() -> int:
                     keys[li] = kt[0, :, :T, :].float().cpu().numpy()
                     if key_patch is not None:
                         for h in range(n_kv):
-                            kt[0, h, :n_settled, :] = torch.from_numpy(
-                                key_patch[li][h]
-                            ).to(kt.dtype).to(kt.device)
+                            kt[0, h, :n_settled, :] = (
+                                torch.from_numpy(key_patch[li][h])
+                                .to(kt.dtype)
+                                .to(kt.device)
+                            )
                 tap.on = capture
                 out = model(
                     input_ids=yt,
@@ -202,9 +211,7 @@ def main() -> int:
                     ("early", slice(0, min(EARLY_WINDOW, s_len))),
                     ("union", slice(0, s_len)),
                 ):
-                    Qw = np.ascontiguousarray(
-                        qh[:, sl, :].reshape(-1, hd)
-                    )
+                    Qw = np.ascontiguousarray(qh[:, sl, :].reshape(-1, hd))
                     M = C12.operator_fast(Kfh, Qw, probe, hd)
                     Khat, bits = quantize_against(Kfh, M)
                     patches[arm][li][h] = Khat

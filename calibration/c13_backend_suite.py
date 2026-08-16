@@ -76,13 +76,19 @@ def run_cells(xp_label, as_backend, dims):
         cell = {}
 
         t0 = time.time()
-        rb = blind_probe(scalar, pts, mode="lstsq", sketch_dim=d,
-                         rng=np.random.default_rng(SEED + 2),
-                         check_regime=False)
+        rb = blind_probe(
+            scalar,
+            pts,
+            mode="lstsq",
+            sketch_dim=d,
+            rng=np.random.default_rng(SEED + 2),
+            check_regime=False,
+        )
         cell["blind_s"] = round(time.time() - t0, 3)
         t0 = time.time()
-        rj = jacobian_probe(vector, pts, n_directions=d,
-                            rng=np.random.default_rng(SEED + 2))
+        rj = jacobian_probe(
+            vector, pts, n_directions=d, rng=np.random.default_rng(SEED + 2)
+        )
         cell["jac_s"] = round(time.time() - t0, 3)
 
         t0 = time.time()
@@ -104,21 +110,32 @@ def run_cells(xp_label, as_backend, dims):
         er_full = float(spec.effective_rank)
         er_top = float(top.effective_rank)
         keep_S = "--gpu-only" not in sys.argv
-        cell.update({
-            **({"S_blind": to_np(rb.S), "S_jac": to_np(rj.S)}
-               if keep_S else {}),
-            "eigvals": ev_full[:TOP_R].tolist(),
-            "trace": float(to_np(rj.S).trace()) if False else float(
-                np.trace(to_np(rj.S))),
-            "fro": float(np.linalg.norm(to_np(rj.S))),
-            "e3_val_dev": e3_vals,
-            "e3_min_overlap": min(ovl),
-            "e3_er_reldev": abs(er_top - er_full) / max(er_full, 1e-300),
-        })
+        cell.update(
+            {
+                **(
+                    {"S_blind": to_np(rb.S), "S_jac": to_np(rj.S)}
+                    if keep_S
+                    else {}
+                ),
+                "eigvals": ev_full[:TOP_R].tolist(),
+                "trace": (
+                    float(to_np(rj.S).trace())
+                    if False
+                    else float(np.trace(to_np(rj.S)))
+                ),
+                "fro": float(np.linalg.norm(to_np(rj.S))),
+                "e3_val_dev": e3_vals,
+                "e3_min_overlap": min(ovl),
+                "e3_er_reldev": abs(er_top - er_full) / max(er_full, 1e-300),
+            }
+        )
         out[d] = cell
-        print(f"[{xp_label}] d={d}: blind {cell['blind_s']}s  "
-              f"jac {cell['jac_s']}s  eigh {cell['eigh_s']}s  "
-              f"top {cell['top_s']}s", flush=True)
+        print(
+            f"[{xp_label}] d={d}: blind {cell['blind_s']}s  "
+            f"jac {cell['jac_s']}s  eigh {cell['eigh_s']}s  "
+            f"top {cell['top_s']}s",
+            flush=True,
+        )
     return out
 
 
@@ -126,18 +143,25 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--device-label", required=True)
     ap.add_argument("--max-cpu-d", type=int, default=8192)
-    ap.add_argument("--gpu-only", action="store_true",
-                    help="skip CPU reference cells and cross-backend "
-                         "grading; E3 + timing only (NRP amendment 3)")
-    ap.add_argument("--desc", action="store_true",
-                    help="run dimensions largest-first so heavy kernels "
-                         "reach the GPU immediately (NRP amendment 3)")
+    ap.add_argument(
+        "--gpu-only",
+        action="store_true",
+        help="skip CPU reference cells and cross-backend "
+        "grading; E3 + timing only (NRP amendment 3)",
+    )
+    ap.add_argument(
+        "--desc",
+        action="store_true",
+        help="run dimensions largest-first so heavy kernels "
+        "reach the GPU immediately (NRP amendment 3)",
+    )
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
     dims = sorted(DIMS, reverse=True) if args.desc else DIMS
-    cpu_dims = [] if args.gpu_only else [d for d in dims
-                                         if d <= args.max_cpu_d]
+    cpu_dims = (
+        [] if args.gpu_only else [d for d in dims if d <= args.max_cpu_d]
+    )
     cpu = run_cells("numpy", lambda a: a, cpu_dims) if cpu_dims else {}
 
     gpu = None
@@ -153,16 +177,18 @@ def main():
     cells, ok = {}, True
     for d in DIMS:
         row = {}
-        pairs = (("cpu", cpu.get(d)),
-                 ("gpu", gpu.get(d) if gpu else None))
+        pairs = (("cpu", cpu.get(d)), ("gpu", gpu.get(d) if gpu else None))
         for label, res in pairs:
             if res is None:
                 continue
-            row[label] = {k: v for k, v in res.items()
-                          if not k.startswith("S_")}
-            e3 = (res["e3_val_dev"] <= 1e-8
-                  and res["e3_min_overlap"] >= 1 - 1e-8
-                  and res["e3_er_reldev"] <= 1e-10)
+            row[label] = {
+                k: v for k, v in res.items() if not k.startswith("S_")
+            }
+            e3 = (
+                res["e3_val_dev"] <= 1e-8
+                and res["e3_min_overlap"] >= 1 - 1e-8
+                and res["e3_er_reldev"] <= 1e-10
+            )
             row[label]["E3_pass"] = bool(e3)
             ok &= e3
         if gpu and d in cpu and "S_blind" in cpu[d] and "S_blind" in gpu[d]:
@@ -174,7 +200,8 @@ def main():
             ev_c = np.asarray(cpu[d]["eigvals"])
             ev_g = np.asarray(gpu[d]["eigvals"])
             row["E2_eig_reldev"] = float(
-                np.max(np.abs(ev_c - ev_g)) / max(ev_c[0], 1e-300))
+                np.max(np.abs(ev_c - ev_g)) / max(ev_c[0], 1e-300)
+            )
             ok &= row["E2_eig_reldev"] <= 1e-9
         cells[str(d)] = row
 
@@ -193,8 +220,11 @@ def main():
             "hostname": platform.node(),
         },
     }
-    out = args.out or str(Path(__file__).parent / "records" /
-                          f"c13-backend-{args.device_label}.json")
+    out = args.out or str(
+        Path(__file__).parent
+        / "records"
+        / f"c13-backend-{args.device_label}.json"
+    )
     Path(out).write_text(json.dumps(record, indent=1, sort_keys=True))
     print(f"\nC-13 [{args.device_label}]: {record['verdict']} -> {out}")
     return 0 if ok else 1

@@ -99,10 +99,10 @@ class TopSpectrum:
     from directions actually computed.
     """
 
-    eigenvalues: np.ndarray          # (r,), largest first
-    eigenvectors: np.ndarray         # (d, r)
-    trace: float                     # exact sum of ALL eigenvalues
-    fro_sq: float                    # exact sum of ALL squared eigenvalues
+    eigenvalues: np.ndarray  # (r,), largest first
+    eigenvectors: np.ndarray  # (d, r)
+    trace: float  # exact sum of ALL eigenvalues
+    fro_sq: float  # exact sum of ALL squared eigenvalues
 
     @property
     def dim(self) -> int:
@@ -137,13 +137,18 @@ class TopSpectrum:
                 f"larger r rather than extrapolating"
             )
         lam = self.eigenvalues
-        c = np.cumsum(np.asarray(lam) if not hasattr(lam, "get")
-                      else lam.get()) / self.trace
+        c = (
+            np.cumsum(
+                np.asarray(lam) if not hasattr(lam, "get") else lam.get()
+            )
+            / self.trace
+        )
         return int(np.searchsorted(c, fraction) + 1)
 
 
-def top_spectrum(S, r: int, *, iters: int = 40, oversample: int = 8,
-                 seed: int = 0) -> TopSpectrum:
+def top_spectrum(
+    S, r: int, *, iters: int = 40, oversample: int = 8, seed: int = 0
+) -> TopSpectrum:
     """Leading-``r`` directions by block subspace iteration — no full
     eigendecomposition, no dependency beyond numpy, GPU-generic.
 

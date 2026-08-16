@@ -172,8 +172,11 @@ def blind_probe(
         # A fixed independent stream. Drawing from the caller's rng here
         # would shift the sketch's directions and silently change every
         # result recorded before this guard existed.
-        gate_consumer = consumer if not batched else (
-            lambda x_: np.asarray(consumer(x_[None, :])).ravel()[0])
+        gate_consumer = (
+            consumer
+            if not batched
+            else (lambda x_: np.asarray(consumer(x_[None, :])).ravel()[0])
+        )
         verdict = applicability(
             gate_consumer, pts, eps=eps, rng=np.random.default_rng(20260807)
         )
@@ -185,8 +188,15 @@ def blind_probe(
 
     if batched:
         return _blind_probe_batched(
-            consumer, pts, xp, mode=mode, sketch_dim=sketch_dim, eps=eps,
-            rng=rng, verdict=verdict)
+            consumer,
+            pts,
+            xp,
+            mode=mode,
+            sketch_dim=sketch_dim,
+            eps=eps,
+            rng=rng,
+            verdict=verdict,
+        )
 
     if mode == "exact":
         k = d
@@ -223,8 +233,9 @@ def blind_probe(
             if mode == "ortho":
                 # orthonormal rows; U^T U is the projector onto their span,
                 # so the recombination below is exactly P_U g
-                U = _xp.to_xp(xp, np.linalg.qr(
-                    rng.standard_normal((d, k)))[0].T)
+                U = _xp.to_xp(
+                    xp, np.linalg.qr(rng.standard_normal((d, k)))[0].T
+                )
             else:
                 U_np = rng.standard_normal((k, d))
                 if mode == "lstsq":
@@ -365,8 +376,9 @@ def jacobian_probe(
         rng = np.random.default_rng(0)
 
     if batched:
-        return _jacobian_probe_batched(consumer, pts, xp, k=k, eps=eps,
-                                       rng=rng)
+        return _jacobian_probe_batched(
+            consumer, pts, xp, k=k, eps=eps, rng=rng
+        )
 
     M = xp.zeros((d, d), dtype=xp.float64)
     calls = 0
@@ -404,12 +416,13 @@ def jacobian_probe(
 
 # --------------------------------------------------------------- batched
 
+
 def _check_row_independence(consumer, X, xp, atol=1e-9):
     """Refuse batch-shaped consumers with cross-row coupling (C-14 B3)."""
     m = int(X.shape[0])
     for i in (0, m // 2):
         full = xp.asarray(consumer(X)).reshape(m, -1)[i]
-        single = xp.asarray(consumer(X[i:i + 1])).reshape(1, -1)[0]
+        single = xp.asarray(consumer(X[i : i + 1])).reshape(1, -1)[0]
         dev = float(abs(full - single).max())
         scale = float(abs(single).max()) + 1e-12
         if dev > atol * max(1.0, scale):
@@ -422,8 +435,9 @@ def _check_row_independence(consumer, X, xp, atol=1e-9):
             )
 
 
-def _blind_probe_batched(consumer, pts, xp, *, mode, sketch_dim, eps,
-                         rng, verdict):
+def _blind_probe_batched(
+    consumer, pts, xp, *, mode, sketch_dim, eps, rng, verdict
+):
     n, d = int(pts.shape[0]), int(pts.shape[1])
     if mode == "exact":
         k = d
@@ -443,8 +457,7 @@ def _blind_probe_batched(consumer, pts, xp, *, mode, sketch_dim, eps,
         if mode == "exact":
             U = xp.eye(d)
         elif mode == "ortho":
-            U = _xp.to_xp(xp, np.linalg.qr(
-                rng.standard_normal((d, k)))[0].T)
+            U = _xp.to_xp(xp, np.linalg.qr(rng.standard_normal((d, k)))[0].T)
         else:
             U_np = rng.standard_normal((k, d))
             if mode == "lstsq":
@@ -458,8 +471,7 @@ def _blind_probe_batched(consumer, pts, xp, *, mode, sketch_dim, eps,
         invocations += 1
         diffs = (y[:k] - y[k:]) / (2.0 * eps)
         if mode in ("exact", "lstsq"):
-            g = (diffs if mode == "exact"
-                 else xp.linalg.pinv(U) @ diffs)
+            g = diffs if mode == "exact" else xp.linalg.pinv(U) @ diffs
         else:
             g = U.T @ diffs
             if mode == "sketch":
@@ -468,11 +480,18 @@ def _blind_probe_batched(consumer, pts, xp, *, mode, sketch_dim, eps,
     S /= n
     S = 0.5 * (S + S.T)
     return ProbeResult(
-        S=S, n_points=n, n_calls=invocations, mode=mode, eps=eps,
+        S=S,
+        n_points=n,
+        n_calls=invocations,
+        mode=mode,
+        eps=eps,
         sketch_dim=None if mode == "exact" else k,
-        meta={"dim": d, "batched": True,
-              "observations": k * n,
-              "regime": None if verdict is None else verdict.to_dict()},
+        meta={
+            "dim": d,
+            "batched": True,
+            "observations": k * n,
+            "regime": None if verdict is None else verdict.to_dict(),
+        },
     )
 
 
@@ -501,8 +520,17 @@ def _jacobian_probe_batched(consumer, pts, xp, *, k, eps, rng):
     M /= n
     M = 0.5 * (M + M.T)
     return ProbeResult(
-        S=M, n_points=n, n_calls=invocations, mode="jacobian", eps=eps,
+        S=M,
+        n_points=n,
+        n_calls=invocations,
+        mode="jacobian",
+        eps=eps,
         sketch_dim=k,
-        meta={"dim": d, "out_dim": out_dim, "batched": True,
-              "observations": k * n, "regime": None},
+        meta={
+            "dim": d,
+            "out_dim": out_dim,
+            "batched": True,
+            "observations": k * n,
+            "regime": None,
+        },
     )

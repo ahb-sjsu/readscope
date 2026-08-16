@@ -34,7 +34,7 @@ def test_aggregates_are_exact_without_full_decomposition():
 
 def test_energy_rank_refuses_beyond_coverage():
     S = make_psd()
-    top = top_spectrum(S, 2)          # top-2 carry 15/18.7 ~ 0.80
+    top = top_spectrum(S, 2)  # top-2 carry 15/18.7 ~ 0.80
     assert top.energy_rank(0.5) >= 1  # answerable inside coverage
     with pytest.raises(ValueError, match="more directions"):
         top.energy_rank(0.99)

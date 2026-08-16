@@ -35,6 +35,7 @@ def consumers(d, rng):
     def xp_of(x):
         if type(x).__module__.split(".")[0] == "cupy":
             import cupy
+
             return cupy
         return np
 
@@ -70,40 +71,57 @@ def main():
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
-    record = {"schema": "readscope-c14-batched-v1",
-              "declaration": "DECLARATION-C14.md",
-              "device_label": args.device_label, "seed": SEED,
-              "cells": {}, "runtime": {
-                  "python": sys.version.split()[0],
-                  "numpy": np.__version__,
-                  "platform": platform.platform(),
-                  "hostname": platform.node()}}
+    record = {
+        "schema": "readscope-c14-batched-v1",
+        "declaration": "DECLARATION-C14.md",
+        "device_label": args.device_label,
+        "seed": SEED,
+        "cells": {},
+        "runtime": {
+            "python": sys.version.split()[0],
+            "numpy": np.__version__,
+            "platform": platform.platform(),
+            "hostname": platform.node(),
+        },
+    }
     ok = True
 
     if args.gpu:
         import cupy as cp
 
-        record["gpu"] = cp.cuda.runtime.getDeviceProperties(0)[
-            "name"].decode()
+        record["gpu"] = cp.cuda.runtime.getDeviceProperties(0)["name"].decode()
         for d in GPU_DIMS:
             rng = np.random.default_rng(SEED)
             pts = cp.asarray(rng.standard_normal((N_PTS, d)))
             _, sb, _, vb = consumers(d, np.random.default_rng(SEED + 1))
             t0 = time.time()
-            blind_probe(sb, pts, mode="lstsq", sketch_dim=d,
-                        rng=np.random.default_rng(SEED + 2),
-                        check_regime=False, batched=True)
+            blind_probe(
+                sb,
+                pts,
+                mode="lstsq",
+                sketch_dim=d,
+                rng=np.random.default_rng(SEED + 2),
+                check_regime=False,
+                batched=True,
+            )
             tb = time.time() - t0
             t0 = time.time()
-            jacobian_probe(vb, pts, n_directions=d,
-                           rng=np.random.default_rng(SEED + 2),
-                           batched=True)
+            jacobian_probe(
+                vb,
+                pts,
+                n_directions=d,
+                rng=np.random.default_rng(SEED + 2),
+                batched=True,
+            )
             tj = time.time() - t0
             record["cells"][f"gpu_d{d}"] = {
                 "blind_batched_s": round(tb, 3),
-                "jac_batched_s": round(tj, 3)}
-            print(f"[gpu-batched] d={d}: blind {tb:.3f}s  jac {tj:.3f}s",
-                  flush=True)
+                "jac_batched_s": round(tj, 3),
+            }
+            print(
+                f"[gpu-batched] d={d}: blind {tb:.3f}s  jac {tj:.3f}s",
+                flush=True,
+            )
         record["verdict"] = "DESCRIPTIVE"
     else:
         # B1: identity with the serial instrument
@@ -113,24 +131,40 @@ def main():
             sc, sb, vc, vb = consumers(d, np.random.default_rng(SEED + 1))
             cell = {}
             t0 = time.time()
-            r_ser = blind_probe(sc, pts, mode="lstsq", sketch_dim=d,
-                                rng=np.random.default_rng(SEED + 2),
-                                check_regime=False)
+            r_ser = blind_probe(
+                sc,
+                pts,
+                mode="lstsq",
+                sketch_dim=d,
+                rng=np.random.default_rng(SEED + 2),
+                check_regime=False,
+            )
             cell["blind_serial_s"] = round(time.time() - t0, 3)
             t0 = time.time()
-            r_bat = blind_probe(sb, pts, mode="lstsq", sketch_dim=d,
-                                rng=np.random.default_rng(SEED + 2),
-                                check_regime=False, batched=True)
+            r_bat = blind_probe(
+                sb,
+                pts,
+                mode="lstsq",
+                sketch_dim=d,
+                rng=np.random.default_rng(SEED + 2),
+                check_regime=False,
+                batched=True,
+            )
             cell["blind_batched_s"] = round(time.time() - t0, 3)
             cell["blind_reldev"] = rel(r_ser.S, r_bat.S)
             t0 = time.time()
-            j_ser = jacobian_probe(vc, pts, n_directions=d,
-                                   rng=np.random.default_rng(SEED + 2))
+            j_ser = jacobian_probe(
+                vc, pts, n_directions=d, rng=np.random.default_rng(SEED + 2)
+            )
             cell["jac_serial_s"] = round(time.time() - t0, 3)
             t0 = time.time()
-            j_bat = jacobian_probe(vb, pts, n_directions=d,
-                                   rng=np.random.default_rng(SEED + 2),
-                                   batched=True)
+            j_bat = jacobian_probe(
+                vb,
+                pts,
+                n_directions=d,
+                rng=np.random.default_rng(SEED + 2),
+                batched=True,
+            )
             cell["jac_batched_s"] = round(time.time() - t0, 3)
             cell["jac_reldev"] = rel(j_ser.S, j_bat.S)
             cell["invocations"] = int(r_bat.n_calls)
@@ -139,10 +173,13 @@ def main():
             cell["B1_pass"] = bool(b1)
             ok &= b1
             record["cells"][f"d{d}"] = cell
-            print(f"[cpu] d={d}: blind dev {cell['blind_reldev']:.2e} "
-                  f"({cell['blind_serial_s']}s -> {cell['blind_batched_s']}s)"
-                  f"  jac dev {cell['jac_reldev']:.2e}  B1 "
-                  f"{'PASS' if b1 else 'FAIL'}", flush=True)
+            print(
+                f"[cpu] d={d}: blind dev {cell['blind_reldev']:.2e} "
+                f"({cell['blind_serial_s']}s -> {cell['blind_batched_s']}s)"
+                f"  jac dev {cell['jac_reldev']:.2e}  B1 "
+                f"{'PASS' if b1 else 'FAIL'}",
+                flush=True,
+            )
 
         # B2: the cliff stands under batching
         d, k, hits = 128, 64, 0
@@ -157,8 +194,15 @@ def main():
 
             span = basis[:, :k]
             pts = rng.standard_normal((2, d)) @ span @ span.T
-            res = blind_probe(sb2, pts, mode="lstsq", sketch_dim=k,
-                              rng=rng, check_regime=False, batched=True)
+            res = blind_probe(
+                sb2,
+                pts,
+                mode="lstsq",
+                sketch_dim=k,
+                rng=rng,
+                check_regime=False,
+                batched=True,
+            )
             s_np = res.S
             top = np.linalg.eigh(s_np)[1][:, -1]
             hidden = 1 - float((span.T @ u_true) @ (span.T @ u_true))
@@ -166,10 +210,15 @@ def main():
                 hits += 1
         b2 = hits == 0
         ok &= b2
-        record["cells"]["B2_cliff"] = {"hidden_recoveries": hits,
-                                       "trials": 50, "pass": bool(b2)}
-        print(f"B2 cliff under batching: {hits}/50 hidden recoveries "
-              f"-> {'PASS' if b2 else 'FAIL'}")
+        record["cells"]["B2_cliff"] = {
+            "hidden_recoveries": hits,
+            "trials": 50,
+            "pass": bool(b2),
+        }
+        print(
+            f"B2 cliff under batching: {hits}/50 hidden recoveries "
+            f"-> {'PASS' if b2 else 'FAIL'}"
+        )
 
         # B3: the consistency gate fires on a row-coupled consumer
         d = 64
@@ -178,12 +227,18 @@ def main():
         _, sb3, _, _ = consumers(d, np.random.default_rng(SEED + 1))
 
         def coupled(X):
-            return sb3(X) + X.mean()          # cross-row coupling
+            return sb3(X) + X.mean()  # cross-row coupling
 
         try:
-            blind_probe(coupled, pts, mode="lstsq", sketch_dim=d,
-                        rng=np.random.default_rng(SEED),
-                        check_regime=False, batched=True)
+            blind_probe(
+                coupled,
+                pts,
+                mode="lstsq",
+                sketch_dim=d,
+                rng=np.random.default_rng(SEED),
+                check_regime=False,
+                batched=True,
+            )
             b3 = False
         except ValueError as e:
             b3 = "row-independent" in str(e)
@@ -192,8 +247,11 @@ def main():
         print(f"B3 consistency gate: {'PASS' if b3 else 'FAIL'}")
         record["verdict"] = "PASS" if ok else "FAIL"
 
-    out = args.out or str(Path(__file__).parent / "records" /
-                          f"c14-batched-{args.device_label}.json")
+    out = args.out or str(
+        Path(__file__).parent
+        / "records"
+        / f"c14-batched-{args.device_label}.json"
+    )
     Path(out).write_text(json.dumps(record, indent=1, sort_keys=True))
     print(f"\nC-14 [{args.device_label}]: {record['verdict']} -> {out}")
     return 0 if record["verdict"] in ("PASS", "DESCRIPTIVE") else 1
