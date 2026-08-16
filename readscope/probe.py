@@ -56,6 +56,8 @@ from typing import Literal
 
 import numpy as np
 
+from readscope import _xp
+
 Consumer = Callable[[np.ndarray], np.ndarray]
 
 
@@ -144,10 +146,11 @@ def blind_probe(
         worthless rather than an error. Costs up to 128 extra consumer calls.
         Turn it off only when the regime is already established.
     """
-    pts = np.atleast_2d(np.asarray(points, dtype=float))
+    xp = _xp.of(points)
+    pts = xp.atleast_2d(xp.asarray(points, dtype=xp.float64))
     if pts.ndim != 2:
         raise ValueError("points must have shape (n, d)")
-    n, d = pts.shape
+    n, d = int(pts.shape[0]), int(pts.shape[1])
     if n == 0:
         raise ValueError("no operating points supplied")
 
@@ -184,43 +187,48 @@ def blind_probe(
     else:
         raise ValueError(f"unknown mode {mode!r}")
 
-    S = np.zeros((d, d), dtype=float)
+    S = xp.zeros((d, d), dtype=xp.float64)
     calls = 0
 
     for x in pts:
         if mode == "exact":
-            g = np.empty(d, dtype=float)
+            g = xp.empty(d, dtype=xp.float64)
             for i in range(d):
-                e = np.zeros(d)
+                e = xp.zeros(d)
                 e[i] = 1.0
                 g[i] = _central_difference(consumer, x, e, eps)
                 calls += 2
         else:
             assert rng is not None
+            # draws stay numpy, in the pure-numpy path's exact order, then
+            # transfer -- same seed probes the same directions on any backend
             if mode == "ortho":
                 # orthonormal rows; U^T U is the projector onto their span,
                 # so the recombination below is exactly P_U g
-                U = np.linalg.qr(rng.standard_normal((d, k)))[0].T
+                U = _xp.to_xp(xp, np.linalg.qr(
+                    rng.standard_normal((d, k)))[0].T)
             else:
-                U = rng.standard_normal((k, d))
+                U_np = rng.standard_normal((k, d))
                 if mode == "lstsq":
-                    U /= np.linalg.norm(U, axis=1, keepdims=True) + 1e-12
+                    U_np /= np.linalg.norm(U_np, axis=1, keepdims=True) + 1e-12
+                U = _xp.to_xp(xp, U_np)
 
             if mode == "lstsq":
-                y = np.empty(k, dtype=float)
-                for j, u in enumerate(U):
-                    y[j] = _central_difference(consumer, x, u, eps)
+                y = xp.empty(k, dtype=xp.float64)
+                for j in range(k):
+                    y[j] = _central_difference(consumer, x, U[j], eps)
                     calls += 2
-                g = np.linalg.pinv(U) @ y
+                g = xp.linalg.pinv(U) @ y
             else:
-                g = np.zeros(d, dtype=float)
-                for u in U:
+                g = xp.zeros(d, dtype=xp.float64)
+                for j in range(k):
+                    u = U[j]
                     deriv = _central_difference(consumer, x, u, eps)
                     g += deriv * u
                     calls += 2
                 if mode == "sketch":
                     g /= k
-        S += np.outer(g, g)
+        S += xp.outer(g, g)
 
     S /= n
     S = 0.5 * (S + S.T)
@@ -321,10 +329,11 @@ def jacobian_probe(
     Whether that lets the direction budget fall below the ambient dimension
     is a measured question, not an assumption. See C-2e.
     """
-    pts = np.atleast_2d(np.asarray(points, dtype=float))
+    xp = _xp.of(points)
+    pts = xp.atleast_2d(xp.asarray(points, dtype=xp.float64))
     if pts.ndim != 2:
         raise ValueError("points must have shape (n, d)")
-    n, d = pts.shape
+    n, d = int(pts.shape[0]), int(pts.shape[1])
     if n == 0:
         raise ValueError("no operating points supplied")
     k = int(n_directions)
@@ -333,23 +342,25 @@ def jacobian_probe(
     if rng is None:
         rng = np.random.default_rng(0)
 
-    M = np.zeros((d, d), dtype=float)
+    M = xp.zeros((d, d), dtype=xp.float64)
     calls = 0
     out_dim = None
 
     for x in pts:
-        U = rng.standard_normal((k, d))
-        U /= np.linalg.norm(U, axis=1, keepdims=True) + 1e-12
+        U_np = rng.standard_normal((k, d))
+        U_np /= np.linalg.norm(U_np, axis=1, keepdims=True) + 1e-12
+        U = _xp.to_xp(xp, U_np)
         rows = []
-        for u in U:
-            hi = np.asarray(consumer(x + eps * u), dtype=float).ravel()
-            lo = np.asarray(consumer(x - eps * u), dtype=float).ravel()
+        for j in range(k):
+            u = U[j]
+            hi = xp.asarray(consumer(x + eps * u), dtype=xp.float64).ravel()
+            lo = xp.asarray(consumer(x - eps * u), dtype=xp.float64).ravel()
             rows.append((hi - lo) / (2.0 * eps))
             calls += 2
-        dC = np.asarray(rows)
+        dC = xp.stack(rows)
         if out_dim is None:
             out_dim = int(dC.shape[1])
-        Jt = np.linalg.pinv(U) @ dC
+        Jt = xp.linalg.pinv(U) @ dC
         M += Jt @ Jt.T
 
     M /= n

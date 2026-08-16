@@ -49,7 +49,8 @@ from readscope.regimes import (
     differential_fraction,
     routing_margins,
 )
-from readscope.spectrum import Spectrum, spectrum_of
+from readscope.spectrum import (Spectrum, TopSpectrum, spectrum_of,
+                                top_spectrum)
 
 __version__ = "0.1.0"
 
@@ -80,6 +81,8 @@ __all__ = [
     "retrieval_margin_gradient",
     "routing_margins",
     "spectrum_of",
+    "top_spectrum",
+    "TopSpectrum",
     "subspace_overlap",
     "tangential_fraction",
     "tangential_fractions",

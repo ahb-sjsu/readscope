@@ -167,6 +167,10 @@ def applicability(
         x = pts[i]
         u = rng.standard_normal(d)
         u /= np.linalg.norm(u)
+        if type(x).__module__.split(".")[0] == "cupy":
+            import cupy
+
+            u = cupy.asarray(u)
         hi = float(np.asarray(consumer(x + eps * u)).reshape(()))
         lo = float(np.asarray(consumer(x - eps * u)).reshape(()))
         values.extend([hi, lo])
