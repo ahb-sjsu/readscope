@@ -1,9 +1,10 @@
 # The five principles
 
-> **Observation Theory v0.2 (2026-08-15).** v0.1 was frozen at commit
-> `a490e4e`, put through the seven-test Crucible campaign, and **did not
-> graduate** (three of the five core predictions survived; the campaign
-> verdict, scorecard, and rules are in
+> **Observation Theory v0.2 (2026-08-15; verdicts updated
+> 2026-08-16).** v0.1 was frozen at commit `a490e4e`, put through the
+> seven-test Crucible campaign, and **did not graduate** (three of the
+> five core predictions survived; the campaign verdict, scorecard, and
+> rules are in
 > [geometric-observation/crucible](https://github.com/ahb-sjsu/geometric-observation/tree/master/crucible),
 > `OT-CAMPAIGN-VERDICT.md`). Per the freeze rules, revision happened
 > only after closure: **P1–P3 are unchanged** (their owed predictions
@@ -12,6 +13,17 @@
 > before/after diff in `OT-V0.2-REVISION.md`), and each principle owes
 > one **new** untested prediction. Still five principles — the
 > no-sixth-principle rule held and holds.
+>
+> **Two further campaigns have since consumed three of the five owed
+> predictions** (`OT-CRUCIBLE-2-VERDICT.md`, `OT-CRUCIBLE-3-VERDICT.md`):
+> P1's composition (OT-8 ✅), P4's feedback-free staleness (OT-14 ✅),
+> and P2's forward transfer (OT-15 ✅, via the corrected estimator after
+> OT-9's death). P5's floor curves remain **untested in substance after
+> two instrument/authoring deaths** (OT-12, OT-13 — the latter leaving a
+> perfect but ungraded exploratory record), and P3's noisy cliff has not
+> been run. Consumed predictions are recorded as instances below; **new
+> owed predictions are not minted here** — that is a revision act with
+> its own seal, and the program's precedent says not to rush it.
 
 The object throughout: a consumer `C` reading a representation `x`, with
 read operator
@@ -40,11 +52,12 @@ cross-domain):** the same trace picked the ranking-destroyer among
 equal-Euclidean-energy perturbations on 400/400 queries over real book
 embeddings, machinery verbatim.
 
-*Owed prediction (new, untested):* **composition.** For a weighted
-ensemble of consumers, the ensemble's codec preference is predicted by
-the weight-averaged traces `Σᵢ wᵢ tr(P_i Σ_δ)` computed from component
-operators alone — no probe of the ensemble. Runnable on multi-head
-attention today.
+*Owed prediction — CONSUMED, survived (OT-8, Second Crucible):*
+**composition.** The ensemble's codec preference predicted by
+weight-averaged component traces `Σᵢ wᵢ tr(P_i Σ_δ)` with no probe of
+the ensemble: **29/30 cells**, with live cross-terms costing exactly
+the one predicted cell. Now an instance; P1 currently carries no open
+owed prediction.
 
 ## P2 — Measure dependence *(unchanged; prediction survived)*
 
@@ -63,11 +76,20 @@ producing machine-zero, and linear convergence in ε. Loading is a
 covariance, not a distance; three failed scalar corrections now have
 their closing statement.
 
-*Owed prediction (new, untested):* **forward transfer of readings.**
-Given the operator probed under a synthetic measure and the measured
-alignment functional between that measure and the activation measure,
-the law predicts the real-activation operator without probing under
-it — graded on real heads against direct activation-measure probes.
+*Owed prediction — CONSUMED, survived in corrected form (OT-9 †,
+OT-15 ✅, Third Crucible):* **forward transfer of readings.** The
+prediction as first worded — importance-reweighting via an alignment
+functional — died as an estimator (OT-9: ESS ≈ 1.0 in 128-d; the
+"correction" was one point, not the law). The substance survived via
+the estimator that design should have been: **direct moment-matched
+probing** — draw operating points from N(μ̂, Σ̂) fitted to ≤ 64 real
+key samples and probe there, no weights anywhere. On the 12 real
+Llama-3.2-3B heads: beats iso-Gaussian probing **11/12** at median
+error ratio **8.27×** (iso is catastrophic on real heads, median
+relative error 6.4). The recorded residual is the fitted family's
+inadequacy — one head where even full-sample Gaussian moments cannot
+beat 1.0 — which is the honest content of any transfer claim. Now an
+instance; P2 currently carries no open owed prediction.
 
 ## P3 — Observation complexity *(unchanged; prediction survived, and became a theorem)*
 
@@ -118,14 +140,17 @@ p = 0.42) and orientation does no work against the rotated null — the
 mechanism is feedback compounding of a ~4.3-nat constant error, and
 C-11c's claim to explain it is dead by the declaration's own sentence.
 
-*Owed prediction (new, untested):* **a feedback-free staleness
-system.** Streaming retrieval has no autoregression: an embedding
-index quantized against the day-0 query operator, served under a
-drifting query stream, has damage that grows with measured
-`d(P_C(t₀), P_C(t))` and is removed by re-allocation at a cadence
-derived from the drift rate — and the feedback-severing control passes
-trivially because the channel does not exist. Runnable on the OT-6
-substrate with query drift by book/language strata.
+*Owed prediction — CONSUMED, survived (OT-14 v2, Third Crucible):*
+**a feedback-free staleness system.** On the OT-6 substrate with a
+qualified mixture-drift dial (Spearman 1.000, range 17×): staleness
+excess tracks measured drift at **ρ = 0.857** across seven strata,
+refresh at the stratum cadence removes **77%** of stale damage at
+full drift (lever 15× eval noise, exact pool-blend operators), and
+the severing control was declared trivial-by-construction *in
+advance*, exactly as the dominance obligation demands. One edge is
+recorded with the pass: refresh slightly *hurts* below drift ≈ 0.1 —
+the derived cadence has a floor, and re-allocating beneath it costs.
+Now an instance; P4 currently carries no open owed prediction.
 
 ## P5 — Metric consequence *(REVISED after OT-5's refutation)*
 
@@ -149,12 +174,19 @@ step — accuracy 0.93–1.00 from DF 1.0 down to 0.094, then 0/30
 informative pairs; **OT-6:** ceiling prediction of a *discrete*
 ranking metric (top-10 overlap), consistent with writ-until-the-floor.
 
-*Owed prediction (new, untested):* **the two curves at the floor.** In
-a consumer family approaching its floor gradually (output quantized to
-g levels, g decreasing), the *informative fraction* of codec
-comparisons decays with g while accuracy *on informative pairs* stays
-at ceiling — both curves predicted, jointly falsifiable: accuracy
-sagging while informative pairs remain would kill the revision.
+*Owed prediction (still untested — twice, by instrument):* **the two
+curves at the floor.** In a consumer family approaching its floor
+gradually, the *informative fraction* of codec comparisons decays
+while accuracy *on informative pairs* stays at ceiling — both curves
+predicted, jointly falsifiable: accuracy sagging while informative
+pairs remain would kill the revision. Two campaigns have failed to
+grade it: OT-12 (family without interior, VOID) and OT-13 (v1: probe
+structurally silent by channel conflation; v2: **accuracy 1.000 at
+every graded step with clean decay**, then VOID on its author's own
+seed-fragile manipulation check — closed unresolved under the sealed
+campaign rule, the perfect curve carrying no verdict weight). The
+prediction remains the theory's live exposure; the instrument lessons
+for a fourth attempt are recorded in `OT13-NOTES.md`.
 
 ---
 
@@ -163,9 +195,20 @@ sagging while informative pairs remain would kill the revision.
 v0.1's campaign: OT-1 ✅ OT-2 ✅ OT-3 ✅ (theorem) OT-5 ❌ OT-6 ✅
 (cross-domain, 400/400) OT-7 ✅ (invariance) OT-4 ❌ — graduation
 denied under the pre-registered rule, and the two refutations are the
-sources of the two revisions above. v0.2 carries five new owed
-predictions; they are the theory's live exposure, and none has been
-run. The research question is unchanged:
+sources of the two revisions above.
+
+The Second Crucible (OT-8..OT-12) closed 1/5 with four instrument
+deaths and zero clean refutations; its durable product is the
+rate-limit rule (no appendix sealed the day its family is first
+constructed). The Third Crucible (OT-13..OT-15), run on
+pre-qualified families under that rule, closed 2/3: **P4's and P2's
+owed predictions are earned** (OT-14, OT-15), P1's was earned earlier
+(OT-8), and OT-13 closed unresolved. The theory's live exposure is
+now exactly two owed predictions: **P3's noisy cliff** (never run)
+and **P5's floor curves** (never graded). No v1.0 declaration is
+available while either stands open, and new owed predictions for
+P1/P2/P4 await a sealed revision act. The research question is
+unchanged:
 
 > **What can be known about an internal representation by observing how
 > another system consumes it; what geometry does that observation
