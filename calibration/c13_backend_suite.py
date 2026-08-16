@@ -105,6 +105,9 @@ def run_cells(xp_label, as_backend, dims):
             **({"S_blind": to_np(rb.S), "S_jac": to_np(rj.S)}
                if keep_S else {}),
             "eigvals": ev_full[:TOP_R].tolist(),
+            "trace": float(to_np(rj.S).trace()) if False else float(
+                np.trace(to_np(rj.S))),
+            "fro": float(np.linalg.norm(to_np(rj.S))),
             "e3_val_dev": e3_vals,
             "e3_min_overlap": min(ovl),
             "e3_er_reldev": abs(er_top - er_full) / max(er_full, 1e-300),

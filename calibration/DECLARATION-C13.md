@@ -123,3 +123,18 @@ bound and structurally cannot hold a >40% GPU floor — and the NRP
 device rows close as `enforcement-incompatible`, with Atlas carrying
 C-13. Either outcome is publishable; only one of them was worth a
 second submission.
+
+## Amendment 4 (2026-08-16): the same-silicon cross-host cell
+
+Co-author suggestion, adopted: the Atlas **GV100** and NRP **V100**
+are the same architecture class (Volta sm_70, strong fp64) on entirely
+different hosts, drivers, and BLAS stacks — comparing them isolates
+backend correctness from residence. Every cell record now carries the
+jacobian operator's trace, Frobenius norm, and top-16 spectrum, and
+the notes will publish a **descriptive cross-silicon table**:
+per-dimension spectral deviation between `atlas-gv100` and `nrp-v100`
+(and, for contrast, the weak-fp64 Ampere devices). Descriptive because
+the sealed bars are frozen; the expectation recorded in advance is
+deviation at linear-algebra rounding (≤ ~1e-9 relative), and a larger
+gap would be a genuine finding about cross-host reproducibility, not
+an instrument defect to quietly absorb.
