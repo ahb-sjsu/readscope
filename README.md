@@ -7,7 +7,7 @@ the outside, with nothing but function calls.**
 [![Principles](https://img.shields.io/badge/principles-5,_with_owed_predictions-purple)](PRINCIPLES.md)
 [![Spec](https://img.shields.io/badge/spec-partial-orange)](SPEC.md)
 [![Calibration](https://img.shields.io/badge/calibrations-C--0_to_C--15-blue)](CALIBRATION.md)
-[![Tests](https://img.shields.io/badge/tests-99-green)](tests/)
+[![Tests](https://img.shields.io/badge/tests-111-green)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## The problem it solves

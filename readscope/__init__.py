@@ -51,6 +51,7 @@ from readscope.regimes import (
     routing_margins,
 )
 from readscope.spectrum import Spectrum, TopSpectrum, spectrum_of, top_spectrum
+from readscope.stats import BootstrapCI, bootstrap_ci, spearman
 
 __version__ = "0.1.0"
 
@@ -83,6 +84,9 @@ __all__ = [
     "spectrum_of",
     "top_spectrum",
     "TopSpectrum",
+    "BootstrapCI",
+    "bootstrap_ci",
+    "spearman",
     "split_half_overlap",
     "step_response",
     "subspace_overlap",
