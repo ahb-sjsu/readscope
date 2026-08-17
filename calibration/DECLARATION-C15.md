@@ -1,11 +1,15 @@
 # DECLARATION-C15 — the (k, n) fixed-budget surface
 
-**STATUS: DRAFT-UNSEALED (drafted 2026-08-16 PDT, the same evening
-the calibration script was written and shaken down). Per the
-rate-limit rule this declaration binds nothing until a dated SEAL
-line replaces this one in a later working session; the shakedown
-record (`records/c15-shakedown.json`, one seed, rank 16) carries no
-evidential weight and exists to show the surface has interior.**
+**STATUS: SEALED 2026-08-16 21:57 PDT, BY RECORDED OWNER OVERRIDE
+of the same-day rate-limit rule** (drafted and shaken down earlier
+this same evening; the conflict was flagged and the program owner
+explicitly chose to seal tonight — the program's second recorded
+exception, after the BMP-V1 seal whose resonance FAIL is the
+standing argument for the rule). The decision rule below is frozen
+exactly as drafted, no edits between draft and seal; the graded run
+is `python calibration/c15_budget_surface.py` (no --shakedown), five
+seeds, ranks {4, 16}; the record is
+`records/c15-budget-surface.json`, committed as executed.
 
 ## The question (reviewer-posed, accepted verbatim)
 
