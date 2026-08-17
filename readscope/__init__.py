@@ -53,7 +53,7 @@ from readscope.regimes import (
 from readscope.spectrum import Spectrum, TopSpectrum, spectrum_of, top_spectrum
 from readscope.stats import BootstrapCI, bootstrap_ci, spearman
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "Allocation",
