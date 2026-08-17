@@ -33,7 +33,7 @@ frequency bins.
 | Field | Scope equivalent | Meaning for this instrument | Status |
 |---|---|---|---|
 | Sample rate | samples/second | Consumer evaluations spent per operating point. `2d` exact, `2k` sketched. | **Measured, exactly known** |
-| Minimum usable budget | minimum input signal | The direction budget below which the probe resolves almost nothing. | **Measured. It is a cliff at `k = d`** |
+| Minimum usable budget | minimum input signal | The direction budget below which the probe resolves almost nothing. | **Measured at matched point counts: a cliff at `k = d`. The equal-total-budget `(k, n)` surface is uncalibrated (C-15 queued)** |
 | Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Measured for this package's estimators, and it is bad** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
@@ -260,10 +260,19 @@ points.
 | 1.25 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | **16** |
 | 1.50 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | **16** |
 
-**Bandwidth is a cliff at `k = d`, not a slope.** It goes 1, 2, 2, then
-straight to the exact estimator's 16. Three quarters of the directions buys
-two of sixteen; the last quarter buys the other fourteen. There is no
-graceful degradation to trade against, and no partial budget worth spending.
+**Bandwidth is a cliff at `k = d`, not a slope — at matched operating-point
+counts.** It goes 1, 2, 2, then straight to the exact estimator's 16. Three
+quarters of the directions buys two of sixteen; the last quarter buys the
+other fourteen. Within this design — every row measured at the same 96
+points — there is no graceful degradation to trade against. **Scope note
+(2026-08-17):** these rows compare equal `n`, not equal total call budget
+`2kn`; the OT-3 theorem behind the cliff covers subspace-confined designs
+and explicitly not generic-position allocation across points, and the
+sketch expectation retains `S`'s eigenspaces at every `k`. Whether
+`k = d/4` at `4n` points catches `k = d` at `n` is uncalibrated — the C-15
+budget-surface calibration is queued to decide it, and until it reports,
+"no partial budget worth spending" is licensed per point, not per total
+budget.
 
 **Read as a specification: for a scalar-margin consumer, pay `2d` consumer
 calls per operating point or expect the dominant direction and nothing

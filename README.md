@@ -99,10 +99,20 @@ scale, without changing what a reading means:
   far as the computed directions reach and **raises rather than
   extrapolates** past its coverage.
 
-What none of this changes: **the budget law.** The cliff at `k = d` is
-a property of consumer calls, not FLOPs — it is a theorem
-([PRINCIPLES.md](PRINCIPLES.md), P3) — and a faster backend buys speed,
-never admission.
+What none of this changes: **the budget law, in its proven scope.**
+The cliff at `k = d` is a property of consumer calls, not FLOPs — a
+faster backend buys speed, never admission. The theorem behind it
+([PRINCIPLES.md](PRINCIPLES.md), P3; OT-3) covers **subspace-confined
+directional designs at an operating point**, which is what this
+probe's per-point estimators are; it does not cover every allocation
+of calls across many operating points, and the sketch expectation
+`(1+1/k)·S + tr(S)/k·I` shares `S`'s eigenspaces at every `k` — so
+whether many cheap points can average their way back to the
+population operator is a **sample-complexity question, not a proven
+impossibility**. That equal-total-budget `(k, n)` surface is the
+instrument's next calibration (C-15); until it lands, every cliff
+statement here is a per-operating-point statement at the measured
+point count.
 
 ## The one rule: budget `2d` calls per operating point
 
@@ -116,10 +126,14 @@ Recovery against the direction budget `k/d` is a cliff, not a slope:
 
 Three quarters of the budget buys two directions of sixteen; the last
 quarter buys the other fourteen. And the cliff does **not** soften if you
-only want the top direction: below full dimension the estimate is a
+only want the top direction: below full dimension a single reading is a
 projection onto a random subspace, and a projected operator's leading
-eigenvector is not the operator's. Cheap and half-right is not on the menu;
-it is cheap and wrong or full-price and exact.
+eigenvector is not the operator's. **Per operating point, at matched
+point counts** — the regime every number in that table lives in —
+cheap and half-right is not on the menu. Whether `k < d` spread over
+proportionally more operating points recovers the population operator
+at equal *total* call budget is measured by no cell yet; that is
+C-15's question, and both answers would be worth having.
 
 Practically: the default `mode="exact"` spends `2d` calls and is correct.
 `mode="lstsq"` with `sketch_dim >= dim` is equivalent. The cheaper
