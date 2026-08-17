@@ -20,8 +20,9 @@
 > and P2's forward transfer (OT-15 ✅, via the corrected estimator after
 > OT-9's death). P5's floor curves remain **untested in substance after
 > two instrument/authoring deaths** (OT-12, OT-13 — the latter leaving a
-> perfect but ungraded exploratory record), and P3's noisy cliff has not
-> been run. Consumed predictions are recorded as instances below; **new
+> perfect but ungraded exploratory record). P3's noisy cliff was
+> discharged 2026-08-17: theorem (OT-3N), then measurement (OT-16,
+> PASS on a fresh seed). Consumed predictions are recorded as instances below; **new
 > owed predictions are not minted here** — that is a revision act with
 > its own seal, and the program's precedent says not to rush it.
 
@@ -109,11 +110,19 @@ exclusion moves the cliff to exactly d−k₀ and never softens it —
 measured in six cells at the predicted location, with sub-cliff "lucky
 recoveries" matching the Haar chance-alignment rate analytically.
 
-*Owed prediction (new, untested):* **the noisy cliff.** With
-observation noise of scale σ on each scalar reading, identification at
-`k ≥ d` floors at an error derivable from σ and the spectrum gap, while
-the cliff's location does not move — noise prices accuracy, never
-admission. Theorem extension first, then measurement.
+*Owed prediction — CONSUMED, survived (OT-3N theorem + OT-16
+measurement, 2026-08-17):* **the noisy cliff.** Proved first
+(`OT3-NOISY-THEOREM.md`): oblivious lower bounds survive every σ by
+total variation zero — noise cannot un-confine a design — and the
+k = d floor is Θ(σ√d/γ) by Davis–Kahan with a matching two-point KL
+lower bound; the adaptive quantifier-order cell recorded open,
+matching OT-3's own. Then measured on a fresh seed (OT-16, PASS, no
+revisions spent): decade linearity 0.84–1.18 with √d/γ slope collapse
+1.33 across six (d, γ) cells, the confined face pinned at 1/√2, the
+step resolved at 22–31×, and the side-information shift to d − k₀
+holding in all four cells. **Noise prices accuracy, never
+admission** — theorem, then measurement, in that order. Now an
+instance; P3 currently carries no open owed prediction.
 
 ## P4 — Temporal nonstationarity *(REVISED after OT-4's refutation)*
 
@@ -204,10 +213,11 @@ constructed). The Third Crucible (OT-13..OT-15), run on
 pre-qualified families under that rule, closed 2/3: **P4's and P2's
 owed predictions are earned** (OT-14, OT-15), P1's was earned earlier
 (OT-8), and OT-13 closed unresolved. The theory's live exposure is
-now exactly two owed predictions: **P3's noisy cliff** (never run)
-and **P5's floor curves** (never graded). No v1.0 declaration is
-available while either stands open, and new owed predictions for
-P1/P2/P4 await a sealed revision act. The research question is
+now exactly **one** owed prediction: **P5's floor curves** (never
+graded — two campaigns, both instrument/authoring deaths). P3's
+noisy cliff was discharged 2026-08-17 (OT-3N + OT-16). No v1.0
+declaration is available while P5 stands open, and new owed
+predictions for P1/P2/P3/P4 await a sealed revision act. The research question is
 unchanged:
 
 > **What can be known about an internal representation by observing how
