@@ -56,7 +56,7 @@ class TestWaterFillKKT:
         alloc = water_fill(w, budget=budget)
         b = alloc.bits
         assert abs(b.sum() - budget) < 1e-9
-        marg = w * 2.0 ** (-2 * b)          # ∝ -dD/db_i up to constant
+        marg = w * 2.0 ** (-2 * b)  # ∝ -dD/db_i up to constant
         active = b > 1e-12
         assert active.any()
         lv = marg[active]
