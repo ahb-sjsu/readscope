@@ -183,19 +183,23 @@ step — accuracy 0.93–1.00 from DF 1.0 down to 0.094, then 0/30
 informative pairs; **OT-6:** ceiling prediction of a *discrete*
 ranking metric (top-10 overlap), consistent with writ-until-the-floor.
 
-*Owed prediction (still untested — twice, by instrument):* **the two
-curves at the floor.** In a consumer family approaching its floor
+*Owed prediction (still untested — three times, by instrument):* **the
+two curves at the floor.** In a consumer family approaching its floor
 gradually, the *informative fraction* of codec comparisons decays
 while accuracy *on informative pairs* stays at ceiling — both curves
 predicted, jointly falsifiable: accuracy sagging while informative
-pairs remain would kill the revision. Two campaigns have failed to
-grade it: OT-12 (family without interior, VOID) and OT-13 (v1: probe
-structurally silent by channel conflation; v2: **accuracy 1.000 at
-every graded step with clean decay**, then VOID on its author's own
-seed-fragile manipulation check — closed unresolved under the sealed
-campaign rule, the perfect curve carrying no verdict weight). The
-prediction remains the theory's live exposure; the instrument lessons
-for a fourth attempt are recorded in `OT13-NOTES.md`.
+pairs remain would kill the revision. Three campaigns have failed to
+grade it: OT-12 (family without interior, VOID); OT-13 (v1: probe
+structurally silent; v2: accuracy 1.000 at every graded step, VOID on
+a seed-fragile per-step check); and OT-17 (Fourth Crucible, 2026-08-17:
+the band-level check fixed, and the family's own interior proved
+seed-fragile — VOID with no escape hatch, campaign closed unresolved).
+Three perfect ungraded accuracy curves now sit in the record with zero
+verdict weight. The prediction remains the theory's sole live
+exposure; the deepened lesson — **family interior must be demonstrated
+across seeds, not at one** — is recorded in `OT-CRUCIBLE-4.md`, and
+the next attempt requires a multi-seed-qualified family in a later
+session.
 
 ---
 
@@ -214,7 +218,7 @@ pre-qualified families under that rule, closed 2/3: **P4's and P2's
 owed predictions are earned** (OT-14, OT-15), P1's was earned earlier
 (OT-8), and OT-13 closed unresolved. The theory's live exposure is
 now exactly **one** owed prediction: **P5's floor curves** (never
-graded — two campaigns, both instrument/authoring deaths). P3's
+graded — three campaigns, all instrument/family deaths). P3's
 noisy cliff was discharged 2026-08-17 (OT-3N + OT-16). No v1.0
 declaration is available while P5 stands open, and new owed
 predictions for P1/P2/P3/P4 await a sealed revision act. The research question is
