@@ -108,11 +108,12 @@ probe's per-point estimators are; it does not cover every allocation
 of calls across many operating points, and the sketch expectation
 `(1+1/k)·S + tr(S)/k·I` shares `S`'s eigenspaces at every `k` — so
 whether many cheap points can average their way back to the
-population operator is a **sample-complexity question, not a proven
-impossibility**. That equal-total-budget `(k, n)` surface is the
-instrument's next calibration (C-15); until it lands, every cliff
-statement here is a per-operating-point statement at the measured
-point count.
+population operator was a **sample-complexity question, not a proven
+impossibility** — and C-15 has now measured it: at equal total
+consumer calls, sub-dimensional budgets do not catch up, at any
+graded rank, within 8× the full-dimension spend (SPEC.md, C-15).
+The cliff is a property of total calls in the measured range; only
+the far asymptotic regime remains open.
 
 ## The one rule: budget `2d` calls per operating point
 
@@ -128,12 +129,10 @@ Three quarters of the budget buys two directions of sixteen; the last
 quarter buys the other fourteen. And the cliff does **not** soften if you
 only want the top direction: below full dimension a single reading is a
 projection onto a random subspace, and a projected operator's leading
-eigenvector is not the operator's. **Per operating point, at matched
-point counts** — the regime every number in that table lives in —
-cheap and half-right is not on the menu. Whether `k < d` spread over
-proportionally more operating points recovers the population operator
-at equal *total* call budget is measured by no cell yet; that is
-C-15's question, and both answers would be worth having.
+eigenvector is not the operator's. **Per operating point and now
+also at equal total budget** (C-15: reallocating directions into
+points buys nothing within 8× the full-dimension spend) — cheap and
+half-right is not on the menu.
 
 Practically: the default `mode="exact"` spends `2d` calls and is correct.
 `mode="lstsq"` with `sketch_dim >= dim` is equivalent. The cheaper

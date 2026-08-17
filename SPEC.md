@@ -36,7 +36,7 @@ frequency bins.
 | Field | Scope equivalent | Meaning for this instrument | Status |
 |---|---|---|---|
 | Sample rate | samples/second | Consumer evaluations spent per operating point. `2d` exact, `2k` sketched. | **Measured, exactly known** |
-| Minimum usable budget | minimum input signal | The direction budget below which the probe resolves almost nothing. | **Measured at matched point counts: a cliff at `k = d`. The equal-total-budget `(k, n)` surface is uncalibrated (C-15 queued)** |
+| Minimum usable budget | minimum input signal | The direction budget below which the probe resolves almost nothing. | **Measured twice over: a cliff at `k = d` at matched point counts (C-2e), and the cliff survives equal-total-budget reallocation (C-15) — sub-dimensional budgets do not catch up within 8× the flagship spend** |
 | Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Measured for this package's estimators, and it is bad** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
 | Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **108 real-model cells with closed-form references (48 attention heads / four families, 12 Mamba channels, 48-cell Qwen scale ladder) plus the three sealed GO runs; one full loading curve on a synthetic consumer** |
@@ -271,16 +271,54 @@ points — there is no graceful degradation to trade against. **Scope note
 (2026-08-17):** these rows compare equal `n`, not equal total call budget
 `2kn`; the OT-3 theorem behind the cliff covers subspace-confined designs
 and explicitly not generic-position allocation across points, and the
-sketch expectation retains `S`'s eigenspaces at every `k`. Whether
-`k = d/4` at `4n` points catches `k = d` at `n` is uncalibrated — the C-15
-budget-surface calibration is queued to decide it, and until it reports,
-"no partial budget worth spending" is licensed per point, not per total
-budget.
+sketch expectation retains `S`'s eigenspaces at every `k`. C-15 has
+now decided it (`records/c15-budget-surface.json`, sealed decision rule):
+it does not catch up. See the C-15 section below — "no partial budget
+worth spending" is licensed at equal total budget too, within the
+measured range.
 
 **Read as a specification: for a scalar-margin consumer, pay `2d` consumer
 calls per operating point or expect the dominant direction and nothing
 else.** That is the honest cost of this instrument, and it is why the source
 program pays it.
+
+### C-15: the cliff survives equal-budget reallocation
+
+C-15, record `calibration/records/c15-budget-surface.json`, sealed
+decision rule applied as frozen (`DECLARATION-C15.md`; sealed by recorded
+owner override, which the declaration itself records). The reviewer-posed
+question: C-2e's rows compare equal point counts, and the sketch
+expectation `(1+1/k)S + tr(S)/k·I` retains `S`'s eigenspaces at every
+`k` — so can many cheap points buy back what few directions lose, at
+equal **total** consumer calls?
+
+Surface arm: total directional observations fixed at the C-2e flagship's
+`kn = 3072`; `k/d` from 1/8 to 1.25 with `n = 3072/k`. Scaling arm:
+`k = d/4`, `n` up to 3072 — 8× the flagship's total budget. Five seeds,
+ranks {4, 16}, lstsq, the C-2e planted family.
+
+| `k/d` (surface, rank 16) | 0.125 | 0.25 | 0.5 | 0.75 | 1.0 | 1.25 |
+|---|---:|---:|---:|---:|---:|---:|
+| `n` at equal budget | 768 | 384 | 192 | 128 | 96 | 76 |
+| median res@16 | 0.02 | 0.11 | 0.05 | 0.04 | **1.0** | **1.0** |
+
+- **D1, dominance: holds.** Per-seed margin of `k = d` over the best
+  sub-dimensional equal-budget cell: median **0.883**, minimum 0.841,
+  against a sealed 0.3 rule.
+- **D2, convergence within 8×: none visible.** At `k = d/4`, rank 16,
+  median res@16 is 0.062 at `n = 384` and **0.057 at `n = 3072`** —
+  flat to declining. Rank 4 medians (0.285, 0.267, 0.256, 0.338) show
+  no clean climb either.
+- AV: 100/100 cells, declared calls exact, `k = d` sanity at 1.0.
+
+**The law, stated once:** the population algebra permits sub-dimensional
+convergence; the measured sample complexity walls it off — within 8× the
+full-dimension budget, reallocating directions into operating points buys
+nothing at any graded rank. The cliff is a property of *total* consumer
+calls in the measured range, which is a stronger statement than C-2e
+alone licensed and is exactly the second budget law the reviewer's
+algebra pointed at. The asymptotic question (would 100× converge?)
+remains open and is priced accordingly: nobody spends 100× to avoid 1×.
 
 ### The discount, which is real and does not go all the way
 
