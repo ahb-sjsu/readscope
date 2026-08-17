@@ -183,23 +183,26 @@ step — accuracy 0.93–1.00 from DF 1.0 down to 0.094, then 0/30
 informative pairs; **OT-6:** ceiling prediction of a *discrete*
 ranking metric (top-10 overlap), consistent with writ-until-the-floor.
 
-*Owed prediction (still untested — three times, by instrument):* **the
-two curves at the floor.** In a consumer family approaching its floor
+*Owed prediction — CONSUMED, survived (OT-18, fifth campaign attempt,
+2026-08-17):* **the two curves at the floor.** In a consumer family approaching its floor
 gradually, the *informative fraction* of codec comparisons decays
 while accuracy *on informative pairs* stays at ceiling — both curves
 predicted, jointly falsifiable: accuracy sagging while informative
-pairs remain would kill the revision. Three campaigns have failed to
-grade it: OT-12 (family without interior, VOID); OT-13 (v1: probe
-structurally silent; v2: accuracy 1.000 at every graded step, VOID on
-a seed-fragile per-step check); and OT-17 (Fourth Crucible, 2026-08-17:
-the band-level check fixed, and the family's own interior proved
-seed-fragile — VOID with no escape hatch, campaign closed unresolved).
-Three perfect ungraded accuracy curves now sit in the record with zero
-verdict weight. The prediction remains the theory's sole live
-exposure; the deepened lesson — **family interior must be demonstrated
-across seeds, not at one** — is recorded in `OT-CRUCIBLE-4.md`, and
-the next attempt requires a multi-seed-qualified family in a later
-session.
+pairs remain would kill the revision. It took five attempts across four campaigns, and the three
+instrument deaths (OT-12: family without interior; OT-13: a perfect
+curve VOIDed on a seed-fragile per-step check; OT-17: the family's
+own interior proved seed-fragile) each bought the lesson the next
+attempt ran on. OT-18 sealed against the multi-seed-qualified F1′
+(`FAMILY-F1P.md`, interior demonstrated at five seeds) with **every
+bar checked against the family record at enforcement granularity
+before sealing** — a check that killed the inherited per-step B1 at
+all five seeds and replaced it with the record-supported trend form.
+On a disjoint seed: 10 interior steps, decay trend Spearman −0.851,
+**accuracy 0.926–1.000 at all 14 graded steps**, and — across five
+campaigns of this claim — the metric was never once wrong while
+decisive. The floor law stands: full fidelity wherever the signal is
+decisive, failure closed at the floor. Now an instance; P5 carries
+no open owed prediction.
 
 ---
 
@@ -217,11 +220,14 @@ constructed). The Third Crucible (OT-13..OT-15), run on
 pre-qualified families under that rule, closed 2/3: **P4's and P2's
 owed predictions are earned** (OT-14, OT-15), P1's was earned earlier
 (OT-8), and OT-13 closed unresolved. The theory's live exposure is
-now exactly **one** owed prediction: **P5's floor curves** (never
-graded — three campaigns, all instrument/family deaths). P3's
-noisy cliff was discharged 2026-08-17 (OT-3N + OT-16). No v1.0
-declaration is available while P5 stands open, and new owed
-predictions for P1/P2/P3/P4 await a sealed revision act. The research question is
+**zero**: all five v0.2 owed predictions are consumed and survived
+(P1 OT-8, P2 OT-15, P3 OT-3N+OT-16, P4 OT-14, P5 OT-18 — the last
+three discharged 2026-08-17). **The v1.0 question is now open. It is
+not decided here:** declaring v1.0 is a separate act with its own
+seal, its own graduation rule, and its own unhurried day, per the
+standing G2 of `OT-CRUCIBLE-4.md`. New owed predictions likewise
+await a sealed revision act — a theory with zero exposure is a
+theory that owes its next risk. The research question is
 unchanged:
 
 > **What can be known about an internal representation by observing how
