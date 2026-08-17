@@ -14,6 +14,7 @@ produce before any accuracy claim here is worth the name.
 """
 
 from readscope.allocate import Allocation, uniform_allocation, water_fill
+from readscope.diagnostics import split_half_overlap, step_response
 from readscope.loading import (
     LoadingCorrection,
     LoadingReading,
@@ -82,6 +83,8 @@ __all__ = [
     "spectrum_of",
     "top_spectrum",
     "TopSpectrum",
+    "split_half_overlap",
+    "step_response",
     "subspace_overlap",
     "tangential_fraction",
     "tangential_fractions",

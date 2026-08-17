@@ -14,7 +14,13 @@ it sets the instrument's sample rate and its noise floor.
 
 ``exact``
     Central differences along every coordinate. Costs ``2 d`` consumer calls
-    per operating point and is exact to order ``eps^2``.
+    per operating point. **"Exact" means exact directional coverage** — no
+    directional underdetermination — conditional on the finite-difference
+    observations: the differences are still an order-``eps^2`` approximation
+    to the differential of a nonlinear consumer, and ``S`` is still a
+    finite-sample average over the operating points supplied. Use
+    :func:`readscope.diagnostics.step_response` to check the step and
+    :func:`readscope.diagnostics.split_half_overlap` to check the sample.
 
 ``sketch``
     Central differences along ``k`` iid Gaussian directions, combined into

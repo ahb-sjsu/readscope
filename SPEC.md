@@ -9,7 +9,10 @@ Every number here names the record it came from, in
 `calibration/records/` for calibrations run in this repository, or the sealed
 preregistration in the `geometric-observation` evidence repository for the
 accuracy points inherited from that program. A number with no record does not
-appear. Regenerating this document from the records automatically is not yet
+appear. A CI census check (`tools/check_spec_census.py`) now fails the
+build when a record exists that this document never cites, when a section
+heading duplicates, or when a known-stale phrase returns; full automatic
+regeneration from the records is still not
 done, so for now the binding is by citation and not by script.
 
 ---
@@ -36,7 +39,7 @@ frequency bins.
 | Minimum usable budget | minimum input signal | The direction budget below which the probe resolves almost nothing. | **Measured at matched point counts: a cliff at `k = d`. The equal-total-budget `(k, n)` surface is uncalibrated (C-15 queued)** |
 | Bandwidth | −3 dB frequency | The rank range over which recovery stays above the noise floor. How many eigendirections can be resolved before the reading is chance. | **Measured for this package's estimators, and it is bad** |
 | Noise floor | volts RMS | Chance overlap for the shape being read, `rank / dim`. Reported with every reading. | **Measured, exactly known** |
-| Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **Three real-model points; one full loading curve on a synthetic consumer** |
+| Accuracy over range | percent of reading | Recovered-subspace overlap as a function of rank, dimension, probe budget, and loading. | **108 real-model cells with closed-form references (48 attention heads / four families, 12 Mamba channels, 48-cell Qwen scale ladder) plus the three sealed GO runs; one full loading curve on a synthetic consumer** |
 | Input impedance | ohms | Probe loading, on a dimensionless axis. | **Axis works. A scalar correction is the wrong shape; effect depends on alignment** |
 | Linearity | percent | Whether the recovered magnitude tracks the true magnitude across scale and across domain. | **Partial. Direction transfers, magnitude does not** |
 | Temperature drift | ppm/°C | Stability of a reading across architectures and scales at matched geometry. | **Four families, spread 1e-15. Four scales, spread 7e-16** |
@@ -765,13 +768,22 @@ scalar correction is the wrong shape for this effect.
 ## Read operators drift along the sequence
 
 C-11c, record `calibration/records/c11c-operator-drift.json`, **PASS on all
-six bars**, on the sixteen source-matched Llama-3.2-3B head-cells.
+six bars**, on the sixteen source-matched Llama-3.2-3B head-cells. (Two
+predecessors stay on the record: C-11's first cut and C-11b's null-free
+intermediate, `records/c11-operator-drift.json` and
+`records/c11b-operator-drift.json` — C-11c's paired null is what they
+lacked, and the sequence is kept rather than collapsed.)
 
 A head's read operator is spanned by its queries, so if the query
 distribution moves with position then a key compressed against an early
 operator is later read by a different one. That is probe loading along the
 time axis, and it is a mechanism candidate for the long-generation
-degradation turboquant-pro reports and does not explain.
+degradation turboquant-pro reports and does not explain. (The C-12
+long-generation follow-up under the corrected symmetric codebook,
+`records/c12-longgen-drift-sym.json`, is where that mechanism claim went
+to die: OT-4 established the collapse is feedback compounding of a
+constant codebook error, not drift — the record is cited here because a
+census that omits its own refutations is not a census.)
 
 **Every quantity is paired with a null**, because two disjoint samples of one
 distribution do not give identical operators either. Windows cut by position
@@ -806,10 +818,6 @@ long-generation regime, and never run against a real degradation curve.
 
 ## Accuracy: everything measured so far
 
----
-
-## Accuracy: everything measured so far
-
 Three runs, on two substrates, under sealed preregistration in the
 `geometric-observation` evidence repository. Two of the three are partial or
 negative and both stay on the record.
@@ -820,8 +828,18 @@ negative and both stay on the record.
 | GO-P-2026-020 | Llama-3.2-3B post-RoPE keys | softmax attention | **0.567** | ≈0.126 | ≈4.5× | 16 | **MISSED** the sealed 0.60 bar (NEG-12) |
 | GO-P-2026-021 | Llama-3.2-3B post-RoPE keys | softmax attention | **0.647** | 0.126 | ≈5.1× | 16 | PASS, 32-key probe |
 
-The 16 cells are layers {8, 16} × 8 KV heads of one 3B model. That is the
-entire real-model evidence base for this instrument's accuracy.
+The 16 cells are layers {8, 16} × 8 KV heads of one 3B model. They were
+the instrument's entire real-model evidence base when this section was
+first written; they no longer are. The census as of C-15's drafting:
+**48 attention head-cells across four families** (Llama, Qwen, Mistral,
+Gemma) at resolution 1.0000 against closed-form references
+(`records/c3-architecture-spread.json`, `c3b`), **12 state-space
+channel-cells** from Mamba-790m with its own analytic operator
+(`records/c3c-state-space.json`), and a **48-cell Qwen2.5 scale ladder**
+from 1.5B to 32B (`records/c5-scale-ladder.json`) — alongside the three
+sealed GO runs above, which stay on the record with their bracket. The
+sections below carry each cell; `tools/check_spec_census.py` fails CI if
+this census drifts from the records again.
 
 Two facts that a spec sheet must carry and a demo would omit.
 
@@ -931,9 +949,11 @@ It does not claim that recovered sensitivity is causal.
 It does not claim any magnitude transfers across domains. GO-P-2026-041 says
 it does not.
 
-It does not claim a specification. It claims three measurements, one
-synthetic, one negative, one positive, on one real model, and an argument
-that the missing measurements are the ones worth making next.
+It does not claim a specification. It claims the measurements in the
+census above — sealed GO runs (one synthetic, one negative, one positive)
+and the calibration cells recorded in `calibration/records/` — and an
+argument that the missing measurements (population/sample uncertainty,
+the equal-budget `(k, n)` surface) are the ones worth making next.
 
 It does not require anyone to accept an account of what a consumer is. The
 reading is a spectrum of output sensitivity, and it means the same thing

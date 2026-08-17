@@ -32,5 +32,8 @@ jobs:
       - name: Format check with black
         run: black --check readscope/ tests/ calibration/
 
+      - name: SPEC census check
+        run: python tools/check_spec_census.py
+
       - name: Run tests
         run: pytest tests/ -v

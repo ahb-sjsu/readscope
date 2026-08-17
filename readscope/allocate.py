@@ -17,6 +17,14 @@ This is the same optimization as power allocation across frequency bins. The
 quantity being allocated against is a downstream task's sensitivity rather
 than a signal's power, which changes what the numbers mean and not the shape
 of the problem.
+
+**The allocation model, stated where the claim is made:** ``water_fill``
+optimizes the explicit surrogate ``D = sum_i w_i 2^(-2 b_i)`` with
+continuous per-direction bits and optional ceilings. "The same
+optimization" is a claim about that surrogate, not about arbitrary real
+codecs: integer bit allocations, finite codebooks, and non-exponential
+distortion laws all depart from the continuous optimum, and how much they
+depart is an uncalibrated question this package has not yet measured.
 """
 
 from __future__ import annotations
