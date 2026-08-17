@@ -72,7 +72,15 @@ class ProbeResult:
     """Operating points probed."""
 
     n_calls: int
-    """Consumer evaluations spent. The instrument's sample-rate axis."""
+    """Consumer **invocations** spent — the number of times the consumer
+    callable was entered. This meaning is constant across execution modes
+    (a batched invocation is one call that evaluates many rows). The other
+    resource axes live in ``meta``: ``n_directional_observations`` (the
+    ``k x n`` directional derivatives the estimate is built from, identical
+    between batched and unbatched runs of the same spec) and
+    ``n_row_evaluations`` (input rows pushed through the consumer, the
+    FLOP-side axis). ``n_invocations`` is also mirrored into ``meta`` so
+    all three axes can be read from one place."""
 
     mode: str
     """``exact`` or ``sketch``."""
@@ -271,6 +279,9 @@ def blind_probe(
         sketch_dim=None if mode == "exact" else k,
         meta={
             "dim": d,
+            "n_invocations": calls,
+            "n_directional_observations": (d if mode == "exact" else k) * n,
+            "n_row_evaluations": calls,
             "regime": None if verdict is None else verdict.to_dict(),
         },
     )
@@ -335,11 +346,19 @@ def jacobian_probe(
     eps: float = 1e-3,
     rng: np.random.Generator | None = None,
     batched: bool = False,
+    output_metric: np.ndarray | None = None,
 ) -> ProbeResult:
     """Recover a read operator from a **vector-valued** consumer.
 
     ``batched=True``: consumer maps ``(m, d)`` to ``(m, out)``; one
     invocation per operating point; observations unchanged (C-14).
+
+    ``output_metric``: the consumer's output metric ``G`` in
+    ``P_C = E[J^T G J]`` — a ``(out, out)`` SPD matrix or a length-``out``
+    vector of diagonal weights. Default ``None`` means ``G = I``, the
+    Euclidean output geometry, which is the configuration every calibration
+    in SPEC.md was run under; a non-identity ``G`` is supported so the API
+    matches the theoretical object, and is currently uncalibrated.
 
     This is the estimator the `geometric-observation` program used for the
     published Llama figures, ported here because the difference from
@@ -377,12 +396,19 @@ def jacobian_probe(
 
     if batched:
         return _jacobian_probe_batched(
-            consumer, pts, xp, k=k, eps=eps, rng=rng
+            consumer,
+            pts,
+            xp,
+            k=k,
+            eps=eps,
+            rng=rng,
+            output_metric=output_metric,
         )
 
     M = xp.zeros((d, d), dtype=xp.float64)
     calls = 0
     out_dim = None
+    G = None
 
     for x in pts:
         U_np = rng.standard_normal((k, d))
@@ -398,8 +424,9 @@ def jacobian_probe(
         dC = xp.stack(rows)
         if out_dim is None:
             out_dim = int(dC.shape[1])
+            G = _prepare_metric(output_metric, out_dim, xp)
         Jt = xp.linalg.pinv(U) @ dC
-        M += Jt @ Jt.T
+        M += Jt @ Jt.T if G is None else Jt @ G @ Jt.T
 
     M /= n
     M = 0.5 * (M + M.T)
@@ -410,8 +437,38 @@ def jacobian_probe(
         mode="jacobian",
         eps=eps,
         sketch_dim=k,
-        meta={"dim": d, "out_dim": out_dim, "regime": None},
+        meta={
+            "dim": d,
+            "out_dim": out_dim,
+            "output_metric": "I" if G is None else "custom",
+            "n_invocations": calls,
+            "n_directional_observations": k * n,
+            "n_row_evaluations": calls,
+            "regime": None,
+        },
     )
+
+
+def _prepare_metric(output_metric, out_dim: int, xp):
+    """Validate G in P_C = E[J^T G J]; None means the identity."""
+    if output_metric is None:
+        return None
+    G_np = np.asarray(output_metric, dtype=np.float64)
+    if G_np.ndim == 1:
+        if G_np.shape[0] != out_dim:
+            raise ValueError(
+                f"diagonal output_metric has length {G_np.shape[0]}, "
+                f"consumer output dimension is {out_dim}"
+            )
+        G_np = np.diag(G_np)
+    if G_np.shape != (out_dim, out_dim):
+        raise ValueError(
+            f"output_metric shape {G_np.shape} does not match consumer "
+            f"output dimension {out_dim}"
+        )
+    if not np.allclose(G_np, G_np.T):
+        raise ValueError("output_metric must be symmetric")
+    return _xp.to_xp(xp, G_np)
 
 
 # --------------------------------------------------------------- batched
@@ -490,16 +547,22 @@ def _blind_probe_batched(
             "dim": d,
             "batched": True,
             "observations": k * n,
+            "n_invocations": invocations,
+            "n_directional_observations": k * n,
+            "n_row_evaluations": 2 * k * n,
             "regime": None if verdict is None else verdict.to_dict(),
         },
     )
 
 
-def _jacobian_probe_batched(consumer, pts, xp, *, k, eps, rng):
+def _jacobian_probe_batched(
+    consumer, pts, xp, *, k, eps, rng, output_metric=None
+):
     n, d = int(pts.shape[0]), int(pts.shape[1])
     M = xp.zeros((d, d), dtype=xp.float64)
     invocations = 0
     out_dim = None
+    G = None
     checked = False
     for x in pts:
         U_np = rng.standard_normal((k, d))
@@ -515,8 +578,9 @@ def _jacobian_probe_batched(consumer, pts, xp, *, k, eps, rng):
         dC = (Y[:k] - Y[k:]) / (2.0 * eps)
         if out_dim is None:
             out_dim = int(dC.shape[1])
+            G = _prepare_metric(output_metric, out_dim, xp)
         Jt = xp.linalg.pinv(U) @ dC
-        M += Jt @ Jt.T
+        M += Jt @ Jt.T if G is None else Jt @ G @ Jt.T
     M /= n
     M = 0.5 * (M + M.T)
     return ProbeResult(
@@ -529,8 +593,12 @@ def _jacobian_probe_batched(consumer, pts, xp, *, k, eps, rng):
         meta={
             "dim": d,
             "out_dim": out_dim,
+            "output_metric": "I" if G is None else "custom",
             "batched": True,
             "observations": k * n,
+            "n_invocations": invocations,
+            "n_directional_observations": k * n,
+            "n_row_evaluations": 2 * k * n,
             "regime": None,
         },
     )

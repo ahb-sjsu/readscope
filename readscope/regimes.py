@@ -139,6 +139,7 @@ def applicability(
     *,
     eps: float = 1e-3,
     flat_fraction: float = 0.9,
+    min_trials: int = 16,
     rng: np.random.Generator | None = None,
 ) -> Applicability:
     """Decide empirically whether the blind probe applies to this consumer.
@@ -149,6 +150,12 @@ def applicability(
     large majority of perturbations produce an exactly zero difference, while
     a scalar-margin consumer almost never does.
 
+    The gate's trial count is **decoupled from the number of operating
+    points** (issue #1): with fewer points than ``min_trials``, points are
+    revisited with fresh directions, so a single-point smooth consumer gets
+    a real trial set instead of an automatic rejection from one
+    perturbation pair.
+
     ``flat_fraction`` is the share of zero responses above which the consumer
     is reported as SELECTION. It is a declared threshold and not a measured
     one, and no calibration in this repository has swept it yet.
@@ -157,8 +164,11 @@ def applicability(
         rng = np.random.default_rng(0)
     pts = np.atleast_2d(np.asarray(points, dtype=float))
     n, d = pts.shape
-    trials = min(n, 64)
-    idx = rng.choice(n, size=trials, replace=False) if n > trials else range(n)
+    trials = min(64, max(int(min_trials), n))
+    if n >= trials:
+        idx = rng.choice(n, size=trials, replace=False)
+    else:
+        idx = rng.choice(n, size=trials, replace=True)
 
     zero = 0
     total = 0
