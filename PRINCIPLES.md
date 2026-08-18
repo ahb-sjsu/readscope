@@ -7,6 +7,15 @@
 > statement changed at declaration. v1.x is editorial only; v2.0
 > requires a refuting measurement plus a sealed revision act. The
 > version history that produced it follows.
+>
+> **v1-line exposure (2026-08-18).** The theory's next risk is minted
+> in
+> [`crucible/OWED-V1.md`](https://github.com/ahb-sjsu/geometric-observation/blob/master/crucible/OWED-V1.md):
+> five new owed predictions (one per principle), each demanding a
+> discharged *descriptive* law become *derivable a priori*, with a
+> named substrate and kill condition. This ledger is live until every
+> line is discharged or refutes; the frozen statements above are
+> untouched.
 
 > **Observation Theory v0.2 (2026-08-15; verdicts updated
 > 2026-08-16).** v0.1 was frozen at commit `a490e4e`, put through the
