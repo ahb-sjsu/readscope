@@ -1,5 +1,13 @@
 # The five principles
 
+> **Observation Theory v1.0 — SEALED 2026-08-18.** This text is
+> frozen verbatim as v1.0 by
+> [`geometric-observation/crucible/DECLARATION-V1.md`](https://github.com/ahb-sjsu/geometric-observation/blob/master/crucible/DECLARATION-V1.md):
+> all five owed predictions consumed, live exposure zero, no
+> statement changed at declaration. v1.x is editorial only; v2.0
+> requires a refuting measurement plus a sealed revision act. The
+> version history that produced it follows.
+
 > **Observation Theory v0.2 (2026-08-15; verdicts updated
 > 2026-08-16).** v0.1 was frozen at commit `a490e4e`, put through the
 > seven-test Crucible campaign, and **did not graduate** (three of the
