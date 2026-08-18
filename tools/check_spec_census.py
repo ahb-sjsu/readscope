@@ -29,6 +29,7 @@ EXEMPT = {
     "rightsize-extraction.json": "infra sizing note, not a calibration",
     "c15-shakedown.json": "shakedown, no evidential weight until C-15 seals",
     "c16-shakedown.json": "shakedown, no evidential weight until C-16 seals",
+    "op3-shakedown.json": "OP3 v1-line shakedown, no weight until PREREG-OP3 seals",
 }
 
 TRIPWIRES = [
