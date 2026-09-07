@@ -8,8 +8,10 @@ sketch identity but carried one step further:
 
   M = E[Shat] = (1 + 1/k) S + (tr S / k) I         (C-15 identity)
   eigengap at mode i:  gap_i = (1+1/k)(lam_i - lam_{i+1}) ~ w_i^2
-  fluctuation floor:   ||Shat_n - M|| ~ beta * tr(S) / (k sqrt(n))   (isotropic, common)
-  Davis-Kahan:         sin th_i <~ ||Shat_n - M|| / gap_i ~ [tr S/(k sqrt n)] / w_i^2
+  fluctuation floor:   ||Shat_n - M|| ~ beta * tr(S) / (k sqrt(n))
+                       (isotropic, common)
+  Davis-Kahan:         sin th_i <~ ||Shat_n - M|| / gap_i
+                       ~ [tr S/(k sqrt n)] / w_i^2
 
 => sin^2 th_i ~ 1 / (n * w_i^4).  The per-mode recovery collapses onto a
 single curve in the scaling variable s_i = m * w_i^p with the DERIVED
@@ -40,8 +42,9 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from readscope import blind_probe  # noqa: E402
 import op3_exponent as op3  # noqa: E402
+
+from readscope import blind_probe  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -60,17 +63,23 @@ def per_mode_cos2(seed, n):
     the planted top-16 basis, per mode (sorted descending)."""
     basis, weights, pts = op3.setup(RANK, seed, n)
     cons = op3.scalar_consumer(basis, weights)
-    res = blind_probe(cons, pts, mode="lstsq", sketch_dim=K, eps=1e-3,
-                      rng=np.random.default_rng(seed * 31 + K),
-                      check_regime=False)
+    res = blind_probe(
+        cons,
+        pts,
+        mode="lstsq",
+        sketch_dim=K,
+        eps=1e-3,
+        rng=np.random.default_rng(seed * 31 + K),
+        check_regime=False,
+    )
     A = np.linalg.qr(res.read_subspace(RANK))[0]
     B = np.linalg.qr(basis[:, :RANK])[0]
     cc = np.linalg.svd(B.T @ A, compute_uv=False)
-    return (cc ** 2).tolist()  # length 16, descending
+    return (cc**2).tolist()  # length 16, descending
 
 
 def fit_universal(s, y):
-    """Fit y = s/(s+A) for scalar A>0 by 1-D search on log A; return (A, rms)."""
+    """Fit y = s/(s+A), scalar A>0, by 1-D search on log A; return (A, rms)."""
     s = np.asarray(s, float)
     y = np.asarray(y, float)
     best = None
@@ -84,8 +93,10 @@ def fit_universal(s, y):
 
 
 def main() -> int:
-    print(f"OP3 front-law validation — d={op3.DIM} k={K} rank={RANK} "
-          f"m in {M_GRID} seeds {SEEDS}")
+    print(
+        f"OP3 front-law validation — d={op3.DIM} k={K} rank={RANK} "
+        f"m in {M_GRID} seeds {SEEDS}"
+    )
     print("derived prediction: collapse variable s_i = m * w_i^4 (p=4)\n")
 
     # Measure per-mode cos^2 across the grid.
@@ -97,11 +108,18 @@ def main() -> int:
             for i, v in enumerate(c2):
                 points.append({"i": i, "m": m, "seed": seed, "cos2": v})
         # progress line: seed-mean cos^2 at this m
-        mean_c2 = [float(np.mean([p["cos2"] for p in points
-                                  if p["i"] == i and p["m"] == m]))
-                   for i in range(RANK)]
-        print(f"  m={m:4d}x  mean cos^2 by mode: "
-              + " ".join(f"{v:.2f}" for v in mean_c2))
+        mean_c2 = [
+            float(
+                np.mean(
+                    [p["cos2"] for p in points if p["i"] == i and p["m"] == m]
+                )
+            )
+            for i in range(RANK)
+        ]
+        print(
+            f"  m={m:4d}x  mean cos^2 by mode: "
+            + " ".join(f"{v:.2f}" for v in mean_c2)
+        )
 
     # For each candidate p, collapse and fit the universal curve.
     print("\ncollapse quality — fit cos^2 = s/(s+A), s = m*w^(p*i):")
@@ -115,9 +133,11 @@ def main() -> int:
         print(f"  p={p:.0f}:  A={A:10.4g}   collapse RMS={rms:.4f}{flag}")
 
     best_p = min(results, key=lambda p: results[p]["rms"])
-    print(f"\nbest-collapsing exponent: p={best_p:.0f} "
-          f"(RMS {results[best_p]['rms']:.4f})   "
-          f"derived p=4 {'CONFIRMED' if best_p == 4.0 else 'NOT best'}")
+    print(
+        f"\nbest-collapsing exponent: p={best_p:.0f} "
+        f"(RMS {results[best_p]['rms']:.4f})   "
+        f"derived p=4 {'CONFIRMED' if best_p == 4.0 else 'NOT best'}"
+    )
 
     # Front advance: mode where cos^2 = 0.5, i.e. s=A -> i* = ln(m/A)/ln(w^-p).
     p = 4.0
@@ -130,19 +150,29 @@ def main() -> int:
         print(f"  m={m:4d}x  i*={istar:5.2f}{delta}")
         prev = istar
     predicted_slope = 1.0 / np.log(W ** (-p))
-    print(f"  predicted di*/d ln m = 1/ln(w^-4) = {predicted_slope:.3f} "
-          f"(~{predicted_slope * np.log(16):.2f} modes per 16x)")
+    print(
+        f"  predicted di*/d ln m = 1/ln(w^-4) = {predicted_slope:.3f} "
+        f"(~{predicted_slope * np.log(16):.2f} modes per 16x)"
+    )
 
     record = {
         "calibration": "OP3-frontlaw",
         "sealed": False,
         "shakedown": True,
-        "note": "desk validation of the derived front law; no evidential weight",
+        "note": "desk validation of the derived front law; no evidential "
+        "weight",
         "generated": datetime.now(timezone.utc).isoformat(),
         "host": platform.node(),
         "derived_exponent_p": 4,
-        "constants": {"dim": op3.DIM, "k": K, "rank": RANK, "w": W,
-                      "base_n": BASE_N, "m_grid": M_GRID, "seeds": SEEDS},
+        "constants": {
+            "dim": op3.DIM,
+            "k": K,
+            "rank": RANK,
+            "w": W,
+            "base_n": BASE_N,
+            "m_grid": M_GRID,
+            "seeds": SEEDS,
+        },
         "collapse_by_p": {str(int(p)): results[p] for p in P_CANDIDATES},
         "best_p": int(best_p),
         "points": points,

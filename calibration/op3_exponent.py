@@ -97,11 +97,18 @@ def cell(seed, n):
         check_regime=False,
     )
     curve = {
-        r: float(subspace_overlap(res.read_subspace(r), basis[:, :r]).resolution)
+        r: float(
+            subspace_overlap(res.read_subspace(r), basis[:, :r]).resolution
+        )
         for r in GRADED_RANKS
     }
-    return {"seed": seed, "n": n, "m": n // BASE_N, "calls": res.n_calls,
-            "resolution": curve}
+    return {
+        "seed": seed,
+        "n": n,
+        "m": n // BASE_N,
+        "calls": res.n_calls,
+        "resolution": curve,
+    }
 
 
 def loglog_fit(ms, ys):
@@ -121,12 +128,17 @@ def loglog_fit(ms, ys):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--shakedown", action="store_true",
-                    help="run with no evidential weight (the only mode until seal)")
-    args = ap.parse_args()
+    ap.add_argument(
+        "--shakedown",
+        action="store_true",
+        help="run with no evidential weight (the only mode until seal)",
+    )
+    ap.parse_args()
 
-    print(f"OP3 exponent shakedown — d={DIM} k={K} rank={RANK} "
-          f"m in {M_GRID} seeds {SEEDS}")
+    print(
+        f"OP3 exponent shakedown — d={DIM} k={K} rank={RANK} "
+        f"m in {M_GRID} seeds {SEEDS}"
+    )
     print("(no evidential weight until crucible/PREREG-OP3.md seals)\n")
 
     rows = []
@@ -139,9 +151,12 @@ def main() -> int:
             rows.append(row)
             for r in GRADED_RANKS:
                 res_by_rank[r][m].append(row["resolution"][r])
-            print(f"  m={m:4d}x n={n:6d} seed={seed}  "
-                  + " ".join(f"r{r}={row['resolution'][r]:.3f}"
-                             for r in GRADED_RANKS))
+            print(
+                f"  m={m:4d}x n={n:6d} seed={seed}  "
+                + " ".join(
+                    f"r{r}={row['resolution'][r]:.3f}" for r in GRADED_RANKS
+                )
+            )
         print()
 
     print("mean resolution and excess (1-res) vs m, per rank:")
@@ -151,16 +166,26 @@ def main() -> int:
         excess = [max(1e-6, 1.0 - v) for v in means]
         res_fit = loglog_fit(M_GRID, means)
         exc_fit = loglog_fit(M_GRID, excess)
-        fits[r] = {"mean_res": means, "excess": excess,
-                   "res_loglog": res_fit, "excess_loglog": exc_fit}
+        fits[r] = {
+            "mean_res": means,
+            "excess": excess,
+            "res_loglog": res_fit,
+            "excess_loglog": exc_fit,
+        }
         tag = "in-budget" if r <= K else "CONFINED "
-        print(f"  rank {r:2d} [{tag}] res: "
-              + " ".join(f"{v:.3f}" for v in means))
+        print(
+            f"  rank {r:2d} [{tag}] res: "
+            + " ".join(f"{v:.3f}" for v in means)
+        )
         if exc_fit:
-            print(f"           excess(1-res) alpha={exc_fit['alpha']:+.3f} "
-                  f"R2={exc_fit['r2']:.3f}   "
-                  f"res-climb alpha={res_fit['alpha']:+.3f} R2={res_fit['r2']:.3f}"
-                  if res_fit else "")
+            print(
+                f"           excess(1-res) alpha={exc_fit['alpha']:+.3f} "
+                f"R2={exc_fit['r2']:.3f}   "
+                f"res-climb alpha={res_fit['alpha']:+.3f} "
+                f"R2={res_fit['r2']:.3f}"
+                if res_fit
+                else ""
+            )
 
     record = {
         "calibration": "OP3-exponent",
@@ -169,10 +194,17 @@ def main() -> int:
         "note": "no evidential weight; bars live in crucible/PREREG-OP3.md",
         "generated": datetime.now(timezone.utc).isoformat(),
         "host": platform.node(),
-        "constants": {"dim": DIM, "k": K, "rank": RANK, "base_n": BASE_N,
-                      "eps": EPS, "spectrum_decay": SPECTRUM_DECAY,
-                      "input_scale": INPUT_SCALE, "m_grid": M_GRID,
-                      "seeds": SEEDS},
+        "constants": {
+            "dim": DIM,
+            "k": K,
+            "rank": RANK,
+            "base_n": BASE_N,
+            "eps": EPS,
+            "spectrum_decay": SPECTRUM_DECAY,
+            "input_scale": INPUT_SCALE,
+            "m_grid": M_GRID,
+            "seeds": SEEDS,
+        },
         "rows": rows,
         "fits": {str(r): fits[r] for r in GRADED_RANKS},
     }
