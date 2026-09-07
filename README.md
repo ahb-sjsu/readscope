@@ -306,6 +306,22 @@ instrument pulled out of that program and specified on its own terms — you
 need no interest in the program, and no theory of what a "consumer" is, to
 point the probe at a function and read the trace.
 
+The program's vocabulary is defined, with its evidence and its corrections,
+in the [Observation Theory Encyclopedia](https://erisml.org/encyclopedia/).
+The entries that name what this instrument measures are
+[read operator](https://erisml.org/encyclopedia/read-operator.html),
+[read subspace](https://erisml.org/encyclopedia/read-subspace.html),
+[blind probe](https://erisml.org/encyclopedia/blind-probe.html), and
+[budget cliff](https://erisml.org/encyclopedia/budget-cliff.html).
+The entry [geometric decision cost](https://erisml.org/encyclopedia/geometric-decision-cost.html)
+is the same object read as a decision model: a consumer whose output metric
+is an inverse covariance, whose read operator was fitted from choice data
+rather than probed, and whose unread monetary direction was tested and
+rejected on high-stakes data. Recovering that operator from individual
+choices instead of coding it by hand is the instrument's next application,
+and the `2d` calls-per-operating-point rule above is the design bound it
+inherits.
+
 ## License
 
 MIT.
